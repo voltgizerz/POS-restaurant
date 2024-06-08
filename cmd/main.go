@@ -4,14 +4,16 @@ import (
 	"context"
 	"os"
 	"os/signal"
-	"runtime"
 	"sync"
 	"syscall"
 
 	"github.com/voltgizerz/POS-restaurant/config"
 	"github.com/voltgizerz/POS-restaurant/database"
 	"github.com/voltgizerz/POS-restaurant/internal/app/api"
+	"github.com/voltgizerz/POS-restaurant/internal/app/api/handler"
+	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
 	"github.com/voltgizerz/POS-restaurant/internal/app/repository"
+	"github.com/voltgizerz/POS-restaurant/internal/app/service"
 	"github.com/voltgizerz/POS-restaurant/pkg/jeager"
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
 )
@@ -24,39 +26,64 @@ func main() {
 	cfg := config.NewConfig()
 	defer handlePanic()
 
-	closer, err := jeager.NewJeager(cfg.App.Name)
-	if err != nil {
-		logger.LogStdErr.Errorf("[NewJeager] Error initializing Jaeger: %v\n", err)
-	}
-	defer closer.Close()
+	// Initialize Jaeger
+	initJaeger(cfg.App.Name)
 
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-	// Init database
+	// Initialize database
 	db := database.InitDatabase(ctx, cfg.Database)
 
-	repositoryOpts := repository.RepositoryOpts{
+	repoOpts := repository.RepositoryOpts{
 		Database: db,
 	}
 
-	_ = repository.NewUserRepository(repositoryOpts)
+	// Initialize Repositories
+	userRepo := repository.NewUserRepository(repoOpts)
 
-	// Init API
-	go api.NewServer(cfg.API)
+	// Initialize Services
+	userService := service.NewUserService(userRepo)
 
-	// Wait for a termination signal
-	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
-	<-sc
+	// Initialize Handlers
+	userHandler := handler.NewUserHandler(userService)
 
-	logger.LogStdOut.Warnln("Application is exiting. Graceful shutdown in action...")
+	interactoAPI := interactor.APInteractor{
+		Cfg:         cfg.API,
+		UserHandler: userHandler,
+	}
+
+	// Start API server
+	go startAPIServer(interactoAPI)
+
+	// Wait for termination signal
+	waitForSignal()
+}
+
+func initJaeger(serviceName string) {
+	closer, err := jeager.NewJeager(serviceName)
+	if err != nil {
+		logger.LogStdErr.Errorf("[NewJeager] Error initializing Jaeger: %v", err)
+		return
+	}
+	defer closer.Close()
 }
 
 func handlePanic() {
 	if r := recover(); r != nil {
-		// Log panic location
-		stack := make([]byte, 4096)
-		runtime.Stack(stack, false)
-		logger.LogStdErr.WithField("panic", r).WithField("stack_trace", string(stack)).Error("Panic occurred!")
+		logger.LogStdErr.Errorf("Panic occurred: %v", r)
 	}
+}
+
+func startAPIServer(interactor interactor.APInteractor) {
+	httpServer := api.NewServer(interactor)
+	httpServer.Initialize()
+}
+
+func waitForSignal() {
+	sigCh := make(chan os.Signal, 1)
+	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+	<-sigCh
+
+	logger.Log.Warnln("Application is exiting. Graceful shutdown in action...")
 }

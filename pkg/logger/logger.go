@@ -11,7 +11,7 @@ import (
 //
 //revive:disable:import-shadowing
 var (
-	LogStdOut *logrus.Logger
+	Log       *logrus.Logger
 	LogStdErr *logrus.Logger
 )
 
@@ -23,7 +23,7 @@ func Init() {
 		HideKeys:        false,
 		FieldsOrder:     []string{"component", "category"},
 	})
-	LogStdOut = logStdOut
+	Log = logStdOut
 
 	logStdErr := logrus.New()
 	logStdErr.SetOutput(os.Stderr)

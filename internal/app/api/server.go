@@ -1,17 +1,29 @@
 package api
 
 import (
-	"github.com/gofiber/fiber/v3"
 	"github.com/voltgizerz/POS-restaurant/config"
+	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
+	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
 )
 
-func NewServer(cfg config.API) {
-	app := fiber.New()
+type Server struct {
+	cfg         config.API
+	userHandler ports.IUserHandler
+}
 
-	app.Get("/ping", func(c fiber.Ctx) error {
-		return c.SendString("pong")
-	})
+func NewServer(interactor interactor.APInteractor) *Server {
+	return &Server{
+		cfg:         interactor.Cfg,
+		userHandler: interactor.UserHandler,
+	}
+}
 
-	logger.LogStdErr.Fatal(app.Listen(":" + cfg.PORT))
+func (s *Server) Initialize() {
+	app := s.InitRouter()
+
+	err := app.Listen(":" + s.cfg.PORT)
+	if err != nil {
+		logger.LogStdErr.Fatalf("[Initialize] error on: %s", err.Error())
+	}
 }

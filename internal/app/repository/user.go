@@ -7,7 +7,7 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
-	"github.com/voltgizerz/POS-restaurant/internal/app/interfaces"
+	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
 )
 
@@ -15,7 +15,7 @@ type UserRepository struct {
 	MasterDB *sqlx.DB
 }
 
-func NewUserRepository(opts RepositoryOpts) interfaces.IUserRepository {
+func NewUserRepository(opts RepositoryOpts) ports.IUserRepository {
 	return &UserRepository{
 		MasterDB: opts.Database.MasterDB,
 	}
