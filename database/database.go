@@ -31,7 +31,7 @@ func connectMySQL(ctx context.Context, cfg config.Database) *sqlx.DB {
 
 	db, err := sqlx.Connect("mysql", cfg.Host)
 	if err != nil {
-		logger.LogStdErr.Errorln("Failed to connect to MySQL: %s", err)
+		logger.LogStdErr.Errorf("Failed to connect to MySQL: %s", err)
 	}
 
 	return db

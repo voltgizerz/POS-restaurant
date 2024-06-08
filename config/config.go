@@ -22,8 +22,7 @@ type (
 	}
 
 	API struct {
-		PORT    string `yaml:"port"`
-		GinMode string `yaml:"gin_mode"`
+		PORT string `yaml:"port"`
 	}
 
 	Database struct {
