@@ -11,19 +11,19 @@ import (
 //
 //revive:disable:import-shadowing
 var (
-	LogStdOut *logrus.Logger
+	Log       *logrus.Logger
 	LogStdErr *logrus.Logger
 )
 
 func Init() {
 	logStdOut := logrus.New()
-	logStdOut.SetOutput(os.Stdout)
-	logStdOut.SetFormatter(&nested.Formatter{
+	Log.SetOutput(os.Stdout)
+	Log.SetFormatter(&nested.Formatter{
 		TimestampFormat: "Jan 02 03:04:05.000 PM",
 		HideKeys:        false,
 		FieldsOrder:     []string{"component", "category"},
 	})
-	LogStdOut = logStdOut
+	Log = logStdOut
 
 	logStdErr := logrus.New()
 	logStdErr.SetOutput(os.Stderr)

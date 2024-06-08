@@ -14,7 +14,7 @@ const (
 // LoadENV - load env file.
 func LoadENV() {
 	if err := godotenv.Load(); err != nil {
-		logger.LogStdOut.Warn("No .env file found")
+		logger.Log.Warn("No .env file found")
 	}
 }
 
