@@ -3,6 +3,8 @@ package database
 import (
 	"context"
 
+	_ "github.com/go-sql-driver/mysql"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/opentracing/opentracing-go"
 	"github.com/voltgizerz/POS-restaurant/config"
@@ -29,7 +31,7 @@ func connectMySQL(ctx context.Context, cfg config.Database) *sqlx.DB {
 
 	db, err := sqlx.Connect("mysql", cfg.Host)
 	if err != nil {
-		logger.LogStdErr.Fatalf("[connectMySQL] failed connect err: %s", err.Error())
+		logger.LogStdErr.Errorf("Failed to connect to MySQL: %s", err)
 	}
 
 	return db
