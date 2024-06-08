@@ -17,8 +17,8 @@ var (
 
 func Init() {
 	logStdOut := logrus.New()
-	Log.SetOutput(os.Stdout)
-	Log.SetFormatter(&nested.Formatter{
+	logStdOut.SetOutput(os.Stdout)
+	logStdOut.SetFormatter(&nested.Formatter{
 		TimestampFormat: "Jan 02 03:04:05.000 PM",
 		HideKeys:        false,
 		FieldsOrder:     []string{"component", "category"},
