@@ -1,0 +1,89 @@
+name: 👩🏼‍🌾 Code Checker
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+  push:
+    branches:
+      - master
+      - develop
+    paths:
+      - './config/linter/revive.toml'
+
+
+env:
+  TESTCOVERAGE_THRESHOLD: 40
+
+jobs:
+  lint:
+    name: Lint and Test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: 🔧 Print current working dir
+      run: |
+        ls -la $PWD
+        ls -la $GITHUB_WORKSPACE
+    - uses: actions/setup-go@v2
+      with:
+        go-version: '1.21.1'
+
+    - name: ⚙️ Setup GO environment
+      run: |
+            go mod download
+
+    - name: 👷 Build
+      run: go build ./cmd/main.go 
+
+    - name: 🧪 Run Unit tests
+      run: |
+            sudo go test ./... -coverprofile coverage.out -covermode count
+            sudo go tool cover -func coverage.out
+
+    - name: 🔎 Quality Gate - Test coverage
+      run: |
+            echo "Quality Gate: checking test coverage is above threshold ..."
+            echo "Threshold             : $TESTCOVERAGE_THRESHOLD %"
+            totalCoverage=`go tool cover -func=coverage.out | grep total | grep -Eo '[0-9]+\.[0-9]+'`
+            
+            # Set totalCoverage as an environment variable
+            echo "totalCoverage=$totalCoverage" >> $GITHUB_ENV
+
+            if (( $(echo "$totalCoverage $TESTCOVERAGE_THRESHOLD" | awk '{print ($1 > $2)}') )); then
+                echo "✅ Test coverage is above the threshold. Great job!"
+            else
+                echo "❌ Current test coverage is below the threshold. Please add more unit tests or adjust the threshold to a lower value."
+            fi
+
+    - name: 💬 PR comment with reactions - Above Threshold
+      uses: thollander/actions-comment-pull-request@v2
+      if: ${{ github.event_name == 'pull_request' && env.totalCoverage >= env.TESTCOVERAGE_THRESHOLD }}
+      with:
+        message: |
+          ✅ Test coverage is above the threshold. Good job! 
+          - **Coverage: ${{env.totalCoverage}}%, Threshold: ${{env.TESTCOVERAGE_THRESHOLD}}%**
+        reactions: rocket
+    
+    - name: 💬 PR comment with reactions - Below Threshold
+      uses: thollander/actions-comment-pull-request@v2
+      if: ${{ github.event_name == 'pull_request' && env.totalCoverage < env.TESTCOVERAGE_THRESHOLD }}
+      with:
+        message: |
+          ❌ Test coverage is below the threshold. Please add more unit tests or adjust the threshold to a lower value.
+          - **Coverage: ${{env.totalCoverage}}%, Threshold: ${{env.TESTCOVERAGE_THRESHOLD}}%**
+        reactions: eyes   
+  
+    - name: 🚧 Gate Keeper - Test coverage
+      if: ${{ github.event_name == 'pull_request' && env.totalCoverage < env.TESTCOVERAGE_THRESHOLD }}
+      run: exit 1
+          
+    - name: 👨‍🎤 Run Revive Action
+      uses: docker://morphy/revive-action:v2
+      with:
+        config: revive.toml
+      continue-on-error: true
+
+    - name: 👨‍🎤 Check formatting
+      run: gofmt -l .

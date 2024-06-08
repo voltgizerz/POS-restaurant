@@ -1,0 +1,28 @@
+# Add 'repo' label to any root file changes
+root:
+- '*'
+
+workflows:
+- .github/**/*
+
+cmd:
+- cmd/**/*
+
+config:
+- config/**/*
+
+docs:
+- docs/**/*
+- README.md
+
+internal:
+- internal/**/*
+
+pkg:
+- pkg/**/*
+
+mocks:
+- internal/app/mocks/*
+
+changelog:
+- CHANGELOG.md

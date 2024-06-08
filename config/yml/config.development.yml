@@ -1,0 +1,11 @@
+app:
+  name: 'POS-FREE'
+  version: '0.0.0'
+  host: 'localhost:8080'
+
+database:
+  pool_max: 2
+
+api:
+  port: 8080
+  gin_mode: release
