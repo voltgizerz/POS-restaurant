@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	nested "github.com/antonfisher/nested-logrus-formatter"
+	"github.com/go-playground/assert/v2"
 	logrus "github.com/sirupsen/logrus"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestLoggerInitialization(t *testing.T) {

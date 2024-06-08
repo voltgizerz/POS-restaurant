@@ -10,6 +10,7 @@ import (
 
 	"github.com/voltgizerz/POS-restaurant/config"
 	"github.com/voltgizerz/POS-restaurant/database"
+	"github.com/voltgizerz/POS-restaurant/internal/app/api"
 	"github.com/voltgizerz/POS-restaurant/internal/app/repository"
 	"github.com/voltgizerz/POS-restaurant/pkg/jeager"
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
@@ -40,7 +41,8 @@ func main() {
 
 	_ = repository.NewUserRepository(repositoryOpts)
 
-	logger.LogStdOut.Info("Application is now running. Press CTRL-C to exit.")
+	// Init API
+	go api.NewServer(cfg.API)
 
 	// Wait for a termination signal
 	sc := make(chan os.Signal, 1)
