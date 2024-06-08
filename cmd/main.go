@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"os"
 	"os/signal"
 	"runtime"
@@ -8,6 +9,8 @@ import (
 	"syscall"
 
 	"github.com/voltgizerz/POS-restaurant/config"
+	"github.com/voltgizerz/POS-restaurant/database"
+	"github.com/voltgizerz/POS-restaurant/internal/app/repository"
 	"github.com/voltgizerz/POS-restaurant/pkg/jeager"
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
 )
@@ -18,7 +21,6 @@ func main() {
 	logger.Init()
 
 	cfg := config.NewConfig()
-
 	defer handlePanic()
 
 	closer, err := jeager.NewJeager(cfg.App.Name)
@@ -26,6 +28,17 @@ func main() {
 		logger.LogStdErr.Errorf("[NewJeager] Error initializing Jaeger: %v\n", err)
 	}
 	defer closer.Close()
+
+	ctx := context.Background()
+
+	// Init database
+	db := database.InitDatabase(ctx, cfg.Database)
+
+	repositoryOpts := repository.RepositoryOpts{
+		Database: db,
+	}
+
+	_ = repository.NewUserRepository(repositoryOpts)
 
 	logger.LogStdOut.Info("Application is now running. Press CTRL-C to exit.")
 
