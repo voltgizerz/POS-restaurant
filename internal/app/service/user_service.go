@@ -69,22 +69,22 @@ func (s *UserService) Login(ctx context.Context, username string, password strin
 	return resp, nil
 }
 
-func (s *UserService) Register(ctx context.Context, userData entity.User) (int64, error) {
+func (s *UserService) Register(ctx context.Context, userData entity.UserORM) (int64, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "service.UserService.Register")
 	defer span.Finish()
 
 	passwordhasing, err := utils.HashPassword(userData.Password)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
-			"email": userData.Email,
-			"error": err,
+			"username": userData.Username,
+			"error":    err,
 		}).Error("[UserService] error on UserService Register")
 	}
 	userData.Password = passwordhasing
 
 	result, err := s.userRepository.RegisterUser(ctx, userData)
-	if result == -1 {
-		return -1, err
+	if err != nil {
+		return 0, err
 	}
 
 	return result, nil

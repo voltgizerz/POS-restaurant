@@ -42,7 +42,7 @@ func (r *UserRepository) GetUserByUsernameAndPassword(ctx context.Context, usern
 	return &user, nil
 }
 
-func (r *UserRepository) RegisterUser(ctx context.Context, userData entity.User) (int64, error) {
+func (r *UserRepository) RegisterUser(ctx context.Context, userData entity.UserORM) (int64, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.RegisterUser")
 	defer span.Finish()
 
@@ -59,7 +59,7 @@ func (r *UserRepository) RegisterUser(ctx context.Context, userData entity.User)
 				"email": userData.Email,
 				"error": err,
 			}).Error("[UserRepository(RegisterUser)] " + err.Error())
-			return -1, err
+			return 0, err
 		}
 
 	}
@@ -69,7 +69,7 @@ func (r *UserRepository) RegisterUser(ctx context.Context, userData entity.User)
 			"email": userData.Email,
 			"error": err,
 		}).Error("[UserRepository(RegisterUser)] " + err.Error())
-		return -1, err
+		return 0, err
 	}
 	return lastid, nil
 

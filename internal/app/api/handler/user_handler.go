@@ -62,7 +62,7 @@ func (h *UserHandler) Register(c fiber.Ctx) error {
 		return sendErrorResp(c, fiber.StatusBadRequest, "Password Mismatch")
 	}
 
-	userData := &entity.User{
+	userData := &entity.UserORM{
 		Email:    req.Email,
 		Password: req.Password,
 		Name:     req.Name,
@@ -70,9 +70,8 @@ func (h *UserHandler) Register(c fiber.Ctx) error {
 	}
 
 	result, err := h.userService.Register(ctx, *userData)
-	if result != -1 {
-		return sendSuccessResp(c, fiber.StatusOK, "Account Added Succesfully.", result)
-	} else {
+	if err != nil {
 		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
+	return sendSuccessResp(c, fiber.StatusOK, "Account Added Succesfully.", result)
 }
