@@ -9,12 +9,12 @@ import (
 
 type IUserRepository interface {
 	GetUserByUsernameAndPassword(ctx context.Context, username string, hashPassword string) (*entity.UserORM, error)
-	RegisterUser(ctx context.Context, username string, hashPassword string, Email string, Name string) (bool, error)
+	RegisterUser(ctx context.Context, userData entity.User) (int64, error)
 }
 
 type IUserService interface {
 	Login(ctx context.Context, username string, password string) (*entity.LoginResponse, error)
-	Register(ctx context.Context, username string, email string, password string, confirmPass string, name string) (bool, error)
+	Register(ctx context.Context, userData entity.User) (int64, error)
 }
 
 type IUserHandler interface {

@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/opentracing/opentracing-go"
 	"github.com/voltgizerz/POS-restaurant/internal/app/constants"
+	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
 	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
 	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
 )
@@ -29,23 +30,23 @@ func (h *UserHandler) Login(c fiber.Ctx) error {
 
 	err := c.Bind().Body(req)
 	if err != nil {
-		return sendErrorResponse(c, fiber.StatusBadRequest, constants.ErrMsgInvalidUsernameAndPassword)
+		return sendErrorResp(c, fiber.StatusBadRequest, constants.ErrMsgInvalidUsernameAndPassword)
 	}
 
 	if req.Username == "" || req.Password == "" {
-		return sendErrorResponse(c, fiber.StatusBadRequest, constants.ErrMsgUsernameOrPasswordRequired)
+		return sendErrorResp(c, fiber.StatusBadRequest, constants.ErrMsgUsernameOrPasswordRequired)
 	}
 
 	userLoginData, err := h.userService.Login(ctx, req.Username, req.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return sendErrorResponse(c, fiber.StatusUnauthorized, constants.ErrMsgUsernameNotFound)
+			return sendErrorResp(c, fiber.StatusUnauthorized, constants.ErrMsgUsernameNotFound)
 		}
 
-		return sendErrorResponse(c, fiber.StatusUnauthorized, constants.ErrMsgInvalidUsernameOrPassword)
+		return sendErrorResp(c, fiber.StatusUnauthorized, constants.ErrMsgInvalidUsernameOrPassword)
 	}
 
-	return sendSuccessResponse(c, fiber.StatusOK, "Success", userLoginData)
+	return sendSuccessResp(c, fiber.StatusOK, "Success", userLoginData)
 }
 
 func (h *UserHandler) Register(c fiber.Ctx) error {
@@ -55,15 +56,23 @@ func (h *UserHandler) Register(c fiber.Ctx) error {
 	req := &registerRequest{}
 	err := c.Bind().Body(req)
 	if err != nil {
-		return sendErrorResponse(c, fiber.StatusBadRequest, "Invalid request body. Please provide name , username, password, confirmpassword,email.")
+		return sendErrorResp(c, fiber.StatusBadRequest, "Invalid request body.")
 	}
-	// TODO
+	if req.Password != req.ConfirmPassword {
+		return sendErrorResp(c, fiber.StatusBadRequest, "Password Mismatch")
+	}
 
-	bool, err := h.userService.Register(ctx, req.Username, req.Email, req.Password, req.ConfirmPassword, req.Name)
-	if bool {
-		return sendSuccessResponse(c, fiber.StatusOK, "Account Added Succesfully.", "DONE!!")
-	} else {
-		return sendErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	userData := &entity.User{
+		Email:    req.Email,
+		Password: req.Password,
+		Name:     req.Name,
+		Username: req.Username,
 	}
-	return nil
+
+	result, err := h.userService.Register(ctx, *userData)
+	if result != -1 {
+		return sendSuccessResp(c, fiber.StatusOK, "Account Added Succesfully.", result)
+	} else {
+		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
+	}
 }

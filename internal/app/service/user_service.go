@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
@@ -70,26 +69,23 @@ func (s *UserService) Login(ctx context.Context, username string, password strin
 	return resp, nil
 }
 
-func (s *UserService) Register(ctx context.Context, username string, email string, password string, confirmPass string, name string) (bool, error) {
+func (s *UserService) Register(ctx context.Context, userData entity.User) (int64, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "service.UserService.Register")
 	defer span.Finish()
 
-	if password != confirmPass {
-		return false, errors.New("Password Mismatch")
-	}
-
-	passwordhasing, err := utils.HashPassword(password)
+	passwordhasing, err := utils.HashPassword(userData.Password)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
-			"email": email,
+			"email": userData.Email,
 			"error": err,
 		}).Error("[UserService] error on UserService Register")
 	}
+	userData.Password = passwordhasing
 
-	result, err := s.userRepository.RegisterUser(ctx, username, passwordhasing, email, name)
-	if !result {
-		return false, err
+	result, err := s.userRepository.RegisterUser(ctx, userData)
+	if result == -1 {
+		return -1, err
 	}
 
-	return true, nil
+	return result, nil
 }
