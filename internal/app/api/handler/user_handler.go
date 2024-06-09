@@ -29,23 +29,23 @@ func (h *UserHandler) Login(c fiber.Ctx) error {
 
 	err := c.Bind().Body(req)
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, constants.ErrMsgInvalidUsernameAndPassword)
+		return sendErrorResponse(c, fiber.StatusBadRequest, constants.ErrMsgInvalidUsernameAndPassword)
 	}
 
 	if req.Username == "" || req.Password == "" {
-		return sendErrorResp(c, fiber.StatusBadRequest, constants.ErrMsgUsernameOrPasswordRequired)
+		return sendErrorResponse(c, fiber.StatusBadRequest, constants.ErrMsgUsernameOrPasswordRequired)
 	}
 
 	userLoginData, err := h.userService.Login(ctx, req.Username, req.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return sendErrorResp(c, fiber.StatusUnauthorized, constants.ErrMsgUsernameNotFound)
+			return sendErrorResponse(c, fiber.StatusUnauthorized, constants.ErrMsgUsernameNotFound)
 		}
 
-		return sendErrorResp(c, fiber.StatusUnauthorized, constants.ErrMsgInvalidUsernameOrPassword)
+		return sendErrorResponse(c, fiber.StatusUnauthorized, constants.ErrMsgInvalidUsernameOrPassword)
 	}
 
-	return sendSuccessResp(c, fiber.StatusOK, "Success", userLoginData)
+	return sendSuccessResponse(c, fiber.StatusOK, "Success", userLoginData)
 }
 
 func (h *UserHandler) Register(c fiber.Ctx) error {
