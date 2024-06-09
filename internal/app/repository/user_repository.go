@@ -10,7 +10,8 @@ import (
 )
 
 const (
-	queryLogin = "SELECT * FROM users WHERE username=$1 and hash_password=$2"
+	queryGetUserByUsernameAndPassword = `SELECT id, name, username, email, password_hashed, is_active, created_at, updated_at 
+		FROM users WHERE username=? AND password_hashed=?`
 )
 
 type UserRepository struct {
@@ -24,11 +25,11 @@ func NewUserRepository(opts RepositoryOpts) ports.IUserRepository {
 }
 
 func (r *UserRepository) GetUserByUsernameAndPassword(ctx context.Context, username string, hashPassword string) (*entity.UserORM, error) {
-	span, _ := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.GetUserByUsernameAndPassword")
+	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.GetUserByUsernameAndPassword")
 	defer span.Finish()
 
 	user := entity.UserORM{}
-	err := r.MasterDB.Get(&user, queryLogin, username, hashPassword)
+	err := r.MasterDB.GetContext(ctx, &user, queryGetUserByUsernameAndPassword, username, hashPassword)
 	if err != nil {
 		return nil, err
 	}

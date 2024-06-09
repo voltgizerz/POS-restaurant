@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
 	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
 )
 
@@ -18,11 +19,11 @@ func NewAuthJWT(secretKey string) ports.IAuth {
 	}
 }
 
-func (a *Auth) CreateToken(username string) (string, error) {
+func (a *Auth) CreateToken(user *entity.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
-			"username": username,
-			"exp":      time.Now().Add(time.Hour * 24).Unix(),
+			"id":         user.ID,
+			"expired_at": time.Now().Add(time.Hour * 24).Unix(),
 		})
 
 	tokenString, err := token.SignedString(a.SecretKey)
