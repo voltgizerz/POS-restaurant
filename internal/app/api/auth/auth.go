@@ -9,32 +9,46 @@ import (
 	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
 )
 
-type Auth struct {
-	SecretKey string
+const (
+	authType = "Bearer"
+)
+
+type AuthJWT struct {
+	SecretKey            string
+	ExpireDurationInHour int
 }
 
 func NewAuthJWT(secretKey string) ports.IAuth {
-	return &Auth{
-		SecretKey: secretKey,
+	return &AuthJWT{
+		SecretKey:            secretKey,
+		ExpireDurationInHour: 24,
 	}
 }
 
-func (a *Auth) CreateToken(user *entity.User) (string, error) {
+func (a *AuthJWT) CreateToken(user *entity.User) (*entity.CreateTokenResponse, error) {
+	expiredAt := time.Now().Add(time.Hour * time.Duration(a.ExpireDurationInHour))
+
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"id":         user.ID,
-			"expired_at": time.Now().Add(time.Hour * 24).Unix(),
+			"expired_at": expiredAt.Unix(),
 		})
 
 	tokenString, err := token.SignedString(a.SecretKey)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return tokenString, nil
+	resp := &entity.CreateTokenResponse{
+		Token:     tokenString,
+		ExpiredAt: expiredAt,
+		TokenType: authType,
+	}
+
+	return resp, nil
 }
 
-func (a *Auth) VerifyToken(tokenString string) error {
+func (a *AuthJWT) VerifyToken(tokenString string) error {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return a.SecretKey, nil
 	})

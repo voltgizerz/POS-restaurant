@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/opentracing/opentracing-go"
+	"github.com/voltgizerz/POS-restaurant/internal/app/constants"
 	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
 	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
 )
@@ -29,29 +30,28 @@ func (h *UserHandler) Login(c fiber.Ctx) error {
 
 	err := c.Bind().Body(req)
 	if err != nil {
-		return sendErrorResponse(c, fiber.StatusBadRequest, "Invalid request body. Please provide both username and password.")
+		return sendErrorResp(c, fiber.StatusBadRequest, constants.ErrMsgInvalidUsernameAndPassword)
 	}
 
-	// Check if the username and password are provided
 	if req.Username == "" || req.Password == "" {
-		return sendErrorResponse(c, fiber.StatusBadRequest, "Username and password are required.")
+		return sendErrorResp(c, fiber.StatusBadRequest, constants.ErrMsgUsernameOrPasswordRequired)
 	}
 
 	dataUser, err := h.userService.Login(ctx, req.Username, req.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return sendErrorResponse(c, fiber.StatusUnauthorized, "Username not found.")
+			return sendErrorResp(c, fiber.StatusUnauthorized, constants.ErrMsgUsernameNotFound)
 		}
 
-		return sendErrorResponse(c, fiber.StatusUnauthorized, "Invalid username or password.")
+		return sendErrorResp(c, fiber.StatusUnauthorized, constants.ErrMsgInvalidUsernameOrPassword)
 	}
 
 	token, err := h.authService.CreateToken(dataUser)
 	if err != nil {
-		return sendErrorResponse(c, fiber.StatusInternalServerError, "Failed create user token.")
+		return sendErrorResp(c, fiber.StatusInternalServerError, constants.ErrMsgInternalServerError)
 	}
 
-	return sendSuccessResponse(c, fiber.StatusOK, "Login successful.", token)
+	return sendSuccessResp(c, fiber.StatusOK, "Success", token)
 }
 
 func (h *UserHandler) Register(c fiber.Ctx) error {

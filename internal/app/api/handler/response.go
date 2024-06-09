@@ -15,8 +15,8 @@ type (
 	}
 )
 
-// sendErrorResponse generates and sends error response
-func sendErrorResponse(c fiber.Ctx, statusCode int, errorMessage string) error {
+// sendErrorResp generates and sends error response
+func sendErrorResp(c fiber.Ctx, statusCode int, errorMessage string) error {
 	response := errorResponse{
 		Code:    statusCode,
 		Message: errorMessage,
@@ -25,8 +25,8 @@ func sendErrorResponse(c fiber.Ctx, statusCode int, errorMessage string) error {
 	return c.Status(statusCode).JSON(response)
 }
 
-// sendSuccessResponse generates and sends success response with dynamic data
-func sendSuccessResponse(c fiber.Ctx, statusCode int, message string, data interface{}) error {
+// sendSuccessResp generates and sends success response with dynamic data
+func sendSuccessResp(c fiber.Ctx, statusCode int, message string, data interface{}) error {
 	response := successResponse{
 		Code:    statusCode,
 		Message: message,
