@@ -25,7 +25,7 @@ func NewAuthJWT(secretKey string) ports.IAuth {
 	}
 }
 
-func (a *AuthJWT) CreateToken(user *entity.User) (*entity.CreateTokenResponse, error) {
+func (a *AuthJWT) CreateToken(user *entity.UserORM) (*entity.CreateTokenResponse, error) {
 	expiredAt := time.Now().Add(time.Hour * time.Duration(a.ExpireDurationInHour))
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,

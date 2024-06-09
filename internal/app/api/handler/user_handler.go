@@ -17,7 +17,6 @@ type UserHandler struct {
 
 func NewUserHandler(i interactor.UserHandler) *UserHandler {
 	return &UserHandler{
-		authService: i.Auth,
 		userService: i.UserService,
 	}
 }
@@ -37,7 +36,7 @@ func (h *UserHandler) Login(c fiber.Ctx) error {
 		return sendErrorResp(c, fiber.StatusBadRequest, constants.ErrMsgUsernameOrPasswordRequired)
 	}
 
-	dataUser, err := h.userService.Login(ctx, req.Username, req.Password)
+	userLoginData, err := h.userService.Login(ctx, req.Username, req.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return sendErrorResp(c, fiber.StatusUnauthorized, constants.ErrMsgUsernameNotFound)
@@ -46,12 +45,7 @@ func (h *UserHandler) Login(c fiber.Ctx) error {
 		return sendErrorResp(c, fiber.StatusUnauthorized, constants.ErrMsgInvalidUsernameOrPassword)
 	}
 
-	token, err := h.authService.CreateToken(dataUser)
-	if err != nil {
-		return sendErrorResp(c, fiber.StatusInternalServerError, constants.ErrMsgInternalServerError)
-	}
-
-	return sendSuccessResp(c, fiber.StatusOK, "Success", token)
+	return sendSuccessResp(c, fiber.StatusOK, "Success", userLoginData)
 }
 
 func (h *UserHandler) Register(c fiber.Ctx) error {

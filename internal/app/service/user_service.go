@@ -6,22 +6,25 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
+	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
 	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
 	"github.com/voltgizerz/POS-restaurant/internal/utils"
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
 )
 
 type UserService struct {
+	authService    ports.IAuth
 	userRepository ports.IUserRepository
 }
 
-func NewUserService(userRepository ports.IUserRepository) *UserService {
+func NewUserService(i interactor.UserService) *UserService {
 	return &UserService{
-		userRepository: userRepository,
+		authService:    i.AuthService,
+		userRepository: i.UserRepository,
 	}
 }
 
-func (s *UserService) Login(ctx context.Context, username string, password string) (*entity.User, error) {
+func (s *UserService) Login(ctx context.Context, username string, password string) (*entity.LoginResponse, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "service.UserService.Login")
 	defer span.Finish()
 
@@ -45,11 +48,25 @@ func (s *UserService) Login(ctx context.Context, username string, password strin
 		return nil, err
 	}
 
-	userData := &entity.User{
-		ID: user.ID,
+	tokenData, err := s.authService.CreateToken(user)
+	if err != nil {
+		logger.LogStdErr.WithFields(logrus.Fields{
+			"username": username,
+			"error":    err,
+		}).Error("[UserService] error on CreateToken")
+
+		return nil, err
 	}
 
-	return userData, nil
+	resp := &entity.LoginResponse{
+		UserID:    user.ID,
+		RoleID:    1, // TODO
+		Token:     tokenData.Token,
+		TokenType: tokenData.TokenType,
+		ExpiredAt: tokenData.ExpiredAt,
+	}
+
+	return resp, nil
 }
 
 func (s *UserService) Register(email string, password string, confirmPass string) error {

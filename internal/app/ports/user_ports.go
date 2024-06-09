@@ -12,7 +12,7 @@ type IUserRepository interface {
 }
 
 type IUserService interface {
-	Login(ctx context.Context, username string, password string) (*entity.User, error)
+	Login(ctx context.Context, username string, password string) (*entity.LoginResponse, error)
 }
 
 type IUserHandler interface {

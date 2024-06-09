@@ -34,7 +34,7 @@ func connectMySQL(ctx context.Context, dsn string, maxOpenConns, maxIdleConns in
 
 	db, err := sqlx.Connect("mysql", dsn)
 	if err != nil {
-		logger.LogStdErr.Errorf("Failed to connect to MySQL: %s", err)
+		logger.LogStdErr.Fatalf("Failed to connect to MySQL: %s", err)
 	}
 
 	db.SetMaxOpenConns(maxOpenConns)
