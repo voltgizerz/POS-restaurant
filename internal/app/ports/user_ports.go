@@ -8,10 +8,11 @@ import (
 )
 
 type IUserRepository interface {
-	GetUser(ctx context.Context, int64 int64) (*entity.User, error)
+	GetUserByUsernameAndPassword(ctx context.Context, username string, hashPassword string) (*entity.UserORM, error)
 }
 
 type IUserService interface {
+	Login(ctx context.Context, username string, password string) (*entity.User, error)
 }
 
 type IUserHandler interface {

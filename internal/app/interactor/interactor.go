@@ -6,6 +6,11 @@ import (
 )
 
 type APInteractor struct {
-	Cfg         config.API
+	CfgAPI      config.API
 	UserHandler ports.IUserHandler
+}
+
+type UserHandler struct {
+	Auth           ports.IAuth
+	UserService ports.IUserService
 }

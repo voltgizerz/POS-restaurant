@@ -10,6 +10,7 @@ import (
 	"github.com/voltgizerz/POS-restaurant/config"
 	"github.com/voltgizerz/POS-restaurant/database"
 	"github.com/voltgizerz/POS-restaurant/internal/app/api"
+	"github.com/voltgizerz/POS-restaurant/internal/app/api/auth"
 	"github.com/voltgizerz/POS-restaurant/internal/app/api/handler"
 	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
 	"github.com/voltgizerz/POS-restaurant/internal/app/repository"
@@ -35,6 +36,9 @@ func main() {
 	// Initialize database
 	db := database.InitDatabase(ctx, cfg.Database)
 
+	// Initialize Auth JWT
+	authJWT := auth.NewAuthJWT(cfg.API.JWTSecretKey)
+
 	repoOpts := repository.RepositoryOpts{
 		Database: db,
 	}
@@ -46,10 +50,13 @@ func main() {
 	userService := service.NewUserService(userRepo)
 
 	// Initialize Handlers
-	userHandler := handler.NewUserHandler(userService)
+	userHandler := handler.NewUserHandler(interactor.UserHandler{
+		Auth:        authJWT,
+		UserService: userService,
+	})
 
 	interactoAPI := interactor.APInteractor{
-		Cfg:         cfg.API,
+		CfgAPI:      cfg.API,
 		UserHandler: userHandler,
 	}
 
