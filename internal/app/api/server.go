@@ -8,13 +8,13 @@ import (
 )
 
 type Server struct {
-	cfg         config.API
+	cfgAPI      config.API
 	userHandler ports.IUserHandler
 }
 
 func NewServer(interactor interactor.APInteractor) *Server {
 	return &Server{
-		cfg:         interactor.Cfg,
+		cfgAPI:         interactor.CfgAPI,
 		userHandler: interactor.UserHandler,
 	}
 }
@@ -22,7 +22,7 @@ func NewServer(interactor interactor.APInteractor) *Server {
 func (s *Server) Initialize() {
 	app := s.InitRouter()
 
-	err := app.Listen(":" + s.cfg.PORT)
+	err := app.Listen(":" + s.cfgAPI.PORT)
 	if err != nil {
 		logger.LogStdErr.Fatalf("[Initialize] error on: %s", err.Error())
 	}

@@ -5,10 +5,12 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/opentracing/opentracing-go"
-	"github.com/sirupsen/logrus"
 	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
 	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
-	"github.com/voltgizerz/POS-restaurant/pkg/logger"
+)
+
+const (
+	queryLogin = "SELECT * FROM users WHERE username=$1 and hash_password=$2"
 )
 
 type UserRepository struct {
@@ -21,18 +23,13 @@ func NewUserRepository(opts RepositoryOpts) ports.IUserRepository {
 	}
 }
 
-func (r *UserRepository) GetUser(ctx context.Context, userID int64) (*entity.User, error) {
-	span, _ := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.GetUser")
+func (r *UserRepository) GetUserByUsernameAndPassword(ctx context.Context, username string, hashPassword string) (*entity.UserORM, error) {
+	span, _ := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.GetUserByUsernameAndPassword")
 	defer span.Finish()
 
-	user := entity.User{}
-	err := r.MasterDB.Get(&user, "SELECT * FROM users WHERE id=$1", userID)
+	user := entity.UserORM{}
+	err := r.MasterDB.Get(&user, queryLogin, username, hashPassword)
 	if err != nil {
-		logger.LogStdErr.WithFields(logrus.Fields{
-			"user_id": userID,
-			"error":   err,
-		}).Error("[UserRepository] error on GetUser")
-
 		return nil, err
 	}
 

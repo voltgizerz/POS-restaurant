@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
 
@@ -29,7 +30,9 @@ func connectMySQL(ctx context.Context, cfg config.Database) *sqlx.DB {
 	span, _ := opentracing.StartSpanFromContext(ctx, "database.connectMySQL")
 	defer span.Finish()
 
-	db, err := sqlx.Connect("mysql", cfg.Host)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s", cfg.Username, cfg.Password, cfg.Host, cfg.Name)
+
+	db, err := sqlx.Connect("mysql", dsn)
 	if err != nil {
 		logger.LogStdErr.Errorf("Failed to connect to MySQL: %s", err)
 	}

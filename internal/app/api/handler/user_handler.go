@@ -2,21 +2,30 @@ package handler
 
 import (
 	"github.com/gofiber/fiber/v3"
+	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
 	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
 )
 
 type UserHandler struct {
+	authService ports.IAuth
 	userService ports.IUserService
 }
 
-func NewUserHandler(userService ports.IUserService) *UserHandler {
+func NewUserHandler(i interactor.UserHandler) *UserHandler {
 	return &UserHandler{
-		userService: userService,
+		authService: i.Auth,
+		userService: i.UserService,
 	}
 }
 
 func (h *UserHandler) Login(c fiber.Ctx) error {
 	// TODO
+
+	//  Hit db check user and password
+
+	// success ?
+	// h.userService
+
 	return nil
 }
 

@@ -22,7 +22,8 @@ type (
 	}
 
 	API struct {
-		PORT string `yaml:"port"`
+		PORT         string `yaml:"port"`
+		JWTSecretKey string `env:"JWT_SECRET_KEY" env-required:"true"`
 	}
 
 	Database struct {
