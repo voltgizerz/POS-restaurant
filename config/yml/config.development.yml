@@ -4,7 +4,8 @@ app:
   host: 'localhost:8080'
 
 database:
-  pool_max: 2
+  max_open_conns: 10
+  max_idle_conns: 10
 
 api:
   port: 8080

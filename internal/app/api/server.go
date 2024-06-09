@@ -14,7 +14,7 @@ type Server struct {
 
 func NewServer(interactor interactor.APInteractor) *Server {
 	return &Server{
-		cfgAPI:         interactor.CfgAPI,
+		cfgAPI:      interactor.CfgAPI,
 		userHandler: interactor.UserHandler,
 	}
 }

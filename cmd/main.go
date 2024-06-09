@@ -47,11 +47,13 @@ func main() {
 	userRepo := repository.NewUserRepository(repoOpts)
 
 	// Initialize Services
-	userService := service.NewUserService(userRepo)
+	userService := service.NewUserService(interactor.UserService{
+		AuthService:    authJWT,
+		UserRepository: userRepo,
+	})
 
 	// Initialize Handlers
 	userHandler := handler.NewUserHandler(interactor.UserHandler{
-		Auth:        authJWT,
 		UserService: userService,
 	})
 

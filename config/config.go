@@ -27,12 +27,13 @@ type (
 	}
 
 	Database struct {
-		Host     string `env:"DATABASE_HOST" env-required:"true"`
-		PORT     string `env:"DATABASE_PORT" env-required:"true"`
-		Username string `env:"DATABASE_USERNAME" env-required:"true"`
-		Password string `env:"DATABASE_PASSWORD" env-required:"true"`
-		Name     string `env:"DATABASE_NAME" env-required:"true"`
-		PoolMax  int    `yaml:"pool_max" env-required:"true"`
+		Host         string `env:"DATABASE_HOST" env-required:"true"`
+		PORT         string `env:"DATABASE_PORT" env-required:"true"`
+		Username     string `env:"DATABASE_USERNAME" env-required:"true"`
+		Password     string `env:"DATABASE_PASSWORD" env-required:"true"`
+		Name         string `env:"DATABASE_NAME" env-required:"true"`
+		MaxOpenConns int    `yaml:"max_open_conns" env-required:"true"`
+		MaxIdleConns int    `yaml:"max_idle_conns" env-required:"true"`
 	}
 )
 

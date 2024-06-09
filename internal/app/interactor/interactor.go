@@ -11,6 +11,10 @@ type APInteractor struct {
 }
 
 type UserHandler struct {
-	Auth           ports.IAuth
 	UserService ports.IUserService
+}
+
+type UserService struct {
+	AuthService    ports.IAuth
+	UserRepository ports.IUserRepository
 }
