@@ -21,21 +21,24 @@ func InitDatabase(ctx context.Context, cfg config.Database) *DatabaseOpts {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "database.InitDatabase")
 	defer span.Finish()
 
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s", cfg.Username, cfg.Password, cfg.Host, cfg.Name)
+
 	return &DatabaseOpts{
-		MasterDB: connectMySQL(ctx, cfg),
+		MasterDB: connectMySQL(ctx, dsn, cfg.MaxOpenConns, cfg.MaxIdleConns),
 	}
 }
 
-func connectMySQL(ctx context.Context, cfg config.Database) *sqlx.DB {
+func connectMySQL(ctx context.Context, dsn string, maxOpenConns, maxIdleConns int) *sqlx.DB {
 	span, _ := opentracing.StartSpanFromContext(ctx, "database.connectMySQL")
 	defer span.Finish()
-
-	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s", cfg.Username, cfg.Password, cfg.Host, cfg.Name)
 
 	db, err := sqlx.Connect("mysql", dsn)
 	if err != nil {
 		logger.LogStdErr.Errorf("Failed to connect to MySQL: %s", err)
 	}
+
+	db.SetMaxOpenConns(maxOpenConns)
+	db.SetMaxIdleConns(maxIdleConns)
 
 	return db
 }

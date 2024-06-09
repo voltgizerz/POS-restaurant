@@ -4,6 +4,7 @@ import "time"
 
 type User struct {
 	ID        int64     `json:"id"`
+	RoleID    int64     `json:"role_id"`
 	Name      string    `json:"name"`
 	Username  string    `json:"username"`
 	Email     string    `json:"email"`
@@ -13,12 +14,12 @@ type User struct {
 }
 
 type UserORM struct {
-	ID         int64     `db:"id"`
-	Name       string    `db:"name"`
-	Username   string    `db:"username"`
-	Email      string    `db:"email"`
-	Password   string    `db:"password_hashed"`
-	IsActive   bool      `db:"is_active"`
-	CreatedAt  time.Time `db:"created_at"`
-	UpdatedAt  time.Time `db:"updated_at"`
+	ID        int64     `db:"id"`
+	Name      string    `db:"name"`
+	Username  string    `db:"username"`
+	Email     string    `db:"email"`
+	Password  string    `db:"password_hashed"`
+	IsActive  bool      `db:"is_active"`
+	CreatedAt time.Time `db:"created_at"`
+	UpdatedAt time.Time `db:"updated_at"`
 }
