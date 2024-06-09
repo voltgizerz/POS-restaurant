@@ -55,9 +55,21 @@ func (h *UserHandler) Login(c fiber.Ctx) error {
 }
 
 func (h *UserHandler) Register(c fiber.Ctx) error {
-	span, _ := opentracing.StartSpanFromContext(c.Context(), "handler.UserHandler.Register")
+	span, ctx := opentracing.StartSpanFromContext(c.Context(), "handler.UserHandler.Register")
 	defer span.Finish()
 
+	req := &registerRequest{}
+	err := c.Bind().Body(req)
+	if err != nil {
+		return sendErrorResponse(c, fiber.StatusBadRequest, "Invalid request body. Please provide name , username, password, confirmpassword,email.")
+	}
 	// TODO
+
+	bool, err := h.userService.Register(ctx, req.Username, req.Email, req.Password, req.ConfirmPassword, req.Name)
+	if bool {
+		return sendSuccessResponse(c, fiber.StatusOK, "Account Added Succesfully.", "DONE!!")
+	} else {
+		return sendErrorResponse(c, fiber.StatusBadRequest, err.Error())
+	}
 	return nil
 }

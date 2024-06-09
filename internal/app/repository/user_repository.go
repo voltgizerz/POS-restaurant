@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"errors"
-	"time"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/opentracing/opentracing-go"
@@ -15,7 +14,7 @@ const (
 	queryGetUserByUsernameAndPassword = `SELECT id, name, username, email, password_hashed, is_active, created_at, updated_at 
 		FROM users WHERE username=? AND password_hashed=?`
 	queryGetEmailSame   = `SELECT username FROM users WHERE email=? `
-	queryInsertDataUser = `INSERT INTO (name,username,email,password_hashed,is_active,created_at) values (?,?,?,?,?,?)`
+	queryInsertDataUser = `INSERT INTO users (name,username,email,password_hashed,is_active,role_id) values (?,?,?,?,?,?)`
 )
 
 type UserRepository struct {
@@ -49,12 +48,11 @@ func (r *UserRepository) RegisterUser(ctx context.Context, username string, hash
 
 	err := r.MasterDB.Get(&user, queryGetEmailSame, Email)
 	if err == nil {
-		return false, err
+		return false, errors.New("Email Already Exists")
 	}
-
-	result := r.MasterDB.MustExecContext(ctx, queryInsertDataUser, Name, username, Email, hashPassword, 1, time.Now())
-	if result == nil {
-		return false, errors.New("Failed Insert User On Database")
+	result, err := r.MasterDB.ExecContext(ctx, queryInsertDataUser, Name, username, Email, hashPassword, 1, 1)
+	if result == nil && err != nil {
+		return false, err
 	}
 
 	return true, nil
