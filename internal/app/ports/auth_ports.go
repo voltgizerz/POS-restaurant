@@ -5,6 +5,6 @@ import (
 )
 
 type IAuth interface {
-	CreateToken(user *entity.User) (*entity.CreateTokenResponse, error)
+	CreateToken(user *entity.UserORM) (*entity.CreateTokenResponse, error)
 	VerifyToken(tokenString string) error
 }
