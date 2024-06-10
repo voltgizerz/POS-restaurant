@@ -78,12 +78,16 @@ func (s *UserService) Register(ctx context.Context, userData entity.UserORM) (in
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": userData.Username,
 			"error":    err,
-		}).Error("[UserService] error on UserService Register")
+		}).Error("[UserService] error on UserService Hash Password On Register")
 	}
 	userData.Password = passwordhasing
 
 	result, err := s.userRepository.RegisterUser(ctx, userData)
 	if err != nil {
+		logger.LogStdErr.WithFields(logrus.Fields{
+			"username": userData.Username,
+			"error":    err,
+		}).Error("[UserService] error on UserService From Repository Register User")
 		return 0, err
 	}
 
