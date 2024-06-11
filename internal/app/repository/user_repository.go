@@ -2,14 +2,12 @@ package repository
 
 import (
 	"context"
-	"errors"
+	"database/sql"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/opentracing/opentracing-go"
-	"github.com/sirupsen/logrus"
 	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
 	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
-	"github.com/voltgizerz/POS-restaurant/pkg/logger"
 )
 
 const (
@@ -46,33 +44,28 @@ func (r *UserRepository) RegisterUser(ctx context.Context, userData entity.UserO
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.RegisterUser")
 	defer span.Finish()
 
-	user := entity.UserORM{}
-
-	err := r.MasterDB.Get(&user, queryGetEmailSame, userData.Email)
-	if err == nil {
-		logger.LogStdErr.WithFields(logrus.Fields{
-			"username": userData.Username,
-			"error":    "Email Already Exist",
-		}).Error("[UserRepository(RegisterUser)] Email Already Exist")
-		return 0, errors.New("Email Already Exists")
-	}
 	result, err := r.MasterDB.ExecContext(ctx, queryInsertDataUser, userData.Name, userData.Username, userData.Email, userData.Password, 1, 1)
 	if err != nil {
-		logger.LogStdErr.WithFields(logrus.Fields{
-			"username": userData.Username,
-			"error":    err,
-		}).Error("[UserRepository(RegisterUser)] " + err.Error())
 		return 0, err
-
 	}
 	lastId, err := result.LastInsertId()
 	if err != nil {
-		logger.LogStdErr.WithFields(logrus.Fields{
-			"username": userData.Username,
-			"error":    err,
-		}).Error("[UserRepository(RegisterUser)] " + err.Error())
 		return 0, err
 	}
 	return lastId, nil
+}
 
+func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.GetUserByEmail")
+	defer span.Finish()
+
+	user := entity.UserORM{}
+
+	err := r.MasterDB.GetContext(ctx, &user, queryGetEmailSame, email)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return err
+		}
+	}
+	return nil
 }
