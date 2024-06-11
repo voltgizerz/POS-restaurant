@@ -62,7 +62,7 @@ func (h *UserHandler) Register(c fiber.Ctx) error {
 		return sendErrorResp(c, fiber.StatusBadRequest, "Password Mismatch")
 	}
 
-	userData := &entity.UserORM{
+	userData := &entity.User{
 		Email:    req.Email,
 		Password: req.Password,
 		Name:     req.Name,

@@ -50,27 +50,29 @@ func (r *UserRepository) RegisterUser(ctx context.Context, userData entity.UserO
 
 	err := r.MasterDB.Get(&user, queryGetEmailSame, userData.Email)
 	if err == nil {
-		return -1, errors.New("Email Already Exists")
+		logger.LogStdErr.WithFields(logrus.Fields{
+			"username": userData.Username,
+			"error":    "Email Already Exist",
+		}).Error("[UserRepository(RegisterUser)] Email Already Exist")
+		return 0, errors.New("Email Already Exists")
 	}
 	result, err := r.MasterDB.ExecContext(ctx, queryInsertDataUser, userData.Name, userData.Username, userData.Email, userData.Password, 1, 1)
 	if err != nil {
-		if result == nil {
-			logger.LogStdErr.WithFields(logrus.Fields{
-				"email": userData.Email,
-				"error": err,
-			}).Error("[UserRepository(RegisterUser)] " + err.Error())
-			return 0, err
-		}
+		logger.LogStdErr.WithFields(logrus.Fields{
+			"username": userData.Username,
+			"error":    err,
+		}).Error("[UserRepository(RegisterUser)] " + err.Error())
+		return 0, err
 
 	}
-	lastid, err := result.LastInsertId()
+	lastId, err := result.LastInsertId()
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
-			"email": userData.Email,
-			"error": err,
+			"username": userData.Username,
+			"error":    err,
 		}).Error("[UserRepository(RegisterUser)] " + err.Error())
 		return 0, err
 	}
-	return lastid, nil
+	return lastId, nil
 
 }
