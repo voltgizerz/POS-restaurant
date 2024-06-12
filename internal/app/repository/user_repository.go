@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"errors"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/opentracing/opentracing-go"
@@ -64,8 +65,8 @@ func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) error
 	err := r.MasterDB.GetContext(ctx, &user, queryGetEmailSame, email)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return err
+			return nil
 		}
 	}
-	return nil
+	return errors.New("Email Already Exists")
 }
