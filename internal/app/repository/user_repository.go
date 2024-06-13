@@ -56,7 +56,7 @@ func (r *UserRepository) RegisterUser(ctx context.Context, userData entity.UserO
 	return lastId, nil
 }
 
-func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) error {
+func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (entity.UserORM, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.GetUserByEmail")
 	defer span.Finish()
 
@@ -65,8 +65,8 @@ func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) error
 	err := r.MasterDB.GetContext(ctx, &user, queryGetEmailSame, email)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil
+			return user, nil
 		}
 	}
-	return errors.New("Email Already Exists")
+	return user, errors.New("Email Already Exists")
 }

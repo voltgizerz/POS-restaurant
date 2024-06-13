@@ -74,9 +74,12 @@ func (s *UserService) Register(ctx context.Context, userData entity.User) (int64
 	span, ctx := opentracing.StartSpanFromContext(ctx, "service.UserService.Register")
 	defer span.Finish()
 
-	err := s.userRepository.GetUserByEmail(ctx, userData.Email)
+	returnUsers, err := s.userRepository.GetUserByEmail(ctx, userData.Email)
 	if err != nil {
-		return 0, errors.New("Email Already Exists")
+		return 0, err
+	}
+	if returnUsers.Username != "" {
+		return 0, errors.New("Email Already Exist")
 	}
 	passwordHashed, err := utils.HashPassword(userData.Password)
 	if err != nil {
