@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/opentracing/opentracing-go"
@@ -12,6 +13,8 @@ import (
 const (
 	queryGetUserByUsernameAndPassword = `SELECT id, name, username, email, password_hashed, is_active, created_at, updated_at 
 		FROM users WHERE username=? AND password_hashed=?`
+	queryGetEmailSame   = `SELECT username FROM users WHERE email=? `
+	queryInsertDataUser = `INSERT INTO users (name,username,email,password_hashed,is_active,role_id) values (?,?,?,?,?,?)`
 )
 
 type UserRepository struct {
@@ -35,4 +38,39 @@ func (r *UserRepository) GetUserByUsernameAndPassword(ctx context.Context, usern
 	}
 
 	return &user, nil
+}
+
+func (r *UserRepository) RegisterUser(ctx context.Context, userData entity.UserORM) (int64, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.RegisterUser")
+	defer span.Finish()
+
+	result, err := r.MasterDB.ExecContext(ctx, queryInsertDataUser, userData.Name, userData.Username, userData.Email, userData.Password, 1, 1)
+	if err != nil {
+		return 0, err
+	}
+
+	lastId, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return lastId, nil
+}
+
+func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*entity.UserORM, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.GetUserByEmail")
+	defer span.Finish()
+
+	user := &entity.UserORM{}
+
+	err := r.MasterDB.GetContext(ctx, user, queryGetEmailSame, email)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return user, nil
+		}
+
+		return nil, err
+	}
+
+	return user, nil
 }

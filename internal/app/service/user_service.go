@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
@@ -69,7 +70,52 @@ func (s *UserService) Login(ctx context.Context, username string, password strin
 	return resp, nil
 }
 
-func (s *UserService) Register(email string, password string, confirmPass string) error {
-	// TODO
-	return nil
+func (s *UserService) Register(ctx context.Context, userData entity.User) (int64, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "service.UserService.Register")
+	defer span.Finish()
+
+	user, err := s.userRepository.GetUserByEmail(ctx, userData.Email)
+	if err != nil {
+		logger.LogStdErr.WithFields(logrus.Fields{
+			"username": userData.Username,
+			"error":    err,
+		}).Error("[UserService] error on GetUserByEmail")
+		return 0, err
+	}
+
+	if user.Username != "" {
+		logger.LogStdErr.WithFields(logrus.Fields{
+			"username": userData.Username,
+			"error":    err,
+		}).Error("[UserService] error on Email Already Exist")
+		return 0, errors.New("Email Already Exist")
+	}
+
+	passwordHashed, err := utils.HashPassword(userData.Password)
+	if err != nil {
+		logger.LogStdErr.WithFields(logrus.Fields{
+			"username": userData.Username,
+			"error":    err,
+		}).Error("[UserService] error on HashPassword")
+		return 0, errors.New("Failed Hashed Password")
+	}
+
+	userDataProceed := entity.UserORM{
+		Username: userData.Username,
+		Password: passwordHashed,
+		Name:     userData.Name,
+		Email:    userData.Email,
+	}
+
+	result, err := s.userRepository.RegisterUser(ctx, userDataProceed)
+	if err != nil {
+		logger.LogStdErr.WithFields(logrus.Fields{
+			"username": userData.Username,
+			"error":    err,
+		}).Error("[UserService] error on RegisterUser")
+		return 0, err
+	}
+
+	return result, nil
+
 }
