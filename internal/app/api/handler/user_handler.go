@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/opentracing/opentracing-go"
 	"github.com/voltgizerz/POS-restaurant/internal/app/constants"
+	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
 	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
 	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
 )
@@ -49,9 +50,33 @@ func (h *UserHandler) Login(c fiber.Ctx) error {
 }
 
 func (h *UserHandler) Register(c fiber.Ctx) error {
-	span, _ := opentracing.StartSpanFromContext(c.Context(), "handler.UserHandler.Register")
+	span, ctx := opentracing.StartSpanFromContext(c.Context(), "handler.UserHandler.Register")
 	defer span.Finish()
 
-	// TODO
-	return nil
+	req := &registerRequest{}
+	err := c.Bind().Body(req)
+	if err != nil {
+		return sendErrorResp(c, fiber.StatusBadRequest, "Invalid request body.")
+	}
+
+	if req.Password != req.ConfirmPassword {
+		return sendErrorResp(c, fiber.StatusBadRequest, "Password mismatch")
+	}
+
+	userData := &entity.User{
+		Email:    req.Email,
+		Password: req.Password,
+		Name:     req.Name,
+		Username: req.Username,
+	}
+
+	result, err := h.userService.Register(ctx, *userData)
+	if err != nil {
+		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
+	}
+	res := map[string]int64{
+		"user_id": result,
+	}
+
+	return sendSuccessResp(c, fiber.StatusCreated, "Account created succesfully.", res)
 }
