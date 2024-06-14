@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"errors"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/opentracing/opentracing-go"
@@ -49,24 +48,29 @@ func (r *UserRepository) RegisterUser(ctx context.Context, userData entity.UserO
 	if err != nil {
 		return 0, err
 	}
+
 	lastId, err := result.LastInsertId()
 	if err != nil {
 		return 0, err
 	}
+
 	return lastId, nil
 }
 
-func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (entity.UserORM, error) {
+func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*entity.UserORM, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.GetUserByEmail")
 	defer span.Finish()
 
-	user := entity.UserORM{}
+	user := &entity.UserORM{}
 
-	err := r.MasterDB.GetContext(ctx, &user, queryGetEmailSame, email)
+	err := r.MasterDB.GetContext(ctx, user, queryGetEmailSame, email)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return user, nil
 		}
+
+		return nil, err
 	}
-	return user, errors.New("Email Already Exists")
+
+	return user, nil
 }

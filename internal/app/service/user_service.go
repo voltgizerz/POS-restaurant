@@ -74,36 +74,48 @@ func (s *UserService) Register(ctx context.Context, userData entity.User) (int64
 	span, ctx := opentracing.StartSpanFromContext(ctx, "service.UserService.Register")
 	defer span.Finish()
 
-	returnUsers, err := s.userRepository.GetUserByEmail(ctx, userData.Email)
+	user, err := s.userRepository.GetUserByEmail(ctx, userData.Email)
 	if err != nil {
+		logger.LogStdErr.WithFields(logrus.Fields{
+			"username": userData.Username,
+			"error":    err,
+		}).Error("[UserService] error on GetUserByEmail")
 		return 0, err
 	}
-	if returnUsers.Username != "" {
+
+	if user.Username != "" {
+		logger.LogStdErr.WithFields(logrus.Fields{
+			"username": userData.Username,
+			"error":    err,
+		}).Error("[UserService] error on Email Already Exist")
 		return 0, errors.New("Email Already Exist")
 	}
+
 	passwordHashed, err := utils.HashPassword(userData.Password)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": userData.Username,
 			"error":    err,
-		}).Error("[UserService] error on UserService Hash Password On Register")
+		}).Error("[UserService] error on HashPassword")
 		return 0, errors.New("Failed Hashed Password")
 	}
-	userDataProced := entity.UserORM{
+
+	userDataProceed := entity.UserORM{
 		Username: userData.Username,
 		Password: passwordHashed,
 		Name:     userData.Name,
 		Email:    userData.Email,
 	}
 
-	result, err := s.userRepository.RegisterUser(ctx, userDataProced)
+	result, err := s.userRepository.RegisterUser(ctx, userDataProceed)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": userData.Username,
 			"error":    err,
-		}).Error("[UserService] error on UserService From Repository Register User")
+		}).Error("[UserService] error on RegisterUser")
 		return 0, err
 	}
+
 	return result, nil
 
 }

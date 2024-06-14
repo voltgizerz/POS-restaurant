@@ -58,8 +58,9 @@ func (h *UserHandler) Register(c fiber.Ctx) error {
 	if err != nil {
 		return sendErrorResp(c, fiber.StatusBadRequest, "Invalid request body.")
 	}
+
 	if req.Password != req.ConfirmPassword {
-		return sendErrorResp(c, fiber.StatusBadRequest, "Password Mismatch")
+		return sendErrorResp(c, fiber.StatusBadRequest, "Password mismatch")
 	}
 
 	userData := &entity.User{
@@ -73,5 +74,9 @@ func (h *UserHandler) Register(c fiber.Ctx) error {
 	if err != nil {
 		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
-	return sendSuccessResp(c, fiber.StatusOK, "Account Added Succesfully.", result)
+	res := map[string]int64{
+		"user_id": result,
+	}
+
+	return sendSuccessResp(c, fiber.StatusCreated, "Account created succesfully.", res)
 }
