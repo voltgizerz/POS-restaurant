@@ -20,6 +20,8 @@ decrypt-gpg:
 	@gpg -d .env.gpg
 
 mock-gen:
+	@mockgen -source=./internal/app/ports/auth_ports.go -destination=./internal/app/mocks/mocks_auth.go -package=mocks
+	@mockgen -source=./internal/app/ports/user_ports.go -destination=./internal/app/mocks/mocks_user.go -package=mocks
 
 changelog-gen:
 	@auto-changelog
