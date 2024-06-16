@@ -71,7 +71,7 @@ jobs:
       if: ${{ github.event_name == 'pull_request' && env.totalCoverage < env.TESTCOVERAGE_THRESHOLD }}
       with:
         message: |
-          ❌ Test coverage is below the threshold. Please add more unit tests or adjust the threshold to a lower value.
+          ❌ Test coverage is below the threshold. Please add more unit tests.
           - **Coverage: ${{env.totalCoverage}}%, Threshold: ${{env.TESTCOVERAGE_THRESHOLD}}%**
         reactions: eyes   
   
