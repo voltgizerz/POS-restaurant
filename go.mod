@@ -15,6 +15,7 @@ require (
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
+	github.com/DATA-DOG/go-sqlmock v1.5.2 // indirect
 	github.com/HdrHistogram/hdrhistogram-go v1.1.2 // indirect
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/gofiber/utils/v2 v2.0.0-beta.4 // indirect
