@@ -3,8 +3,10 @@ package handler
 import (
 	"database/sql"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
 	"github.com/opentracing/opentracing-go"
+
 	"github.com/voltgizerz/POS-restaurant/internal/app/constants"
 	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
 	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
@@ -33,8 +35,11 @@ func (h *UserHandler) Login(c fiber.Ctx) error {
 		return sendErrorResp(c, fiber.StatusBadRequest, constants.ErrMsgInvalidUsernameAndPassword)
 	}
 
-	if req.Username == "" || req.Password == "" {
-		return sendErrorResp(c, fiber.StatusBadRequest, constants.ErrMsgUsernameOrPasswordRequired)
+	err = validator.New().StructCtx(ctx, req)
+	if err != nil {
+		validationErrors := err.(validator.ValidationErrors)
+
+		return sendErrorResp(c, fiber.StatusBadRequest, validationErrors.Error())
 	}
 
 	userLoginData, err := h.userService.Login(ctx, req.Username, req.Password)

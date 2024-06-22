@@ -25,3 +25,14 @@ mock-gen:
 
 changelog-gen:
 	@auto-changelog
+
+# Target to apply migrations
+up:
+	goose -dir=./database/migrations mysql "root@tcp(localhost:3306)/db_pos?parseTime=true" up
+
+# Target to reset migrations (if needed)
+down:
+	goose -dir=./database/migrations mysql "root@tcp(localhost:3306)/db_pos?parseTime=true" down
+
+status:
+	goose -dir=./database/migrations mysql "root@tcp(localhost:3306)/db_pos?parseTime=true" status
