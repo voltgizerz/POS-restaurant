@@ -26,3 +26,6 @@ mocks:
 
 changelog:
 - CHANGELOG.md
+
+migration:
+- database/migrations/*
