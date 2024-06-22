@@ -9,7 +9,7 @@ import (
 type Menu struct {
 	ID        int64           `json:"id"`
 	Name      string          `json:"name"`
-	UserId    int64           `json:"user_id"`
+	UserID    int64           `json:"user_id"`
 	Thumbnail string          `json:"thumbnail"`
 	Price     decimal.Decimal `json:"price"`
 	IsActive  bool            `json:"is_active"`
@@ -25,6 +25,7 @@ type MenuOrm struct {
 	IsActive  bool            `db:"is_active"`
 	CreatedAt time.Time       `db:"created_at"`
 	UpdatedAt time.Time       `db:"updated_at"`
+	DeletedAt time.Time       `db:"deleted_at"`
 }
 
 type MenuResponse struct {

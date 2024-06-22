@@ -26,5 +26,5 @@ type UserORM struct {
 }
 
 type RegisterResponse struct {
-	User_id int64 `json:"user_id"`
+	UserID int64 `json:"user_id"`
 }

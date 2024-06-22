@@ -36,11 +36,6 @@ func (h *MenuHandler) AddMenu(c fiber.Ctx) error {
 		return sendErrorResp(c, fiber.StatusBadRequest, "Error data menu")
 	}
 
-	convertId, err := strconv.Atoi(req.UserId)
-	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
-	}
-
 	priceConvert, err := decimal.NewFromString(req.Price)
 	if err != nil {
 		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
@@ -49,7 +44,7 @@ func (h *MenuHandler) AddMenu(c fiber.Ctx) error {
 	menuData := &entity.Menu{
 		Name:      req.Name,
 		Thumbnail: req.Thumbnail,
-		UserId:    int64(convertId),
+		UserID:    req.UserID,
 		Price:     priceConvert,
 	}
 
@@ -69,18 +64,13 @@ func (h *MenuHandler) GetMenuByUserID(c fiber.Ctx) error {
 	span, ctx := opentracing.StartSpanFromContext(c.Context(), "handler.MenuHandler.GetMenuByUserID")
 	defer span.Finish()
 
-	req := &getMenuRequest{}
-	err := c.Bind().Body(req)
+	userID := c.Params("user_id")
+	convertUserIDtoInt, err := strconv.Atoi(userID)
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, "Invalid request body.")
+		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
-	convertId, err := strconv.Atoi(req.UserId)
-	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, "Error Convert ID")
-	}
-
-	result, err := h.menuService.GetMenu(ctx, int64(convertId))
+	result, err := h.menuService.GetMenu(ctx, int64(convertUserIDtoInt))
 	if err != nil {
 		return sendErrorResp(c, fiber.StatusBadRequest, constants.ErrMsgMenuNotFound)
 	}
@@ -98,12 +88,8 @@ func (h *MenuHandler) UpdateMenuByMenuID(c fiber.Ctx) error {
 		return sendErrorResp(c, fiber.StatusBadRequest, "Invalid request body.")
 	}
 
-	convertMenuid, err := strconv.Atoi(req.ID)
-	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
-	}
-
-	convertUserid, err := strconv.Atoi(req.UserId)
+	menuID := c.Params("menu_id")
+	convertMenuIDtoInt, err := strconv.Atoi(menuID)
 	if err != nil {
 		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
@@ -119,9 +105,9 @@ func (h *MenuHandler) UpdateMenuByMenuID(c fiber.Ctx) error {
 	}
 
 	menuData := entity.Menu{
-		ID:        int64(convertMenuid),
+		ID:        int64(convertMenuIDtoInt),
 		Name:      req.Name,
-		UserId:    int64(convertUserid),
+		UserID:    req.UserID,
 		Thumbnail: req.Thumbnail,
 		Price:     priceConvert,
 		IsActive:  activeConvert,
@@ -139,20 +125,15 @@ func (h *MenuHandler) DeleteMenuBatchByUserID(c fiber.Ctx) error {
 	span, ctx := opentracing.StartSpanFromContext(c.Context(), "handler.MenuHandler.DeleteMenuBatchByUserID")
 	defer span.Finish()
 
-	req := &getMenuRequest{}
-	err := c.Bind().Body(req)
+	userID := c.Params("user_id")
+	convertUserIDtoInt, err := strconv.Atoi(userID)
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, "Invalid request body.")
+		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
-	convertId, err := strconv.Atoi(req.UserId)
+	result, err := h.menuService.DeleteMenuBatchUserID(ctx, int64(convertUserIDtoInt))
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, "Error Convert ID")
-	}
-
-	result, err := h.menuService.DeleteMenuBatchUserID(ctx, int64(convertId))
-	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, fmt.Sprintf(constants.ErrMsgFailedDeleteMenu, " Delete Batch By User Id"))
+		return sendErrorResp(c, fiber.StatusBadRequest, fmt.Sprintf(constants.ErrMsgFailedDeleteMenu, " delete batch by user id"))
 	}
 
 	return sendSuccessResp(c, fiber.StatusOK, "Success", result)
@@ -162,20 +143,15 @@ func (h *MenuHandler) DeleteMenuByMenuId(c fiber.Ctx) error {
 	span, ctx := opentracing.StartSpanFromContext(c.Context(), "handler.MenuHandler.DeleteMenuByMenuId")
 	defer span.Finish()
 
-	req := &menuIdRequest{}
-	err := c.Bind().Body(req)
+	menuID := c.Params("menu_id")
+	convertMenuIDtoInt, err := strconv.Atoi(menuID)
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, "Invalid request body.")
+		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
-	convertId, err := strconv.Atoi(req.MenuId)
+	result, err := h.menuService.DeleteMenuID(ctx, int64(convertMenuIDtoInt))
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, "Error Convert ID")
-	}
-
-	result, err := h.menuService.DeleteMenuID(ctx, int64(convertId))
-	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, fmt.Sprintf(constants.ErrMsgFailedDeleteMenu, " Delete By Menu ID"))
+		return sendErrorResp(c, fiber.StatusBadRequest, fmt.Sprintf(constants.ErrMsgFailedDeleteMenu, " delete by menu id"))
 	}
 
 	return sendSuccessResp(c, fiber.StatusOK, "Success", result)

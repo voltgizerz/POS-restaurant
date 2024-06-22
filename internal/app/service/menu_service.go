@@ -30,14 +30,14 @@ func (s *MenuService) RegisterMenu(ctx context.Context, menuData entity.Menu) (i
 	menuConvert := entity.MenuOrm{
 		Name:      menuData.Name,
 		Thumbnail: menuData.Thumbnail,
-		UserId:    menuData.UserId,
+		UserId:    menuData.UserID,
 		Price:     menuData.Price,
 	}
 
 	idData, err := s.menuRepository.AddMenu(ctx, &menuConvert)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
-			"user_id": menuData.UserId,
+			"user_id": menuData.UserID,
 			"error":   err,
 		}).Error("[MenuService] error on AddMenu")
 		return 0, err
@@ -115,7 +115,7 @@ func (s *MenuService) UpdateMenuID(ctx context.Context, menuData *entity.Menu) (
 		Name:      menuData.Name,
 		Thumbnail: menuData.Thumbnail,
 		Price:     menuData.Price,
-		UserId:    menuData.UserId,
+		UserId:    menuData.UserID,
 		IsActive:  menuData.IsActive,
 	}
 

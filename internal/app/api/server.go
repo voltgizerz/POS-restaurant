@@ -22,9 +22,6 @@ func NewServer(interactor interactor.APInteractor) *Server {
 }
 
 func (s *Server) Initialize() {
-	if s.menuHandler == nil {
-		print("Have Handler")
-	}
 	app := s.InitRouter()
 
 	err := app.Listen(":" + s.cfgAPI.PORT)

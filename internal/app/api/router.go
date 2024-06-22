@@ -30,11 +30,11 @@ func (s *Server) initUserRoutes(group fiber.Router) {
 // initUserRoutes initializes user-related routes.
 func (s *Server) initMenuRoutes(group fiber.Router) {
 	menuRoutes := group.Group("/menu")
-	menuRoutes.Post("/add", s.menuHandler.AddMenu)
-	menuRoutes.Post("/delete/batchuserid", s.menuHandler.DeleteMenuBatchByUserID)
-	menuRoutes.Post("/delete", s.menuHandler.DeleteMenuByMenuId)
-	menuRoutes.Post("/update", s.menuHandler.UpdateMenuByMenuID)
-	menuRoutes.Get("/get", s.menuHandler.GetMenuByUserID)
+	menuRoutes.Post("/", s.menuHandler.AddMenu)
+	menuRoutes.Delete("/user/:user_id/", s.menuHandler.DeleteMenuBatchByUserID)
+	menuRoutes.Delete("/:menu_id/", s.menuHandler.DeleteMenuByMenuId)
+	menuRoutes.Patch("/:menu_id/", s.menuHandler.UpdateMenuByMenuID)
+	menuRoutes.Get("/:user_id/", s.menuHandler.GetMenuByUserID)
 }
 
 // initPingRoute initializes the ping route.
