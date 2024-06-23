@@ -5,3 +5,4 @@ config.production.yml
 app.exe
 tmp
 main.exe
+coverage.out

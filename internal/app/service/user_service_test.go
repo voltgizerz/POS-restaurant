@@ -11,6 +11,8 @@ import (
 )
 
 func TestUserService_Login(t *testing.T) {
+	mockUserORM := &entity.UserORM{ID: 1, Password: "$2a$14$aRI5bAYlMR7jvM2XH/EB1u9cHMpbuNX6FUsLGPnkdWNeN96OCbw0q"}
+
 	type args struct {
 		ctx      context.Context
 		username string
@@ -28,24 +30,24 @@ func TestUserService_Login(t *testing.T) {
 			args: args{
 				ctx:      context.Background(),
 				username: "test-user",
-				password: "test-password",
+				password: "felix",
 			},
 			want: &entity.LoginResponse{
-				UserID: 1,
-				RoleID: 1,
-				Token:  "mock-token",
+				UserID:    1,
+				Token:     "MOCKING-TOKEN",
+				TokenType: "Bearer",
 			},
 			wantErr: false,
 			setup: func(mockObj *MockObject) {
-				mockObj.MockUserRepo.EXPECT().GetUserByUsernameAndPassword(gomock.Any(), gomock.Any(), gomock.Any()).
-					Return(&entity.UserORM{ID: 1}, nil).Times(1)
+				mockObj.MockUserRepo.EXPECT().GetUserByUsername(gomock.Any(), gomock.Any()).
+					Return(mockUserORM, nil).Times(1)
 
-				mockObj.MockAuthService.EXPECT().CreateToken(gomock.Any(), &entity.UserORM{ID: 1}).
-					Return(&entity.CreateTokenResponse{Token: "mock-token"}, nil).Times(1)
+				mockObj.MockAuthService.EXPECT().CreateToken(gomock.Any(), gomock.Any()).
+					Return(&entity.CreateTokenResponse{Token: "MOCKING-TOKEN", TokenType: "Bearer"}, nil).Times(1)
 			},
 		},
 		{
-			name: "ERROR - on GetUserByUsernameAndPassword",
+			name: "ERROR - on GetUserByUsername",
 			args: args{
 				ctx:      context.Background(),
 				username: "test-user",
@@ -54,8 +56,22 @@ func TestUserService_Login(t *testing.T) {
 			want:    nil,
 			wantErr: true,
 			setup: func(mockObj *MockObject) {
-				mockObj.MockUserRepo.EXPECT().GetUserByUsernameAndPassword(gomock.Any(), gomock.Any(), gomock.Any()).
+				mockObj.MockUserRepo.EXPECT().GetUserByUsername(gomock.Any(), gomock.Any()).
 					Return(nil, errors.New("some errors")).Times(1)
+			},
+		},
+		{
+			name: "ERROR - on VerifyPassword",
+			args: args{
+				ctx:      context.Background(),
+				username: "test-user",
+				password: "test-password",
+			},
+			want:    nil,
+			wantErr: true,
+			setup: func(mockObj *MockObject) {
+				mockObj.MockUserRepo.EXPECT().GetUserByUsername(gomock.Any(), gomock.Any()).
+					Return(&entity.UserORM{ID: 1, Password: "aasd"}, nil).Times(1)
 			},
 		},
 		{
@@ -63,15 +79,15 @@ func TestUserService_Login(t *testing.T) {
 			args: args{
 				ctx:      context.Background(),
 				username: "test-user",
-				password: "test-password",
+				password: "felix",
 			},
-			want:    nil,
+			want:   nil,
 			wantErr: true,
 			setup: func(mockObj *MockObject) {
-				mockObj.MockUserRepo.EXPECT().GetUserByUsernameAndPassword(gomock.Any(), gomock.Any(), gomock.Any()).
-					Return(&entity.UserORM{ID: 1}, nil).Times(1)
+				mockObj.MockUserRepo.EXPECT().GetUserByUsername(gomock.Any(), gomock.Any()).
+					Return(mockUserORM, nil).Times(1)
 
-				mockObj.MockAuthService.EXPECT().CreateToken(gomock.Any(), &entity.UserORM{ID: 1}).
+				mockObj.MockAuthService.EXPECT().CreateToken(gomock.Any(), gomock.Any()).
 					Return(nil, errors.New("some errors")).Times(1)
 			},
 		},
