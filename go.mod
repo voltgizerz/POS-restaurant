@@ -5,6 +5,7 @@ go 1.21.3
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/antonfisher/nested-logrus-formatter v1.3.1
+	github.com/go-playground/assert v1.2.1
 	github.com/go-playground/assert/v2 v2.2.0
 	github.com/go-playground/validator/v10 v10.22.0
 	github.com/go-sql-driver/mysql v1.8.1
