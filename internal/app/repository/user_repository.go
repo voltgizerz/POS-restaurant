@@ -11,8 +11,10 @@ import (
 )
 
 const (
-	queryGetUserByUsernameAndPassword = `SELECT id, name, username, email, password_hashed, is_active, created_at, updated_at 
+	queryGetUserByUsernameAndPassword = `SELECT id, name, username, email, password_hashed, is_active, role_id, created_at, updated_at 
 		FROM users WHERE username=? AND password_hashed=?`
+	queryGetUserByUsername = `SELECT id, name, username, email, password_hashed, is_active, role_id, created_at, updated_at 
+		FROM users WHERE username=?`
 	queryGetEmailSame   = `SELECT username FROM users WHERE email=? `
 	queryInsertDataUser = `INSERT INTO users (name,username,email,password_hashed,is_active,role_id) values (?,?,?,?,?,?)`
 )
@@ -33,6 +35,19 @@ func (r *UserRepository) GetUserByUsernameAndPassword(ctx context.Context, usern
 
 	user := entity.UserORM{}
 	err := r.MasterDB.GetContext(ctx, &user, queryGetUserByUsernameAndPassword, username, hashPassword)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func (r *UserRepository) GetUserByUsername(ctx context.Context, username string) (*entity.UserORM, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.GetUserByUsername")
+	defer span.Finish()
+
+	user := entity.UserORM{}
+	err := r.MasterDB.GetContext(ctx, &user, queryGetUserByUsername, username)
 	if err != nil {
 		return nil, err
 	}

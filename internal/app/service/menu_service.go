@@ -12,13 +12,11 @@ import (
 )
 
 type MenuService struct {
-	authService    ports.IAuth
 	menuRepository ports.IMenuRepository
 }
 
 func NewMenuService(i interactor.MenuService) *MenuService {
 	return &MenuService{
-		authService:    i.AuthService,
 		menuRepository: i.MenuRepository,
 	}
 }
@@ -46,14 +44,14 @@ func (s *MenuService) RegisterMenu(ctx context.Context, menuData entity.Menu) (i
 	return idData, nil
 }
 
-func (s *MenuService) GetMenu(ctx context.Context, idUser int64) ([]*entity.MenuResponse, error) {
+func (s *MenuService) GetMenu(ctx context.Context, userID int64) ([]*entity.MenuResponse, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "service.MenuService.GetMenu")
 	defer span.Finish()
 
-	result, err := s.menuRepository.FetchMenuById(ctx, idUser)
+	result, err := s.menuRepository.FetchMenuById(ctx, userID)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
-			"user_id": idUser,
+			"user_id": userID,
 			"error":   err,
 		}).Error("[MenuService] error on GetMenu")
 		return nil, err
@@ -74,39 +72,39 @@ func (s *MenuService) GetMenu(ctx context.Context, idUser int64) ([]*entity.Menu
 	return convertMenu, nil
 }
 
-func (s *MenuService) UpdateActiveMenuID(ctx context.Context, idUser int64) (int64, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "service.MenuService.DeleteMenuID")
+func (s *MenuService) UpdateActiveMenuID(ctx context.Context, userID int64) (int64, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "service.MenuService.UpdateActiveMenuID")
 	defer span.Finish()
 
-	_, err := s.menuRepository.UpdateActiveMenuByMenuID(ctx, idUser)
+	_, err := s.menuRepository.UpdateActiveMenuByMenuID(ctx, userID)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
-			"user_id": idUser,
+			"user_id": userID,
 			"error":   err,
-		}).Error("[MenuService] error on DeleteMenuID")
+		}).Error("[MenuService] error on UpdateActiveMenuByMenuID")
 		return 0, err
 	}
 
 	return 1, nil
 }
 
-func (s *MenuService) UpdateActiveMenuBatchUserID(ctx context.Context, idUser int64) (int64, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "service.MenuService.DeleteMenuBatchUserID")
+func (s *MenuService) UpdateActiveMenuBatchUserID(ctx context.Context, userID int64) (int64, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "service.MenuService.UpdateActiveMenuBatchUserID")
 	defer span.Finish()
 
-	_, err := s.menuRepository.UpdateActiveMenuBatchUser(ctx, idUser)
+	_, err := s.menuRepository.UpdateActiveMenuBatchUser(ctx, userID)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
-			"user_id": idUser,
+			"user_id": userID,
 			"error":   err,
-		}).Error("[MenuService] error on DeleteMenBatchUserID")
+		}).Error("[MenuService] error on UpdateActiveMenuBatchUser")
 		return 0, err
 	}
 
 	return 1, nil
 }
 
-func (s *MenuService) UpdateMenuID(ctx context.Context, menuData *entity.Menu) (int64, error) {
+func (s *MenuService) UpdateMenuID(ctx context.Context, menuData entity.Menu) (int64, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "service.MenuService.UpdateMenuID")
 	defer span.Finish()
 
@@ -124,7 +122,7 @@ func (s *MenuService) UpdateMenuID(ctx context.Context, menuData *entity.Menu) (
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"menu_id": menuData.ID,
 			"error":   err,
-		}).Error("[MenuService] error on UpdateMenuID")
+		}).Error("[MenuService] error on UpdateMenuByMenuID")
 		return 0, err
 	}
 

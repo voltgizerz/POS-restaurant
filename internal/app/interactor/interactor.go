@@ -7,7 +7,7 @@ import (
 
 type APInteractor struct {
 	CfgAPI      config.API
-	UserHandler ports.IUserHandler
+	AuthHandler ports.IAuthHandler
 	MenuHandler ports.IMenuHandler
 }
 
@@ -17,7 +17,6 @@ type UserHandler struct {
 
 type MenuHandler struct {
 	MenuService ports.IMenuService
-	AuthService ports.IAuth
 }
 
 type UserService struct {
@@ -26,6 +25,5 @@ type UserService struct {
 }
 
 type MenuService struct {
-	AuthService    ports.IAuth
 	MenuRepository ports.IMenuRepository
 }

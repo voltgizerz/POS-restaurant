@@ -10,6 +10,7 @@ func (s *Server) InitRouter() *fiber.App {
 	app := fiber.New()
 
 	v1 := app.Group("api/v1")
+	s.initAuthRoutes(v1)
 	s.initUserRoutes(v1)
 	s.initPingRoute(v1)
 	s.initMenuRoutes(v1)
@@ -20,16 +21,26 @@ func (s *Server) InitRouter() *fiber.App {
 	return app
 }
 
+// initAuthRoutes initializes user-related routes.
+func (s *Server) initAuthRoutes(group fiber.Router) {
+	userRoutes := group.Group("/auth")
+	userRoutes.Post("/login", s.authHandler.Login)
+	userRoutes.Post("/register", s.authHandler.Register)
+}
+
 // initUserRoutes initializes user-related routes.
 func (s *Server) initUserRoutes(group fiber.Router) {
 	userRoutes := group.Group("/user")
-	userRoutes.Post("/login", s.userHandler.Login)
-	userRoutes.Post("/register", s.userHandler.Register)
+
+	// Define route with JWT middleware
+	userRoutes.Post("/sample", func(c fiber.Ctx) error {
+		return c.SendString("sample usecase auth jwt")
+	}, s.jwtMiddleware.AuthorizeAccess())
 }
 
 // initUserRoutes initializes user-related routes.
 func (s *Server) initMenuRoutes(group fiber.Router) {
-	menuRoutes := group.Group("/menu/v1")
+	menuRoutes := group.Group("/menu/v1", s.jwtMiddleware.AuthorizeAccess())
 	menuRoutes.Post("/", s.menuHandler.AddMenu)
 	menuRoutes.Delete("/user/:user_id/", s.menuHandler.UpdateActiveMenuBatchByUserID)
 	menuRoutes.Delete("/:menu_id/", s.menuHandler.UpdateActiveMenuByMenuID)

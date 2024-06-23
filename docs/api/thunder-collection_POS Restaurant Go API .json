@@ -1,0 +1,217 @@
+{
+    "clientName": "Thunder Client",
+    "collectionName": "POS Restaurant Go API ",
+    "collectionId": "25ef691c-d75d-4a48-9379-2661ad8e4dcf",
+    "dateExported": "2024-06-23T05:38:39.757Z",
+    "version": "1.2",
+    "folders": [],
+    "requests": [
+        {
+            "_id": "2b40958c-2fd0-4943-b87b-959a509977b4",
+            "colId": "25ef691c-d75d-4a48-9379-2661ad8e4dcf",
+            "containerId": "",
+            "name": "[Auth]  Login",
+            "url": "http://127.0.0.1:8080/api/v1/auth/login",
+            "method": "POST",
+            "sortNum": 5000,
+            "created": "2024-06-23T04:52:36.445Z",
+            "modified": "2024-06-23T04:52:36.445Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"username\": \"felix\",\n  \"password\":\"felix\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "ea49a3ee-a10c-4efc-bf77-4703ac31fddd",
+            "colId": "25ef691c-d75d-4a48-9379-2661ad8e4dcf",
+            "containerId": "",
+            "name": "[Auth] Register User",
+            "url": "http://127.0.0.1:8080/api/v1/auth/register",
+            "method": "POST",
+            "sortNum": 7500,
+            "created": "2024-06-23T04:52:44.772Z",
+            "modified": "2024-06-23T04:52:44.772Z",
+            "headers": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"username\": \"felix\",\n  \"password\": \"felix\",\n  \"confirm_password\": \"felix\",\n  \"name\": \"felix\",\n  \"email\": \"felix@gmail.com\"\n}",
+                "form": []
+            }
+        },
+        {
+            "_id": "7eb5956c-5a4e-4131-ad87-45d1fdd45871",
+            "colId": "25ef691c-d75d-4a48-9379-2661ad8e4dcf",
+            "containerId": "",
+            "name": "Delete By Menu Id",
+            "url": "127.0.0.1:8080/api/v1/menu/delete",
+            "method": "POST",
+            "sortNum": 10000,
+            "created": "2024-06-22T12:02:34.508Z",
+            "modified": "2024-06-22T12:02:34.508Z",
+            "headers": [
+                {
+                    "name": "User-Agent",
+                    "value": "insomnia/9.2.0"
+                }
+            ],
+            "params": [],
+            "body": {
+                "form": [
+                    {
+                        "name": "menuid",
+                        "value": "32"
+                    }
+                ],
+                "type": "formencoded"
+            },
+            "docs": ""
+        },
+        {
+            "_id": "12065ef5-3937-42eb-86c9-f6234f4fad16",
+            "colId": "25ef691c-d75d-4a48-9379-2661ad8e4dcf",
+            "containerId": "",
+            "name": "Update Menu By Menu Id",
+            "url": "127.0.0.1:8080/api/v1/menu/update",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2024-06-22T12:02:34.510Z",
+            "modified": "2024-06-22T12:02:34.510Z",
+            "headers": [
+                {
+                    "name": "User-Agent",
+                    "value": "insomnia/9.2.0"
+                }
+            ],
+            "params": [],
+            "body": {
+                "form": [
+                    {
+                        "name": "id",
+                        "value": "33"
+                    },
+                    {
+                        "name": "name",
+                        "value": "Ayam Goreng"
+                    },
+                    {
+                        "name": "thumbnail",
+                        "value": "gegel.com"
+                    },
+                    {
+                        "name": "price",
+                        "value": "30000"
+                    },
+                    {
+                        "name": "userid",
+                        "value": "3"
+                    },
+                    {
+                        "name": "isactive",
+                        "value": "1"
+                    }
+                ],
+                "type": "formencoded"
+            },
+            "docs": ""
+        },
+        {
+            "_id": "7f5fdfb0-6229-4d3a-8413-70b006b35428",
+            "colId": "25ef691c-d75d-4a48-9379-2661ad8e4dcf",
+            "containerId": "",
+            "name": "Delete Batch By User Id",
+            "url": "127.0.0.1:8080/api/v1/menu/delete/batchuserid",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2024-06-22T12:02:34.511Z",
+            "modified": "2024-06-22T12:02:34.511Z",
+            "headers": [
+                {
+                    "name": "User-Agent",
+                    "value": "insomnia/9.2.0"
+                }
+            ],
+            "params": [],
+            "body": {
+                "form": [
+                    {
+                        "name": "userid",
+                        "value": "1"
+                    }
+                ],
+                "type": "formencoded"
+            },
+            "docs": ""
+        },
+        {
+            "_id": "f0e8c225-fb60-4e36-a6d8-bfc1a93f7206",
+            "colId": "25ef691c-d75d-4a48-9379-2661ad8e4dcf",
+            "containerId": "",
+            "name": "Get Menu",
+            "url": "127.0.0.1:8080/api/v1/menu/get",
+            "method": "GET",
+            "sortNum": 40000,
+            "created": "2024-06-22T12:02:34.512Z",
+            "modified": "2024-06-22T12:02:34.512Z",
+            "headers": [
+                {
+                    "name": "User-Agent",
+                    "value": "insomnia/9.2.0"
+                }
+            ],
+            "params": [],
+            "body": {
+                "form": [
+                    {
+                        "name": "userid",
+                        "value": "3"
+                    }
+                ],
+                "type": "formencoded"
+            },
+            "docs": ""
+        },
+        {
+            "_id": "6304593b-6497-47af-b395-1ea351d61af4",
+            "colId": "25ef691c-d75d-4a48-9379-2661ad8e4dcf",
+            "containerId": "",
+            "name": "Add Menu",
+            "url": "127.0.0.1:8080/api/v1/menu/add",
+            "method": "POST",
+            "sortNum": 50000,
+            "created": "2024-06-22T12:02:34.513Z",
+            "modified": "2024-06-22T12:02:34.513Z",
+            "headers": [
+                {
+                    "name": "User-Agent",
+                    "value": "insomnia/9.2.0"
+                }
+            ],
+            "params": [],
+            "body": {
+                "form": [
+                    {
+                        "name": "name",
+                        "value": "Nasi Goreng"
+                    },
+                    {
+                        "name": "thumbnail",
+                        "value": "google.com"
+                    },
+                    {
+                        "name": "price",
+                        "value": "10000"
+                    },
+                    {
+                        "name": "userid",
+                        "value": "1"
+                    }
+                ],
+                "type": "formencoded"
+            },
+            "docs": ""
+        }
+    ],
+    "ref": "Lm1cMssDWN39N9yM54NDz8n_skb7yLlYZO00SI13YGNZ-EvEcVfMrg9Opfz9c5XyyH70qTjb-aKqejDtENrZ0Q"
+}

@@ -7,6 +7,7 @@ CREATE TABLE `users` (
   `email` varchar(255) DEFAULT NULL,
   `password_hashed` varchar(528) DEFAULT NULL,
   `is_active` tinyint(1) NOT NULL,
+  `role_id` tinyint(1) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)

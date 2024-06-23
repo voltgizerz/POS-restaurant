@@ -14,13 +14,11 @@ import (
 
 type MenuHandler struct {
 	menuService ports.IMenuService
-	authService ports.IAuth
 }
 
 func NewMenuHandler(i interactor.MenuHandler) *MenuHandler {
 	return &MenuHandler{
 		menuService: i.MenuService,
-		authService: i.AuthService,
 	}
 }
 
@@ -32,37 +30,32 @@ func (h *MenuHandler) AddMenu(c fiber.Ctx) error {
 
 	err := c.Bind().Body(req)
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, "Error data menu")
+		return SendErrorResp(c, fiber.StatusBadRequest, "Error data menu")
 	}
 
 	priceConvert, err := strconv.ParseFloat(req.Price, 64)
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
-	}
-
-	activeConvert, err := strconv.ParseBool(req.IsActive)
-	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
+		return SendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	menuData := &entity.Menu{
 		Name:      req.Name,
 		Thumbnail: req.Thumbnail,
 		UserID:    req.UserID,
-		IsActive:  activeConvert,
+		IsActive:  req.IsActive,
 		Price:     priceConvert,
 	}
 
 	result, err := h.menuService.RegisterMenu(ctx, *menuData)
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusUnauthorized, err.Error())
+		return SendErrorResp(c, fiber.StatusUnauthorized, err.Error())
 	}
 
 	responseMsg := map[string]int64{
 		"menu_id": result,
 	}
 
-	return sendSuccessResp(c, fiber.StatusOK, "Success", responseMsg)
+	return SendSuccessResp(c, fiber.StatusOK, "Success", responseMsg)
 }
 
 func (h *MenuHandler) GetMenuByUserID(c fiber.Ctx) error {
@@ -72,15 +65,15 @@ func (h *MenuHandler) GetMenuByUserID(c fiber.Ctx) error {
 	userID := c.Params("user_id")
 	convertUserIDtoInt, err := strconv.Atoi(userID)
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
+		return SendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	result, err := h.menuService.GetMenu(ctx, int64(convertUserIDtoInt))
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, constants.ErrMsgMenuNotFound)
+		return SendErrorResp(c, fiber.StatusBadRequest, constants.ErrMsgMenuNotFound)
 	}
 
-	return sendSuccessResp(c, fiber.StatusOK, "Success", result)
+	return SendSuccessResp(c, fiber.StatusOK, "Success", result)
 }
 
 func (h *MenuHandler) UpdateMenuByMenuID(c fiber.Ctx) error {
@@ -90,23 +83,18 @@ func (h *MenuHandler) UpdateMenuByMenuID(c fiber.Ctx) error {
 	req := &updateMenuRequest{}
 	err := c.Bind().Body(req)
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, "Invalid request body.")
+		return SendErrorResp(c, fiber.StatusBadRequest, "Invalid request body.")
 	}
 
 	menuID := c.Params("menu_id")
 	convertMenuIDtoInt, err := strconv.Atoi(menuID)
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
+		return SendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	priceConvert, err := strconv.ParseFloat(req.Price, 64)
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
-	}
-
-	activeConvert, err := strconv.ParseBool(req.IsActive)
-	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
+		return SendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	menuData := entity.Menu{
@@ -115,15 +103,15 @@ func (h *MenuHandler) UpdateMenuByMenuID(c fiber.Ctx) error {
 		UserID:    req.UserID,
 		Thumbnail: req.Thumbnail,
 		Price:     priceConvert,
-		IsActive:  activeConvert,
+		IsActive:  req.IsActive,
 	}
 
-	result, err := h.menuService.UpdateMenuID(ctx, &menuData)
+	result, err := h.menuService.UpdateMenuID(ctx, menuData)
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, constants.ErrMsgFailedUpdateMenu)
+		return SendErrorResp(c, fiber.StatusBadRequest, constants.ErrMsgFailedUpdateMenu)
 	}
 
-	return sendSuccessResp(c, fiber.StatusOK, "Success", result)
+	return SendSuccessResp(c, fiber.StatusOK, "Success", result)
 }
 
 func (h *MenuHandler) UpdateActiveMenuBatchByUserID(c fiber.Ctx) error {
@@ -133,15 +121,15 @@ func (h *MenuHandler) UpdateActiveMenuBatchByUserID(c fiber.Ctx) error {
 	userID := c.Params("user_id")
 	convertUserIDtoInt, err := strconv.Atoi(userID)
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
+		return SendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	result, err := h.menuService.UpdateActiveMenuBatchUserID(ctx, int64(convertUserIDtoInt))
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, fmt.Sprintf(constants.ErrMsgFailedDeleteMenu, " delete batch by user id"))
+		return SendErrorResp(c, fiber.StatusBadRequest, fmt.Sprintf(constants.ErrMsgFailedDeleteMenu, " delete batch by user id"))
 	}
 
-	return sendSuccessResp(c, fiber.StatusOK, "Success", result)
+	return SendSuccessResp(c, fiber.StatusOK, "Success", result)
 }
 
 func (h *MenuHandler) UpdateActiveMenuByMenuID(c fiber.Ctx) error {
@@ -151,13 +139,13 @@ func (h *MenuHandler) UpdateActiveMenuByMenuID(c fiber.Ctx) error {
 	menuID := c.Params("menu_id")
 	convertMenuIDtoInt, err := strconv.Atoi(menuID)
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
+		return SendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	result, err := h.menuService.UpdateActiveMenuID(ctx, int64(convertMenuIDtoInt))
 	if err != nil {
-		return sendErrorResp(c, fiber.StatusBadRequest, fmt.Sprintf(constants.ErrMsgFailedDeleteMenu, " delete by menu id"))
+		return SendErrorResp(c, fiber.StatusBadRequest, fmt.Sprintf(constants.ErrMsgFailedDeleteMenu, " delete by menu id"))
 	}
 
-	return sendSuccessResp(c, fiber.StatusOK, "Success", result)
+	return SendSuccessResp(c, fiber.StatusOK, "Success", result)
 }

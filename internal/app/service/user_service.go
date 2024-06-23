@@ -29,27 +29,27 @@ func (s *UserService) Login(ctx context.Context, username string, password strin
 	span, ctx := opentracing.StartSpanFromContext(ctx, "service.UserService.Login")
 	defer span.Finish()
 
-	hashPassword, err := utils.HashPassword(password)
+	user, err := s.userRepository.GetUserByUsername(ctx, username)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": username,
 			"error":    err,
-		}).Error("[UserService] error on HashPassword")
+		}).Error("[UserService] error on GetUserByUsername")
 
 		return nil, err
 	}
 
-	user, err := s.userRepository.GetUserByUsernameAndPassword(ctx, username, hashPassword)
+	err = utils.VerifyPassword(password, user.Password)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": username,
 			"error":    err,
-		}).Error("[UserService] error on GetUserByUsernameAndPassword")
+		}).Error("[UserService] error on VerifyPassword")
 
 		return nil, err
 	}
 
-	tokenData, err := s.authService.CreateToken(user)
+	tokenData, err := s.authService.CreateToken(ctx, *user)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": username,
@@ -61,7 +61,7 @@ func (s *UserService) Login(ctx context.Context, username string, password strin
 
 	resp := &entity.LoginResponse{
 		UserID:    user.ID,
-		RoleID:    1, // TODO
+		RoleID:    user.RoleID,
 		Token:     tokenData.Token,
 		TokenType: tokenData.TokenType,
 		ExpiredAt: tokenData.ExpiredAt,
@@ -88,7 +88,7 @@ func (s *UserService) Register(ctx context.Context, userData entity.User) (int64
 			"username": userData.Username,
 			"error":    err,
 		}).Error("[UserService] error on Email Already Exist")
-		return 0, errors.New("Email Already Exist")
+		return 0, errors.New("Email already exist")
 	}
 
 	passwordHashed, err := utils.HashPassword(userData.Password)
@@ -97,7 +97,7 @@ func (s *UserService) Register(ctx context.Context, userData entity.User) (int64
 			"username": userData.Username,
 			"error":    err,
 		}).Error("[UserService] error on HashPassword")
-		return 0, errors.New("Failed Hashed Password")
+		return 0, errors.New("Failed hashed password")
 	}
 
 	userDataProceed := entity.UserORM{
