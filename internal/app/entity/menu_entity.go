@@ -14,7 +14,7 @@ type Menu struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-type MenuOrm struct {
+type MenuORM struct {
 	ID        int64     `db:"id"`
 	Name      string    `db:"name"`
 	UserId    int64     `db:"user_id"`

@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
+	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
 	"go.uber.org/mock/gomock"
 )
 
@@ -81,7 +82,7 @@ func TestUserService_Login(t *testing.T) {
 				username: "test-user",
 				password: "felix",
 			},
-			want:   nil,
+			want:    nil,
 			wantErr: true,
 			setup: func(mockObj *MockObject) {
 				mockObj.MockUserRepo.EXPECT().GetUserByUsername(gomock.Any(), gomock.Any()).
@@ -213,6 +214,30 @@ func TestUserService_Register(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("UserService.Register() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewUserService(t *testing.T) {
+	type args struct {
+		i interactor.UserService
+	}
+	tests := []struct {
+		name string
+		args args
+		want *UserService
+	}{
+		{
+			name: "SUCCESS",
+			args: args{i: interactor.UserService{}},
+			want: &UserService{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewUserService(tt.args.i); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewUserService() = %v, want %v", got, tt.want)
 			}
 		})
 	}
