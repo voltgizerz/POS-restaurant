@@ -13,7 +13,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	v3 "github.com/gofiber/fiber/v3"
+	fiber "github.com/gofiber/fiber/v3"
 	entity "github.com/voltgizerz/POS-restaurant/internal/app/entity"
 	gomock "go.uber.org/mock/gomock"
 )
@@ -54,6 +54,21 @@ func (m *MockIUserRepository) GetUserByEmail(ctx context.Context, email string) 
 func (mr *MockIUserRepositoryMockRecorder) GetUserByEmail(ctx, email any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByEmail", reflect.TypeOf((*MockIUserRepository)(nil).GetUserByEmail), ctx, email)
+}
+
+// GetUserByUsername mocks base method.
+func (m *MockIUserRepository) GetUserByUsername(ctx context.Context, username string) (*entity.UserORM, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetUserByUsername", ctx, username)
+	ret0, _ := ret[0].(*entity.UserORM)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetUserByUsername indicates an expected call of GetUserByUsername.
+func (mr *MockIUserRepositoryMockRecorder) GetUserByUsername(ctx, username any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByUsername", reflect.TypeOf((*MockIUserRepository)(nil).GetUserByUsername), ctx, username)
 }
 
 // GetUserByUsernameAndPassword mocks base method.
@@ -163,7 +178,7 @@ func (m *MockIUserHandler) EXPECT() *MockIUserHandlerMockRecorder {
 }
 
 // Login mocks base method.
-func (m *MockIUserHandler) Login(c v3.Ctx) error {
+func (m *MockIUserHandler) Login(c fiber.Ctx) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Login", c)
 	ret0, _ := ret[0].(error)
@@ -177,7 +192,7 @@ func (mr *MockIUserHandlerMockRecorder) Login(c any) *gomock.Call {
 }
 
 // Register mocks base method.
-func (m *MockIUserHandler) Register(c v3.Ctx) error {
+func (m *MockIUserHandler) Register(c fiber.Ctx) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Register", c)
 	ret0, _ := ret[0].(error)

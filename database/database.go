@@ -21,7 +21,7 @@ func InitDatabase(ctx context.Context, cfg config.Database) *DatabaseOpts {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "database.InitDatabase")
 	defer span.Finish()
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s", cfg.Username, cfg.Password, cfg.Host, cfg.Name)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=true", cfg.Username, cfg.Password, cfg.Host, cfg.Name)
 
 	return &DatabaseOpts{
 		MasterDB: connectMySQL(ctx, dsn, cfg.MaxOpenConns, cfg.MaxIdleConns),
