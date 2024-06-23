@@ -40,12 +40,12 @@ func (s *Server) initUserRoutes(group fiber.Router) {
 
 // initUserRoutes initializes user-related routes.
 func (s *Server) initMenuRoutes(group fiber.Router) {
-	menuRoutes := group.Group("/menu/v1", s.jwtMiddleware.AuthorizeAccess())
-	menuRoutes.Post("/", s.menuHandler.AddMenu)
-	menuRoutes.Delete("/user/:user_id/", s.menuHandler.UpdateActiveMenuBatchByUserID)
-	menuRoutes.Delete("/:menu_id/", s.menuHandler.UpdateActiveMenuByMenuID)
-	menuRoutes.Patch("/:menu_id/", s.menuHandler.UpdateMenuByMenuID)
-	menuRoutes.Get("/:user_id/", s.menuHandler.GetMenuByUserID)
+	menuRoutes := group.Group("/menu")
+	menuRoutes.Post("/", s.menuHandler.AddMenu, s.jwtMiddleware.AuthorizeAccess())
+	menuRoutes.Delete("/user/:user_id/", s.menuHandler.UpdateActiveMenuBatchByUserID, s.jwtMiddleware.AuthorizeAccess())
+	menuRoutes.Delete("/:menu_id/", s.menuHandler.UpdateActiveMenuByMenuID, s.jwtMiddleware.AuthorizeAccess())
+	menuRoutes.Patch("/:menu_id/", s.menuHandler.UpdateMenuByMenuID, s.jwtMiddleware.AuthorizeAccess())
+	menuRoutes.Get("/:user_id/", s.menuHandler.GetMenuByUserID, s.jwtMiddleware.AuthorizeAccess())
 }
 
 // initPingRoute initializes the ping route.

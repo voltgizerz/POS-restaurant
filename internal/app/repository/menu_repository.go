@@ -12,11 +12,11 @@ import (
 )
 
 const (
-	queryInsertMenu                    = `INSERT INTO food_menu (name,thumbnail,price,is_active,user_id) values (?,?,?,?,?)`
-	queryGetMenuByUserId               = `SELECT id,name,price,thumbnail,is_active from food_menu where user_id = ? and is_active = 1`
-	queryUpdateActiveBatchMenuByUserId = `UPDATE food_menu set is_active = 0 , deleted_at = ? where user_id = ?`
-	queryUpdateMenuActiveByMenuId      = `UPDATE food_menu set is_active = 0 , deleted_at = ? where id = ?`
-	queryUpdateMenuByMenuId            = `UPDATE food_menu set name = ? ,price = ? , thumbnail = ? ,is_active = ? , user_id = ? , updated_at = ? where id = ?`
+	queryInsertMenu                    = `INSERT INTO food_menus (name,thumbnail,price,is_active,user_id) values (?,?,?,?,?)`
+	queryGetMenuByUserId               = `SELECT id,name,price,thumbnail,is_active from food_menus where user_id = ? and is_active = 1`
+	queryUpdateActiveBatchMenuByUserId = `UPDATE food_menus set is_active = 0 , deleted_at = ? where user_id = ?`
+	queryUpdateMenuActiveByMenuId      = `UPDATE food_menus set is_active = 0 , deleted_at = ? where id = ?`
+	queryUpdateMenuByMenuId            = `UPDATE food_menus set name = ? ,price = ? , thumbnail = ? ,is_active = ? , user_id = ? , updated_at = ? where id = ?`
 )
 
 type MenuRepository struct {
@@ -31,7 +31,7 @@ func NewMenuRepository(opts RepositoryOpts) ports.IMenuRepository {
 
 // DeleteMenuBatchUser implements ports.IMenuRepository.
 func (m *MenuRepository) UpdateActiveMenuBatchUser(ctx context.Context, idUser int64) (int64, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.DeleteMenuBatchUser")
+	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.UpdateActiveMenuBatchUser")
 	defer span.Finish()
 
 	result, err := m.MasterDB.ExecContext(ctx, queryUpdateActiveBatchMenuByUserId, time.Now(), idUser)
@@ -53,7 +53,7 @@ func (m *MenuRepository) UpdateActiveMenuBatchUser(ctx context.Context, idUser i
 
 // UpdateMenuByMenuID implements ports.IMenuRepository.
 func (m *MenuRepository) UpdateActiveMenuByMenuID(ctx context.Context, idMenu int64) (int64, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.DeleteMenuByMenuID")
+	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.UpdateActiveMenuByMenuID")
 	defer span.Finish()
 
 	result, err := m.MasterDB.ExecContext(ctx, queryUpdateMenuActiveByMenuId, time.Now(), idMenu)

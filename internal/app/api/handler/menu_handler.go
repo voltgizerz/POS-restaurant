@@ -115,7 +115,7 @@ func (h *MenuHandler) UpdateMenuByMenuID(c fiber.Ctx) error {
 }
 
 func (h *MenuHandler) UpdateActiveMenuBatchByUserID(c fiber.Ctx) error {
-	span, ctx := opentracing.StartSpanFromContext(c.Context(), "handler.MenuHandler.DeleteMenuBatchByUserID")
+	span, ctx := opentracing.StartSpanFromContext(c.Context(), "handler.MenuHandler.UpdateActiveMenuBatchByUserID")
 	defer span.Finish()
 
 	userID := c.Params("user_id")

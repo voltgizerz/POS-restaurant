@@ -1,6 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE TABLE `food_menu` (
+CREATE TABLE `food_menus` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(300) DEFAULT NULL,
   `thumbnail` text,
@@ -16,5 +16,5 @@ CREATE TABLE `food_menu` (
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE `food_menu`
+DROP TABLE `food_menus`
 -- +goose StatementEnd
