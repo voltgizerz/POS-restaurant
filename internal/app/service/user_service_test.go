@@ -117,3 +117,103 @@ func TestUserService_Login(t *testing.T) {
 		})
 	}
 }
+
+func TestUserService_Register(t *testing.T) {
+	type args struct {
+		ctx      context.Context
+		username string
+		password string
+		name     string
+		email    string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    int64
+		wantErr bool
+		setup   func(mockObj *MockObject)
+	}{
+		{
+			name: "SUCCESS - Register",
+			args: args{
+				ctx:      context.Background(),
+				username: "test-user",
+				password: "test-password",
+				email:    "test-email@email.com",
+				name:     "test-name",
+			},
+			want:    1,
+			wantErr: false,
+			setup: func(mockObj *MockObject) {
+				mockObj.MockUserRepo.EXPECT().GetUserByEmail(gomock.Any(), gomock.Any()).
+					Return(&entity.UserORM{}, nil).Times(1)
+				mockObj.MockUserRepo.EXPECT().RegisterUser(gomock.Any(), gomock.Any()).
+					Return(int64(1), nil).Times(1)
+			},
+		},
+		{
+			name: "ERROR - GetUserByEmail",
+			args: args{
+				ctx:      context.Background(),
+				username: "test-user",
+				password: "test-password",
+				email:    "test-email@email.com",
+				name:     "test-name",
+			},
+			want:    0,
+			wantErr: true,
+			setup: func(mockObj *MockObject) {
+				mockObj.MockUserRepo.EXPECT().GetUserByEmail(gomock.Any(), gomock.Any()).
+					Return(&entity.UserORM{Username: ""}, errors.New("some error")).Times(1)
+			},
+		},
+		{
+			name: "ERROR - Register",
+			args: args{
+				ctx:      context.Background(),
+				username: "test-user",
+				password: "test-password",
+				email:    "test-email@email.com",
+				name:     "test-name",
+			},
+			want:    0,
+			wantErr: true,
+			setup: func(mockObj *MockObject) {
+				mockObj.MockUserRepo.EXPECT().GetUserByEmail(gomock.Any(), gomock.Any()).
+					Return(&entity.UserORM{Username: ""}, errors.New("some error")).Times(1)
+				mockObj.MockUserRepo.EXPECT().RegisterUser(gomock.Any(), gomock.Any()).
+					Return(int64(0), errors.New("some error")).AnyTimes()
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctrl, mockObj := NewMock(t)
+			if tt.setup != nil {
+				tt.setup(mockObj)
+			}
+			defer ctrl.Finish()
+
+			service := &UserService{
+				userRepository: mockObj.MockUserRepo,
+			}
+
+			user_data := &entity.User{
+				Username: tt.args.username,
+				Password: tt.args.password,
+				Email:    tt.args.email,
+				Name:     tt.args.name,
+			}
+
+			got, err := service.Register(tt.args.ctx, *user_data)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UserService.Register() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("UserService.Register() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

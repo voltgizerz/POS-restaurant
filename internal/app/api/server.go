@@ -12,6 +12,7 @@ type Server struct {
 	cfgAPI        config.API
 	jwtMiddleware middleware.JWTAuth
 	authHandler   ports.IAuthHandler
+	menuHandler   ports.IMenuHandler
 }
 
 func NewServer(interactor interactor.APInteractor, jwtMiddleware middleware.JWTAuth) *Server {
@@ -19,6 +20,7 @@ func NewServer(interactor interactor.APInteractor, jwtMiddleware middleware.JWTA
 		cfgAPI:        interactor.CfgAPI,
 		jwtMiddleware: jwtMiddleware,
 		authHandler:   interactor.AuthHandler,
+		menuHandler:   interactor.MenuHandler,
 	}
 }
 

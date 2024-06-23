@@ -24,3 +24,7 @@ type UserORM struct {
 	CreatedAt time.Time `db:"created_at"`
 	UpdatedAt time.Time `db:"updated_at"`
 }
+
+type RegisterResponse struct {
+	UserID int64 `json:"user_id"`
+}

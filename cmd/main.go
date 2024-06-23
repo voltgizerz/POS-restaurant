@@ -50,10 +50,16 @@ func main() {
 	// Initialize Repositories
 	userRepo := repository.NewUserRepository(repoOpts)
 
+	menuRepo := repository.NewMenuRepository(repoOpts)
+
 	// Initialize Services
 	userService := service.NewUserService(interactor.UserService{
 		AuthService:    authJWT,
 		UserRepository: userRepo,
+	})
+
+	menuService := service.NewMenuService(interactor.MenuService{
+		MenuRepository: menuRepo,
 	})
 
 	// Initialize Handlers
@@ -61,9 +67,14 @@ func main() {
 		UserService: userService,
 	})
 
+	menuHandler := handler.NewMenuHandler(interactor.MenuHandler{
+		MenuService: menuService,
+	})
+
 	interactoAPI := interactor.APInteractor{
 		CfgAPI:      cfg.API,
 		AuthHandler: authHandler,
+		MenuHandler: menuHandler,
 	}
 
 	// Start API server
