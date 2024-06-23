@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	queryGetUserByUsernameAndPassword = `SELECT id, name, username, email, password_hashed, is_active, role_id created_at, updated_at 
+	queryGetUserByUsernameAndPassword = `SELECT id, name, username, email, password_hashed, is_active, role_id, created_at, updated_at 
 		FROM users WHERE username=? AND password_hashed=?`
 	queryGetUserByUsername = `SELECT id, name, username, email, password_hashed, is_active, role_id, created_at, updated_at 
 		FROM users WHERE username=?`
