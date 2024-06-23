@@ -12,11 +12,11 @@ import (
 )
 
 const (
-	queryInsertMenu              = `INSERT INTO food_menu (name,thumbnail,price,is_active,user_id) values (?,?,?,?,?)`
-	queryGetMenuByUserId         = `SELECT id,name,price,thumbnail,is_active from food_menu where user_id = ? and is_active = 1`
-	queryDeleteBatchMenuByUserId = `UPDATE food_menu set is_active = 0 , deleted_at = ? where user_id = ?`
-	queryDeleteMenuIdByMenuId    = `UPDATE food_menu set is_active = 0 , deleted_at = ? where id = ?`
-	queryUpdateMenuByMenuId      = `UPDATE food_menu set name = ? ,price = ? , thumbnail = ? ,is_active = ? , user_id = ? , updated_at = ? where id = ?`
+	queryInsertMenu                    = `INSERT INTO food_menu (name,thumbnail,price,is_active,user_id) values (?,?,?,?,?)`
+	queryGetMenuByUserId               = `SELECT id,name,price,thumbnail,is_active from food_menu where user_id = ? and is_active = 1`
+	queryUpdateActiveBatchMenuByUserId = `UPDATE food_menu set is_active = 0 , deleted_at = ? where user_id = ?`
+	queryUpdateMenuActiveByMenuId      = `UPDATE food_menu set is_active = 0 , deleted_at = ? where id = ?`
+	queryUpdateMenuByMenuId            = `UPDATE food_menu set name = ? ,price = ? , thumbnail = ? ,is_active = ? , user_id = ? , updated_at = ? where id = ?`
 )
 
 type MenuRepository struct {
@@ -30,11 +30,11 @@ func NewMenuRepository(opts RepositoryOpts) ports.IMenuRepository {
 }
 
 // DeleteMenuBatchUser implements ports.IMenuRepository.
-func (m *MenuRepository) DeleteMenuBatchUser(ctx context.Context, idUser int64) (int64, error) {
+func (m *MenuRepository) UpdateActiveMenuBatchUser(ctx context.Context, idUser int64) (int64, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.DeleteMenuBatchUser")
 	defer span.Finish()
 
-	result, err := m.MasterDB.ExecContext(ctx, queryDeleteBatchMenuByUserId, time.Now(), idUser)
+	result, err := m.MasterDB.ExecContext(ctx, queryUpdateActiveBatchMenuByUserId, time.Now(), idUser)
 	if err != nil {
 		return 0, err
 	}
@@ -51,12 +51,12 @@ func (m *MenuRepository) DeleteMenuBatchUser(ctx context.Context, idUser int64) 
 	return 1, nil
 }
 
-// DeleteMenuByMenuID implements ports.IMenuRepository.
-func (m *MenuRepository) DeleteMenuByMenuID(ctx context.Context, idMenu int64) (int64, error) {
+// UpdateMenuByMenuID implements ports.IMenuRepository.
+func (m *MenuRepository) UpdateActiveMenuByMenuID(ctx context.Context, idMenu int64) (int64, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.DeleteMenuByMenuID")
 	defer span.Finish()
 
-	result, err := m.MasterDB.ExecContext(ctx, queryDeleteMenuIdByMenuId, time.Now(), idMenu)
+	result, err := m.MasterDB.ExecContext(ctx, queryUpdateMenuActiveByMenuId, time.Now(), idMenu)
 	if err != nil {
 		return 0, err
 	}
@@ -100,7 +100,7 @@ func (m *MenuRepository) AddMenu(ctx context.Context, menuData *entity.MenuOrm) 
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.AddMenu")
 	defer span.Finish()
 
-	result, err := m.MasterDB.ExecContext(ctx, queryInsertMenu, menuData.Name, menuData.Thumbnail, menuData.Price, 1, menuData.UserId)
+	result, err := m.MasterDB.ExecContext(ctx, queryInsertMenu, menuData.Name, menuData.Thumbnail, menuData.Price, menuData.IsActive, menuData.UserId)
 	if err != nil {
 		return 0, err
 	}

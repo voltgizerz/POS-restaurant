@@ -6,6 +6,7 @@ type (
 		Thumbnail string `json:"thumbnail"`
 		Price     string `json:"price"`
 		UserID    int64  `json:"user_id"`
+		IsActive  string `json:"is_active"`
 	}
 
 	updateMenuRequest struct {

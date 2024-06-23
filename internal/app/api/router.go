@@ -29,10 +29,10 @@ func (s *Server) initUserRoutes(group fiber.Router) {
 
 // initUserRoutes initializes user-related routes.
 func (s *Server) initMenuRoutes(group fiber.Router) {
-	menuRoutes := group.Group("/menu")
+	menuRoutes := group.Group("/menu/v1")
 	menuRoutes.Post("/", s.menuHandler.AddMenu)
-	menuRoutes.Delete("/user/:user_id/", s.menuHandler.DeleteMenuBatchByUserID)
-	menuRoutes.Delete("/:menu_id/", s.menuHandler.DeleteMenuByMenuId)
+	menuRoutes.Delete("/user/:user_id/", s.menuHandler.UpdateActiveMenuBatchByUserID)
+	menuRoutes.Delete("/:menu_id/", s.menuHandler.UpdateActiveMenuByMenuID)
 	menuRoutes.Patch("/:menu_id/", s.menuHandler.UpdateMenuByMenuID)
 	menuRoutes.Get("/:user_id/", s.menuHandler.GetMenuByUserID)
 }

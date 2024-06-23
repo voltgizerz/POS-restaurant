@@ -6,7 +6,6 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/opentracing/opentracing-go"
-	"github.com/shopspring/decimal"
 	"github.com/voltgizerz/POS-restaurant/internal/app/constants"
 	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
 	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
@@ -36,7 +35,12 @@ func (h *MenuHandler) AddMenu(c fiber.Ctx) error {
 		return sendErrorResp(c, fiber.StatusBadRequest, "Error data menu")
 	}
 
-	priceConvert, err := decimal.NewFromString(req.Price)
+	priceConvert, err := strconv.ParseFloat(req.Price, 64)
+	if err != nil {
+		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
+	}
+
+	activeConvert, err := strconv.ParseBool(req.IsActive)
 	if err != nil {
 		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
@@ -45,6 +49,7 @@ func (h *MenuHandler) AddMenu(c fiber.Ctx) error {
 		Name:      req.Name,
 		Thumbnail: req.Thumbnail,
 		UserID:    req.UserID,
+		IsActive:  activeConvert,
 		Price:     priceConvert,
 	}
 
@@ -94,7 +99,7 @@ func (h *MenuHandler) UpdateMenuByMenuID(c fiber.Ctx) error {
 		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
-	priceConvert, err := decimal.NewFromString(req.Price)
+	priceConvert, err := strconv.ParseFloat(req.Price, 64)
 	if err != nil {
 		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
@@ -121,7 +126,7 @@ func (h *MenuHandler) UpdateMenuByMenuID(c fiber.Ctx) error {
 	return sendSuccessResp(c, fiber.StatusOK, "Success", result)
 }
 
-func (h *MenuHandler) DeleteMenuBatchByUserID(c fiber.Ctx) error {
+func (h *MenuHandler) UpdateActiveMenuBatchByUserID(c fiber.Ctx) error {
 	span, ctx := opentracing.StartSpanFromContext(c.Context(), "handler.MenuHandler.DeleteMenuBatchByUserID")
 	defer span.Finish()
 
@@ -131,7 +136,7 @@ func (h *MenuHandler) DeleteMenuBatchByUserID(c fiber.Ctx) error {
 		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
-	result, err := h.menuService.DeleteMenuBatchUserID(ctx, int64(convertUserIDtoInt))
+	result, err := h.menuService.UpdateActiveMenuBatchUserID(ctx, int64(convertUserIDtoInt))
 	if err != nil {
 		return sendErrorResp(c, fiber.StatusBadRequest, fmt.Sprintf(constants.ErrMsgFailedDeleteMenu, " delete batch by user id"))
 	}
@@ -139,7 +144,7 @@ func (h *MenuHandler) DeleteMenuBatchByUserID(c fiber.Ctx) error {
 	return sendSuccessResp(c, fiber.StatusOK, "Success", result)
 }
 
-func (h *MenuHandler) DeleteMenuByMenuId(c fiber.Ctx) error {
+func (h *MenuHandler) UpdateActiveMenuByMenuID(c fiber.Ctx) error {
 	span, ctx := opentracing.StartSpanFromContext(c.Context(), "handler.MenuHandler.DeleteMenuByMenuId")
 	defer span.Finish()
 
@@ -149,7 +154,7 @@ func (h *MenuHandler) DeleteMenuByMenuId(c fiber.Ctx) error {
 		return sendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
-	result, err := h.menuService.DeleteMenuID(ctx, int64(convertMenuIDtoInt))
+	result, err := h.menuService.UpdateActiveMenuID(ctx, int64(convertMenuIDtoInt))
 	if err != nil {
 		return sendErrorResp(c, fiber.StatusBadRequest, fmt.Sprintf(constants.ErrMsgFailedDeleteMenu, " delete by menu id"))
 	}

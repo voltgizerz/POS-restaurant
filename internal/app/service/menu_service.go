@@ -59,26 +59,26 @@ func (s *MenuService) GetMenu(ctx context.Context, idUser int64) ([]*entity.Menu
 		return nil, err
 	}
 
-	convert_menu := []*entity.MenuResponse{}
+	convertMenu := []*entity.MenuResponse{}
 	for _, data := range result {
-		menu_data := entity.MenuResponse{
+		menuData := entity.MenuResponse{
 			ID:        data.ID,
 			Name:      data.Name,
 			Thumbnail: data.Thumbnail,
 			Price:     data.Price,
 			IsActive:  data.IsActive,
 		}
-		convert_menu = append(convert_menu, &menu_data)
+		convertMenu = append(convertMenu, &menuData)
 	}
 
-	return convert_menu, nil
+	return convertMenu, nil
 }
 
-func (s *MenuService) DeleteMenuID(ctx context.Context, idUser int64) (int64, error) {
+func (s *MenuService) UpdateActiveMenuID(ctx context.Context, idUser int64) (int64, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "service.MenuService.DeleteMenuID")
 	defer span.Finish()
 
-	_, err := s.menuRepository.DeleteMenuByMenuID(ctx, idUser)
+	_, err := s.menuRepository.UpdateActiveMenuByMenuID(ctx, idUser)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"user_id": idUser,
@@ -90,11 +90,11 @@ func (s *MenuService) DeleteMenuID(ctx context.Context, idUser int64) (int64, er
 	return 1, nil
 }
 
-func (s *MenuService) DeleteMenuBatchUserID(ctx context.Context, idUser int64) (int64, error) {
+func (s *MenuService) UpdateActiveMenuBatchUserID(ctx context.Context, idUser int64) (int64, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "service.MenuService.DeleteMenuBatchUserID")
 	defer span.Finish()
 
-	_, err := s.menuRepository.DeleteMenuBatchUser(ctx, idUser)
+	_, err := s.menuRepository.UpdateActiveMenuBatchUser(ctx, idUser)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"user_id": idUser,

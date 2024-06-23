@@ -135,6 +135,40 @@ func TestUserService_Register(t *testing.T) {
 					Return(int64(1), nil).Times(1)
 			},
 		},
+		{
+			name: "ERROR - GetUserByEmail",
+			args: args{
+				ctx:      context.Background(),
+				username: "test-user",
+				password: "test-password",
+				email:    "test-email@email.com",
+				name:     "test-name",
+			},
+			want:    0,
+			wantErr: true,
+			setup: func(mockObj *MockObject) {
+				mockObj.MockUserRepo.EXPECT().GetUserByEmail(gomock.Any(), gomock.Any()).
+					Return(&entity.UserORM{Username: ""}, errors.New("some error")).Times(1)
+			},
+		},
+		{
+			name: "ERROR - Register",
+			args: args{
+				ctx:      context.Background(),
+				username: "test-user",
+				password: "test-password",
+				email:    "test-email@email.com",
+				name:     "test-name",
+			},
+			want:    0,
+			wantErr: true,
+			setup: func(mockObj *MockObject) {
+				mockObj.MockUserRepo.EXPECT().GetUserByEmail(gomock.Any(), gomock.Any()).
+					Return(&entity.UserORM{Username: ""}, errors.New("some error")).Times(1)
+				mockObj.MockUserRepo.EXPECT().RegisterUser(gomock.Any(), gomock.Any()).
+					Return(int64(0), errors.New("some error")).AnyTimes()
+			},
+		},
 	}
 
 	for _, tt := range tests {
