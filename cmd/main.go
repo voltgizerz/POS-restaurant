@@ -10,8 +10,9 @@ import (
 	"github.com/voltgizerz/POS-restaurant/config"
 	"github.com/voltgizerz/POS-restaurant/database"
 	"github.com/voltgizerz/POS-restaurant/internal/app/api"
-	"github.com/voltgizerz/POS-restaurant/internal/app/api/auth"
 	"github.com/voltgizerz/POS-restaurant/internal/app/api/handler"
+	"github.com/voltgizerz/POS-restaurant/internal/app/api/middleware"
+	"github.com/voltgizerz/POS-restaurant/internal/app/auth"
 	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
 	"github.com/voltgizerz/POS-restaurant/internal/app/repository"
 	"github.com/voltgizerz/POS-restaurant/internal/app/service"
@@ -39,6 +40,9 @@ func main() {
 	// Initialize Auth JWT
 	authJWT := auth.NewAuthJWT(cfg.API.JWTSecretKey)
 
+	// Initialize Middleware
+	jwtMiddleware := middleware.NewJWTAuthMiddleware(authJWT)
+
 	repoOpts := repository.RepositoryOpts{
 		Database: db,
 	}
@@ -53,17 +57,17 @@ func main() {
 	})
 
 	// Initialize Handlers
-	userHandler := handler.NewUserHandler(interactor.UserHandler{
+	authHandler := handler.NewAuthHandler(interactor.UserHandler{
 		UserService: userService,
 	})
 
 	interactoAPI := interactor.APInteractor{
 		CfgAPI:      cfg.API,
-		UserHandler: userHandler,
+		AuthHandler: authHandler,
 	}
 
 	// Start API server
-	go startAPIServer(interactoAPI)
+	go startAPIServer(interactoAPI, jwtMiddleware)
 
 	// Wait for termination signal
 	waitForSignal()
@@ -84,8 +88,8 @@ func handlePanic() {
 	}
 }
 
-func startAPIServer(interactor interactor.APInteractor) {
-	httpServer := api.NewServer(interactor)
+func startAPIServer(interactor interactor.APInteractor, jwtMiddleware middleware.JWTAuth) {
+	httpServer := api.NewServer(interactor, jwtMiddleware)
 	httpServer.Initialize()
 }
 

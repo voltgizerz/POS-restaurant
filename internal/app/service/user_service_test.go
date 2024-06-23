@@ -40,12 +40,12 @@ func TestUserService_Login(t *testing.T) {
 				mockObj.MockUserRepo.EXPECT().GetUserByUsernameAndPassword(gomock.Any(), gomock.Any(), gomock.Any()).
 					Return(&entity.UserORM{ID: 1}, nil).Times(1)
 
-				mockObj.MockAuthService.EXPECT().CreateToken(&entity.UserORM{ID: 1}).
+				mockObj.MockAuthService.EXPECT().CreateToken(gomock.Any(), &entity.UserORM{ID: 1}).
 					Return(&entity.CreateTokenResponse{Token: "mock-token"}, nil).Times(1)
 			},
 		},
 		{
-			name: "ERROR On - GetUserByUsernameAndPassword",
+			name: "ERROR - on GetUserByUsernameAndPassword",
 			args: args{
 				ctx:      context.Background(),
 				username: "test-user",
@@ -59,7 +59,7 @@ func TestUserService_Login(t *testing.T) {
 			},
 		},
 		{
-			name: "ERROR On - CreateToken",
+			name: "ERROR - on CreateToken",
 			args: args{
 				ctx:      context.Background(),
 				username: "test-user",
@@ -71,7 +71,7 @@ func TestUserService_Login(t *testing.T) {
 				mockObj.MockUserRepo.EXPECT().GetUserByUsernameAndPassword(gomock.Any(), gomock.Any(), gomock.Any()).
 					Return(&entity.UserORM{ID: 1}, nil).Times(1)
 
-				mockObj.MockAuthService.EXPECT().CreateToken(&entity.UserORM{ID: 1}).
+				mockObj.MockAuthService.EXPECT().CreateToken(gomock.Any(), &entity.UserORM{ID: 1}).
 					Return(nil, errors.New("some errors")).Times(1)
 			},
 		},

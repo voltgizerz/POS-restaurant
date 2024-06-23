@@ -3,3 +3,5 @@ logs
 ./coverage.out
 config.production.yml
 app.exe
+tmp
+main.exe
