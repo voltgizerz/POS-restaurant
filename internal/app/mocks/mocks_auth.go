@@ -13,6 +13,7 @@ import (
 	context "context"
 	reflect "reflect"
 
+	fiber "github.com/gofiber/fiber/v3"
 	jwt "github.com/golang-jwt/jwt/v5"
 	entity "github.com/voltgizerz/POS-restaurant/internal/app/entity"
 	gomock "go.uber.org/mock/gomock"
@@ -70,4 +71,55 @@ func (m *MockIAuth) VerifyToken(ctx context.Context, tokenString string) (*jwt.T
 func (mr *MockIAuthMockRecorder) VerifyToken(ctx, tokenString any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyToken", reflect.TypeOf((*MockIAuth)(nil).VerifyToken), ctx, tokenString)
+}
+
+// MockIAuthHandler is a mock of IAuthHandler interface.
+type MockIAuthHandler struct {
+	ctrl     *gomock.Controller
+	recorder *MockIAuthHandlerMockRecorder
+}
+
+// MockIAuthHandlerMockRecorder is the mock recorder for MockIAuthHandler.
+type MockIAuthHandlerMockRecorder struct {
+	mock *MockIAuthHandler
+}
+
+// NewMockIAuthHandler creates a new mock instance.
+func NewMockIAuthHandler(ctrl *gomock.Controller) *MockIAuthHandler {
+	mock := &MockIAuthHandler{ctrl: ctrl}
+	mock.recorder = &MockIAuthHandlerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockIAuthHandler) EXPECT() *MockIAuthHandlerMockRecorder {
+	return m.recorder
+}
+
+// Login mocks base method.
+func (m *MockIAuthHandler) Login(c fiber.Ctx) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Login", c)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Login indicates an expected call of Login.
+func (mr *MockIAuthHandlerMockRecorder) Login(c any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockIAuthHandler)(nil).Login), c)
+}
+
+// Register mocks base method.
+func (m *MockIAuthHandler) Register(c fiber.Ctx) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Register", c)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Register indicates an expected call of Register.
+func (mr *MockIAuthHandlerMockRecorder) Register(c any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockIAuthHandler)(nil).Register), c)
 }
