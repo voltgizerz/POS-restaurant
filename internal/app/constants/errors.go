@@ -5,6 +5,9 @@ const (
 	ErrMsgUsernameOrPasswordRequired = "Username and password are required."
 	ErrMsgUsernameNotFound           = "Username not found."
 	ErrMsgInvalidUsernameOrPassword  = "Invalid username or password."
+	ErrMsgMenuNotFound               = "Menu not found"
+	ErrMsgFailedDeleteMenu           = "Menu failed to delete on %s"
+	ErrMsgFailedUpdateMenu           = "Menu update failed"
 
 	ErrMsgInternalServerError = "Internal server error."
 )

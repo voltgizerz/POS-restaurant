@@ -10,8 +10,10 @@
 package mocks
 
 import (
+	context "context"
 	reflect "reflect"
 
+	jwt "github.com/golang-jwt/jwt/v5"
 	entity "github.com/voltgizerz/POS-restaurant/internal/app/entity"
 	gomock "go.uber.org/mock/gomock"
 )
@@ -40,30 +42,32 @@ func (m *MockIAuth) EXPECT() *MockIAuthMockRecorder {
 }
 
 // CreateToken mocks base method.
-func (m *MockIAuth) CreateToken(user *entity.UserORM) (*entity.CreateTokenResponse, error) {
+func (m *MockIAuth) CreateToken(ctx context.Context, user entity.UserORM) (*entity.CreateTokenResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CreateToken", user)
+	ret := m.ctrl.Call(m, "CreateToken", ctx, user)
 	ret0, _ := ret[0].(*entity.CreateTokenResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // CreateToken indicates an expected call of CreateToken.
-func (mr *MockIAuthMockRecorder) CreateToken(user any) *gomock.Call {
+func (mr *MockIAuthMockRecorder) CreateToken(ctx, user any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateToken", reflect.TypeOf((*MockIAuth)(nil).CreateToken), user)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateToken", reflect.TypeOf((*MockIAuth)(nil).CreateToken), ctx, user)
 }
 
 // VerifyToken mocks base method.
-func (m *MockIAuth) VerifyToken(tokenString string) error {
+func (m *MockIAuth) VerifyToken(ctx context.Context, tokenString string) (*jwt.Token, jwt.MapClaims, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "VerifyToken", tokenString)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret := m.ctrl.Call(m, "VerifyToken", ctx, tokenString)
+	ret0, _ := ret[0].(*jwt.Token)
+	ret1, _ := ret[1].(jwt.MapClaims)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
 // VerifyToken indicates an expected call of VerifyToken.
-func (mr *MockIAuthMockRecorder) VerifyToken(tokenString any) *gomock.Call {
+func (mr *MockIAuthMockRecorder) VerifyToken(ctx, tokenString any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyToken", reflect.TypeOf((*MockIAuth)(nil).VerifyToken), tokenString)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyToken", reflect.TypeOf((*MockIAuth)(nil).VerifyToken), ctx, tokenString)
 }

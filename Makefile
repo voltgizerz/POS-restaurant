@@ -28,11 +28,11 @@ changelog-gen:
 
 # Target to apply migrations
 up:
-	goose -dir=./database/migrations mysql "root@tcp(localhost:3306)/db_pos?parseTime=true" up
+	@goose -dir=./database/migrations mysql "root@tcp(localhost:3306)/db_pos?parseTime=true" up
 
 # Target to reset migrations (if needed)
 down:
-	goose -dir=./database/migrations mysql "root@tcp(localhost:3306)/db_pos?parseTime=true" down
+	@goose -dir=./database/migrations mysql "root@tcp(localhost:3306)/db_pos?parseTime=true" down
 
 status:
-	goose -dir=./database/migrations mysql "root@tcp(localhost:3306)/db_pos?parseTime=true" status
+	@goose -dir=./database/migrations mysql "root@tcp(localhost:3306)/db_pos?parseTime=true" status
