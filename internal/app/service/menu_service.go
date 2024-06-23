@@ -25,14 +25,14 @@ func (s *MenuService) RegisterMenu(ctx context.Context, menuData entity.Menu) (i
 	span, ctx := opentracing.StartSpanFromContext(ctx, "service.MenuService.RegisterMenu")
 	defer span.Finish()
 
-	menuConvert := entity.MenuOrm{
+	menuConvert := entity.MenuORM{
 		Name:      menuData.Name,
 		Thumbnail: menuData.Thumbnail,
 		UserId:    menuData.UserID,
 		Price:     menuData.Price,
 	}
 
-	idData, err := s.menuRepository.AddMenu(ctx, &menuConvert)
+	idData, err := s.menuRepository.AddMenu(ctx, menuConvert)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"user_id": menuData.UserID,
@@ -108,7 +108,7 @@ func (s *MenuService) UpdateMenuID(ctx context.Context, menuData entity.Menu) (i
 	span, ctx := opentracing.StartSpanFromContext(ctx, "service.MenuService.UpdateMenuID")
 	defer span.Finish()
 
-	menuOrm := entity.MenuOrm{
+	menuOrm := entity.MenuORM{
 		ID:        menuData.ID,
 		Name:      menuData.Name,
 		Thumbnail: menuData.Thumbnail,

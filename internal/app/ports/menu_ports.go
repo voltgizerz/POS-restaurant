@@ -17,16 +17,16 @@ type IMenuHandler interface {
 
 type IMenuService interface {
 	RegisterMenu(ctx context.Context, menuData entity.Menu) (int64, error)
-	GetMenu(ctx context.Context, idMenu int64) ([]*entity.MenuResponse, error)
-	UpdateActiveMenuID(ctx context.Context, idMenu int64) (int64, error)
+	GetMenu(ctx context.Context, menuID int64) ([]*entity.MenuResponse, error)
+	UpdateActiveMenuID(ctx context.Context, menuID int64) (int64, error)
 	UpdateActiveMenuBatchUserID(ctx context.Context, userID int64) (int64, error)
 	UpdateMenuID(ctx context.Context, menuData entity.Menu) (int64, error)
 }
 
 type IMenuRepository interface {
-	FetchMenuById(ctx context.Context, userID int64) ([]*entity.MenuOrm, error)
-	AddMenu(ctx context.Context, menuData *entity.MenuOrm) (int64, error)
-	UpdateActiveMenuByMenuID(ctx context.Context, idMenu int64) (int64, error)
+	FetchMenuById(ctx context.Context, userID int64) ([]*entity.MenuORM, error)
+	AddMenu(ctx context.Context, menuData entity.MenuORM) (int64, error)
+	UpdateActiveMenuByMenuID(ctx context.Context, menuID int64) (int64, error)
 	UpdateActiveMenuBatchUser(ctx context.Context, userID int64) (int64, error)
-	UpdateMenuByMenuID(ctx context.Context, menuData *entity.MenuOrm) (int64, error)
+	UpdateMenuByMenuID(ctx context.Context, menuData *entity.MenuORM) (int64, error)
 }

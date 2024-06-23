@@ -52,11 +52,11 @@ func (m *MenuRepository) UpdateActiveMenuBatchUser(ctx context.Context, idUser i
 }
 
 // UpdateMenuByMenuID implements ports.IMenuRepository.
-func (m *MenuRepository) UpdateActiveMenuByMenuID(ctx context.Context, idMenu int64) (int64, error) {
+func (m *MenuRepository) UpdateActiveMenuByMenuID(ctx context.Context, menuID int64) (int64, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.UpdateActiveMenuByMenuID")
 	defer span.Finish()
 
-	result, err := m.MasterDB.ExecContext(ctx, queryUpdateMenuActiveByMenuId, time.Now(), idMenu)
+	result, err := m.MasterDB.ExecContext(ctx, queryUpdateMenuActiveByMenuId, time.Now(), menuID)
 	if err != nil {
 		return 0, err
 	}
@@ -74,7 +74,7 @@ func (m *MenuRepository) UpdateActiveMenuByMenuID(ctx context.Context, idMenu in
 }
 
 // UpdateMenuByMenuID implements ports.IMenuRepository.
-func (m *MenuRepository) UpdateMenuByMenuID(ctx context.Context, menuData *entity.MenuOrm) (int64, error) {
+func (m *MenuRepository) UpdateMenuByMenuID(ctx context.Context, menuData *entity.MenuORM) (int64, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.UpdateMenuByMenuID")
 	defer span.Finish()
 
@@ -96,7 +96,7 @@ func (m *MenuRepository) UpdateMenuByMenuID(ctx context.Context, menuData *entit
 }
 
 // AddMenu implements ports.IMenuRepository.
-func (m *MenuRepository) AddMenu(ctx context.Context, menuData *entity.MenuOrm) (int64, error) {
+func (m *MenuRepository) AddMenu(ctx context.Context, menuData entity.MenuORM) (int64, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.AddMenu")
 	defer span.Finish()
 
@@ -114,11 +114,11 @@ func (m *MenuRepository) AddMenu(ctx context.Context, menuData *entity.MenuOrm) 
 }
 
 // FetchMenuById implements ports.IMenuRepository.
-func (m *MenuRepository) FetchMenuById(ctx context.Context, menuId int64) ([]*entity.MenuOrm, error) {
+func (m *MenuRepository) FetchMenuById(ctx context.Context, menuId int64) ([]*entity.MenuORM, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.FetchMenuById")
 	defer span.Finish()
 
-	menu_data := []*entity.MenuOrm{}
+	menu_data := []*entity.MenuORM{}
 
 	err := m.MasterDB.SelectContext(ctx, &menu_data, queryGetMenuByUserId, menuId)
 	if err != nil {
