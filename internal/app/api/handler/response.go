@@ -1,25 +1,31 @@
 package handler
 
-import "github.com/gofiber/fiber/v3"
+import (
+	"github.com/gofiber/fiber/v3"
+	"github.com/voltgizerz/POS-restaurant/internal/app/constants"
+)
 
 type (
 	errorResponse struct {
-		Code    int    `json:"code"`
-		Message string `json:"message"`
+		Success   bool   `json:"success"`
+		Message   string `json:"message"`
+		RequestID string `json:"request_id"`
 	}
 
 	successResponse struct {
-		Code    int         `json:"code"`
-		Message string      `json:"message"`
-		Data    interface{} `json:"data"`
+		Success   bool        `json:"success"`
+		Message   string      `json:"message"`
+		Data      interface{} `json:"data"`
+		RequestID string      `json:"request_id"`
 	}
 )
 
 // SendErrorResp generates and sends error response
 func SendErrorResp(c fiber.Ctx, statusCode int, errorMessage string) error {
 	response := errorResponse{
-		Code:    statusCode,
-		Message: errorMessage,
+		Success:   false,
+		Message:   errorMessage,
+		RequestID: c.Locals(constants.CTXKeyRequestID).(string),
 	}
 
 	return c.Status(statusCode).JSON(response)
@@ -28,9 +34,10 @@ func SendErrorResp(c fiber.Ctx, statusCode int, errorMessage string) error {
 // SendSuccessResp generates and sends success response with dynamic data
 func SendSuccessResp(c fiber.Ctx, statusCode int, message string, data interface{}) error {
 	response := successResponse{
-		Code:    statusCode,
-		Message: message,
-		Data:    data,
+		Success:   true,
+		Message:   message,
+		Data:      data,
+		RequestID: c.Locals(constants.CTXKeyRequestID).(string),
 	}
 
 	return c.Status(statusCode).JSON(response)

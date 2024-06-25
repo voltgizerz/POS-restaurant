@@ -23,7 +23,7 @@ func NewMenuHandler(i interactor.MenuHandler) *MenuHandler {
 }
 
 func (h *MenuHandler) AddMenu(c fiber.Ctx) error {
-	span, ctx := opentracing.StartSpanFromContext(c.Context(), "handler.MenuHandler.AddMenu")
+	span, ctx := opentracing.StartSpanFromContext(c.UserContext(), "handler.MenuHandler.AddMenu")
 	defer span.Finish()
 
 	req := &addMenuRequest{}
@@ -59,7 +59,7 @@ func (h *MenuHandler) AddMenu(c fiber.Ctx) error {
 }
 
 func (h *MenuHandler) GetMenuByUserID(c fiber.Ctx) error {
-	span, ctx := opentracing.StartSpanFromContext(c.Context(), "handler.MenuHandler.GetMenuByUserID")
+	span, ctx := opentracing.StartSpanFromContext(c.UserContext(), "handler.MenuHandler.GetMenuByUserID")
 	defer span.Finish()
 
 	userID := c.Params("user_id")
@@ -77,7 +77,7 @@ func (h *MenuHandler) GetMenuByUserID(c fiber.Ctx) error {
 }
 
 func (h *MenuHandler) UpdateMenuByMenuID(c fiber.Ctx) error {
-	span, ctx := opentracing.StartSpanFromContext(c.Context(), "handler.MenuHandler.GetMenuByUserID")
+	span, ctx := opentracing.StartSpanFromContext(c.UserContext(), "handler.MenuHandler.GetMenuByUserID")
 	defer span.Finish()
 
 	req := &updateMenuRequest{}
@@ -115,7 +115,7 @@ func (h *MenuHandler) UpdateMenuByMenuID(c fiber.Ctx) error {
 }
 
 func (h *MenuHandler) UpdateActiveMenuBatchByUserID(c fiber.Ctx) error {
-	span, ctx := opentracing.StartSpanFromContext(c.Context(), "handler.MenuHandler.UpdateActiveMenuBatchByUserID")
+	span, ctx := opentracing.StartSpanFromContext(c.UserContext(), "handler.MenuHandler.UpdateActiveMenuBatchByUserID")
 	defer span.Finish()
 
 	userID := c.Params("user_id")
@@ -133,7 +133,7 @@ func (h *MenuHandler) UpdateActiveMenuBatchByUserID(c fiber.Ctx) error {
 }
 
 func (h *MenuHandler) UpdateActiveMenuByMenuID(c fiber.Ctx) error {
-	span, ctx := opentracing.StartSpanFromContext(c.Context(), "handler.MenuHandler.DeleteMenuByMenuId")
+	span, ctx := opentracing.StartSpanFromContext(c.UserContext(), "handler.MenuHandler.DeleteMenuByMenuId")
 	defer span.Finish()
 
 	menuID := c.Params("menu_id")

@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/google/uuid"
 	"github.com/opentracing/opentracing-go"
 	"github.com/voltgizerz/POS-restaurant/internal/app/api/handler"
 	"github.com/voltgizerz/POS-restaurant/internal/app/constants"
@@ -12,7 +13,7 @@ import (
 )
 
 const (
-	tokeTypeJWT    = "Bearer"
+	tokenTypeJWT   = "Bearer"
 	headerAuthName = "Authorization"
 )
 
@@ -30,37 +31,45 @@ func (m *JWTAuth) AuthorizeAccess() fiber.Handler {
 	span, _ := opentracing.StartSpanFromContext(context.Background(), "middleware.AuthorizeAccess")
 	defer span.Finish()
 
-	return func(ctx fiber.Ctx) error {
-		authHeader := ctx.Get(headerAuthName)
+	return func(c fiber.Ctx) error {
+		authHeader := c.Get(headerAuthName)
 		if authHeader == "" {
-			return handler.SendErrorResp(ctx, fiber.StatusUnauthorized, "Missing Authorization header")
+			return handler.SendErrorResp(c, fiber.StatusUnauthorized, "Missing Authorization header")
 		}
 
 		// Check if the token type is Bearer
 		tokenType, tokenValue, err := parseAuthHeader(authHeader)
-		if err != nil || tokenType != tokeTypeJWT {
-			return handler.SendErrorResp(ctx, fiber.StatusUnauthorized, "Invalid authorization header format")
+		if err != nil || tokenType != tokenTypeJWT {
+			return handler.SendErrorResp(c, fiber.StatusUnauthorized, "Invalid authorization header format")
 		}
 
 		// Verify JWT token using AuthService.VerifyToken
-		_, claims, err := m.AuthService.VerifyToken(ctx.Context(), tokenValue)
+		_, claims, err := m.AuthService.VerifyToken(c.UserContext(), tokenValue)
 		if err != nil {
-			return handler.SendErrorResp(ctx, fiber.StatusUnauthorized, "Invalid token")
+			return handler.SendErrorResp(c, fiber.StatusUnauthorized, "Invalid token")
 		}
 
-		// Extract user ID from claims
+		requestID := uuid.New().String()
+
+		// Store the UUID in the context for access in handlers
+		c.Locals(constants.CTXKeyRequestID, requestID)
+
 		userID := claims["user_id"].(float64)
 		username := claims["username"].(string)
 		roleID := claims["role_id"].(float64)
 		isActive := claims["is_active"].(bool)
 
-		// Set user information in request context
-		ctx.Locals(constants.CTXKeyUserID, int64(userID))
-		ctx.Locals(constants.CTXKeyUsername, username)
-		ctx.Locals(constants.CTXKeyRoleID, int64(roleID))
-		ctx.Locals(constants.CTXKeyIsActive, isActive)
+		// Create a new Go context with user information
+		ctx := context.WithValue(c.UserContext(), constants.CTXKeyUserID, userID)
+		ctx = context.WithValue(ctx, constants.CTXKeyUsername, username)
+		ctx = context.WithValue(ctx, constants.CTXKeyRoleID, roleID)
+		ctx = context.WithValue(ctx, constants.CTXKeyIsActive, isActive)
+		ctx = context.WithValue(ctx, constants.CTXKeyRequestID, requestID)
 
-		return ctx.Next()
+		// Replace Fiber's context with the new context containing user information
+		c.SetUserContext(ctx)
+
+		return c.Next()
 	}
 }
 
