@@ -2,12 +2,10 @@ package handler
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/opentracing/opentracing-go"
-	"github.com/voltgizerz/POS-restaurant/internal/app/auth"
 	"github.com/voltgizerz/POS-restaurant/internal/app/constants"
 	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
 	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
@@ -27,9 +25,6 @@ func NewMenuHandler(i interactor.MenuHandler) *MenuHandler {
 func (h *MenuHandler) AddMenu(c fiber.Ctx) error {
 	span, ctx := opentracing.StartSpanFromContext(c.UserContext(), "handler.MenuHandler.AddMenu")
 	defer span.Finish()
-
-	data, err := auth.GetUserLoginFromCtx(ctx)
-	log.Println(data, err)
 
 	req := &addMenuRequest{}
 
