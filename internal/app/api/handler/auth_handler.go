@@ -24,7 +24,7 @@ func NewAuthHandler(i interactor.UserHandler) *AuthHandler {
 }
 
 func (h *AuthHandler) Login(c fiber.Ctx) error {
-	span, ctx := opentracing.StartSpanFromContext(c.Context(), "handler.AuthHandler.Login")
+	span, ctx := opentracing.StartSpanFromContext(c.UserContext(), "handler.AuthHandler.Login")
 	defer span.Finish()
 
 	req := &loginRequest{}
@@ -54,10 +54,11 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 }
 
 func (h *AuthHandler) Register(c fiber.Ctx) error {
-	span, ctx := opentracing.StartSpanFromContext(c.Context(), "handler.AuthHandler.Register")
+	span, ctx := opentracing.StartSpanFromContext(c.UserContext(), "handler.AuthHandler.Register")
 	defer span.Finish()
 
 	req := &registerRequest{}
+
 	err := c.Bind().Body(req)
 	if err != nil {
 		return SendErrorResp(c, fiber.StatusBadRequest, "Invalid request body.")
