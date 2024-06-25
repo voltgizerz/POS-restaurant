@@ -28,7 +28,7 @@ func (h *MenuHandler) AddMenu(c fiber.Ctx) error {
 
 	req := &addMenuRequest{}
 
-	err = c.Bind().Body(req)
+	err := c.Bind().Body(req)
 	if err != nil {
 		return SendErrorResp(c, fiber.StatusBadRequest, "Error data menu")
 	}
