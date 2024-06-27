@@ -64,7 +64,6 @@ func (h *AuthHandler) Register(c fiber.Ctx) error {
 	if err != nil {
 		return SendErrorResp(c, fiber.StatusBadRequest, "Invalid request body.")
 	}
-	
 
 	err = validator.New().StructCtx(ctx, req)
 	if err != nil {
@@ -88,6 +87,7 @@ func (h *AuthHandler) Register(c fiber.Ctx) error {
 	if err != nil {
 		return SendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
+
 	res := map[string]int64{
 		"user_id": result,
 	}
