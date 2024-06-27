@@ -39,7 +39,7 @@ func (s *UserService) Login(ctx context.Context, username string, password strin
 		return nil, err
 	}
 
-	err = utils.VerifyPassword(password, user.Password)
+	err = utils.VerifyPassword(password, user.PasswordHashed)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": username,
@@ -101,10 +101,10 @@ func (s *UserService) Register(ctx context.Context, userData entity.User) (int64
 	}
 
 	userDataProceed := entity.UserORM{
-		Username: userData.Username,
-		Password: passwordHashed,
-		Name:     userData.Name,
-		Email:    userData.Email,
+		Username:       userData.Username,
+		PasswordHashed: passwordHashed,
+		Name:           userData.Name,
+		Email:          userData.Email,
 	}
 
 	result, err := s.userRepository.RegisterUser(ctx, userDataProceed)
