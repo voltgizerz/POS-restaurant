@@ -43,7 +43,7 @@ func TestUserService_Login(t *testing.T) {
 				mockObj.MockUserRepo.EXPECT().GetUserByUsername(gomock.Any(), gomock.Any()).
 					Return(mockUserORM, nil).Times(1)
 
-				mockObj.MockAuthService.EXPECT().CreateToken(gomock.Any(), gomock.Any()).
+				mockObj.MockJWTService.EXPECT().CreateToken(gomock.Any(), gomock.Any()).
 					Return(&entity.CreateTokenResponse{Token: "MOCKING-TOKEN", TokenType: "Bearer"}, nil).Times(1)
 			},
 		},
@@ -88,7 +88,7 @@ func TestUserService_Login(t *testing.T) {
 				mockObj.MockUserRepo.EXPECT().GetUserByUsername(gomock.Any(), gomock.Any()).
 					Return(mockUserORM, nil).Times(1)
 
-				mockObj.MockAuthService.EXPECT().CreateToken(gomock.Any(), gomock.Any()).
+				mockObj.MockJWTService.EXPECT().CreateToken(gomock.Any(), gomock.Any()).
 					Return(nil, errors.New("some errors")).Times(1)
 			},
 		},
@@ -102,18 +102,18 @@ func TestUserService_Login(t *testing.T) {
 			}
 			defer ctrl.Finish()
 
-			service := &UserService{
-				authService:    mockObj.MockAuthService,
+			service := &AuthService{
+				jwtService:     mockObj.MockJWTService,
 				userRepository: mockObj.MockUserRepo,
 			}
 
 			got, err := service.Login(tt.args.ctx, tt.args.username, tt.args.password)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("UserService.Login() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("AuthService.Login() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("UserService.Login() = %v, want %v", got, tt.want)
+				t.Errorf("AuthService.Login() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -196,7 +196,7 @@ func TestUserService_Register(t *testing.T) {
 			}
 			defer ctrl.Finish()
 
-			service := &UserService{
+			service := &AuthService{
 				userRepository: mockObj.MockUserRepo,
 			}
 
@@ -209,35 +209,35 @@ func TestUserService_Register(t *testing.T) {
 
 			got, err := service.Register(tt.args.ctx, *user_data)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("UserService.Register() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("AuthService.Register() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("UserService.Register() = %v, want %v", got, tt.want)
+				t.Errorf("AuthService.Register() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestNewUserService(t *testing.T) {
+func TestNewAuthService(t *testing.T) {
 	type args struct {
-		i interactor.UserService
+		i interactor.AuthService
 	}
 	tests := []struct {
 		name string
 		args args
-		want *UserService
+		want *AuthService
 	}{
 		{
 			name: "SUCCESS",
-			args: args{i: interactor.UserService{}},
-			want: &UserService{},
+			args: args{i: interactor.AuthService{}},
+			want: &AuthService{},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewUserService(tt.args.i); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewUserService() = %v, want %v", got, tt.want)
+			if got := NewAuthService(tt.args.i); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewAuthService() = %v, want %v", got, tt.want)
 			}
 		})
 	}

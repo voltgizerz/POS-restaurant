@@ -21,7 +21,7 @@ type AuthJWT struct {
 	ExpireDuration int
 }
 
-func NewAuthJWT(secretKey string) ports.IAuth {
+func NewAuthJWT(secretKey string) ports.IJWTAuth {
 	return &AuthJWT{
 		SecretKey:      secretKey,
 		ExpireDuration: expireDurationJWT,
