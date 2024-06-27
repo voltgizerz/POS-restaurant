@@ -13,7 +13,7 @@ type IUserRepository interface {
 	GetUserByEmail(ctx context.Context, email string) (*entity.UserORM, error)
 }
 
-type IUserService interface {
+type IAuthService interface {
 	Login(ctx context.Context, username string, password string) (*entity.LoginResponse, error)
 	Register(ctx context.Context, userData entity.User) (int64, error)
 }

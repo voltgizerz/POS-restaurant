@@ -18,10 +18,10 @@ const (
 )
 
 type JWTAuth struct {
-	AuthService ports.IAuth
+	AuthService ports.IJWTAuth
 }
 
-func NewJWTAuthMiddleware(authService ports.IAuth) JWTAuth {
+func NewJWTAuthMiddleware(authService ports.IJWTAuth) JWTAuth {
 	return JWTAuth{
 		AuthService: authService,
 	}

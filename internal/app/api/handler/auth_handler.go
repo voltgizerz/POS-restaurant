@@ -15,12 +15,12 @@ import (
 )
 
 type AuthHandler struct {
-	userService ports.IUserService
+	authService ports.IAuthService
 }
 
-func NewAuthHandler(i interactor.UserHandler) *AuthHandler {
+func NewAuthHandler(i interactor.AuthHandler) *AuthHandler {
 	return &AuthHandler{
-		userService: i.UserService,
+		authService: i.AuthService,
 	}
 }
 
@@ -42,7 +42,7 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 		return SendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
-	userLoginData, err := h.userService.Login(ctx, req.Username, req.Password)
+	dataLogin, err := h.authService.Login(ctx, req.Username, req.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return SendErrorResp(c, fiber.StatusUnauthorized, constants.ErrMsgUsernameNotFound)
@@ -51,7 +51,7 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 		return SendErrorResp(c, fiber.StatusUnauthorized, constants.ErrMsgInvalidUsernameOrPassword)
 	}
 
-	return SendSuccessResp(c, fiber.StatusOK, "Success", userLoginData)
+	return SendSuccessResp(c, fiber.StatusOK, "Success", dataLogin)
 }
 
 func (h *AuthHandler) Register(c fiber.Ctx) error {
@@ -64,6 +64,7 @@ func (h *AuthHandler) Register(c fiber.Ctx) error {
 	if err != nil {
 		return SendErrorResp(c, fiber.StatusBadRequest, "Invalid request body.")
 	}
+	
 
 	err = validator.New().StructCtx(ctx, req)
 	if err != nil {
@@ -83,7 +84,7 @@ func (h *AuthHandler) Register(c fiber.Ctx) error {
 		Username: req.Username,
 	}
 
-	result, err := h.userService.Register(ctx, *userData)
+	result, err := h.authService.Register(ctx, *userData)
 	if err != nil {
 		return SendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}

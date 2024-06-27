@@ -53,8 +53,8 @@ func main() {
 	menuRepo := repository.NewMenuRepository(repoOpts)
 
 	// Initialize Services
-	userService := service.NewUserService(interactor.UserService{
-		AuthService:    authJWT,
+	authService := service.NewAuthService(interactor.AuthService{
+		JWTService:     authJWT,
 		UserRepository: userRepo,
 	})
 
@@ -63,8 +63,8 @@ func main() {
 	})
 
 	// Initialize Handlers
-	authHandler := handler.NewAuthHandler(interactor.UserHandler{
-		UserService: userService,
+	authHandler := handler.NewAuthHandler(interactor.AuthHandler{
+		AuthService: authService,
 	})
 
 	menuHandler := handler.NewMenuHandler(interactor.MenuHandler{

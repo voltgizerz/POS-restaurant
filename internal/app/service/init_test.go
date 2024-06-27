@@ -18,19 +18,19 @@ func TestMain(m *testing.M) {
 }
 
 type MockObject struct {
-	MockUserRepo    *mocks.MockIUserRepository
-	MockAuthService *mocks.MockIAuth
+	MockUserRepo   *mocks.MockIUserRepository
+	MockJWTService *mocks.MockIJWTAuth
 }
 
 func NewMock(t *testing.T) (*gomock.Controller, *MockObject) {
 	setTestENV()
 	ctrl := gomock.NewController(t)
 	mockUserRepo := mocks.NewMockIUserRepository(ctrl)
-	mockAuthService := mocks.NewMockIAuth(ctrl)
+	mockJWTService := mocks.NewMockIJWTAuth(ctrl)
 
 	mockObj := &MockObject{
-		MockUserRepo:    mockUserRepo,
-		MockAuthService: mockAuthService,
+		MockUserRepo:   mockUserRepo,
+		MockJWTService: mockJWTService,
 	}
 
 	return ctrl, mockObj

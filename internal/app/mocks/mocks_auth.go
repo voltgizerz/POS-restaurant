@@ -19,31 +19,31 @@ import (
 	gomock "go.uber.org/mock/gomock"
 )
 
-// MockIAuth is a mock of IAuth interface.
-type MockIAuth struct {
+// MockIJWTAuth is a mock of IJWTAuth interface.
+type MockIJWTAuth struct {
 	ctrl     *gomock.Controller
-	recorder *MockIAuthMockRecorder
+	recorder *MockIJWTAuthMockRecorder
 }
 
-// MockIAuthMockRecorder is the mock recorder for MockIAuth.
-type MockIAuthMockRecorder struct {
-	mock *MockIAuth
+// MockIJWTAuthMockRecorder is the mock recorder for MockIJWTAuth.
+type MockIJWTAuthMockRecorder struct {
+	mock *MockIJWTAuth
 }
 
-// NewMockIAuth creates a new mock instance.
-func NewMockIAuth(ctrl *gomock.Controller) *MockIAuth {
-	mock := &MockIAuth{ctrl: ctrl}
-	mock.recorder = &MockIAuthMockRecorder{mock}
+// NewMockIJWTAuth creates a new mock instance.
+func NewMockIJWTAuth(ctrl *gomock.Controller) *MockIJWTAuth {
+	mock := &MockIJWTAuth{ctrl: ctrl}
+	mock.recorder = &MockIJWTAuthMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockIAuth) EXPECT() *MockIAuthMockRecorder {
+func (m *MockIJWTAuth) EXPECT() *MockIJWTAuthMockRecorder {
 	return m.recorder
 }
 
 // CreateToken mocks base method.
-func (m *MockIAuth) CreateToken(ctx context.Context, user entity.UserORM) (*entity.CreateTokenResponse, error) {
+func (m *MockIJWTAuth) CreateToken(ctx context.Context, user entity.UserORM) (*entity.CreateTokenResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateToken", ctx, user)
 	ret0, _ := ret[0].(*entity.CreateTokenResponse)
@@ -52,13 +52,13 @@ func (m *MockIAuth) CreateToken(ctx context.Context, user entity.UserORM) (*enti
 }
 
 // CreateToken indicates an expected call of CreateToken.
-func (mr *MockIAuthMockRecorder) CreateToken(ctx, user any) *gomock.Call {
+func (mr *MockIJWTAuthMockRecorder) CreateToken(ctx, user any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateToken", reflect.TypeOf((*MockIAuth)(nil).CreateToken), ctx, user)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateToken", reflect.TypeOf((*MockIJWTAuth)(nil).CreateToken), ctx, user)
 }
 
 // VerifyToken mocks base method.
-func (m *MockIAuth) VerifyToken(ctx context.Context, tokenString string) (*jwt.Token, jwt.MapClaims, error) {
+func (m *MockIJWTAuth) VerifyToken(ctx context.Context, tokenString string) (*jwt.Token, jwt.MapClaims, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "VerifyToken", ctx, tokenString)
 	ret0, _ := ret[0].(*jwt.Token)
@@ -68,9 +68,9 @@ func (m *MockIAuth) VerifyToken(ctx context.Context, tokenString string) (*jwt.T
 }
 
 // VerifyToken indicates an expected call of VerifyToken.
-func (mr *MockIAuthMockRecorder) VerifyToken(ctx, tokenString any) *gomock.Call {
+func (mr *MockIJWTAuthMockRecorder) VerifyToken(ctx, tokenString any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyToken", reflect.TypeOf((*MockIAuth)(nil).VerifyToken), ctx, tokenString)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyToken", reflect.TypeOf((*MockIJWTAuth)(nil).VerifyToken), ctx, tokenString)
 }
 
 // MockIAuthHandler is a mock of IAuthHandler interface.

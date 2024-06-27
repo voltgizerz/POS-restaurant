@@ -8,7 +8,7 @@ import (
 	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
 )
 
-type IAuth interface {
+type IJWTAuth interface {
 	CreateToken(ctx context.Context, user entity.UserORM) (*entity.CreateTokenResponse, error)
 	VerifyToken(ctx context.Context, tokenString string) (*jwt.Token, jwt.MapClaims, error)
 }
