@@ -59,7 +59,7 @@ func (r *UserRepository) RegisterUser(ctx context.Context, userData entity.UserO
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.RegisterUser")
 	defer span.Finish()
 
-	result, err := r.MasterDB.ExecContext(ctx, queryInsertDataUser, userData.Name, userData.Username, userData.Email, userData.Password, 1, 1)
+	result, err := r.MasterDB.ExecContext(ctx, queryInsertDataUser, userData.Name, userData.Username, userData.Email, userData.PasswordHashed, 1, 1)
 	if err != nil {
 		return 0, err
 	}

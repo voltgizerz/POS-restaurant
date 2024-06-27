@@ -11,6 +11,7 @@ import (
 	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
 	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
 	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
+	"github.com/voltgizerz/POS-restaurant/internal/utils"
 )
 
 type AuthHandler struct {
@@ -27,7 +28,7 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 	span, ctx := opentracing.StartSpanFromContext(c.UserContext(), "handler.AuthHandler.Login")
 	defer span.Finish()
 
-	req := &loginRequest{}
+	req := &entity.LoginRequest{}
 
 	err := c.Bind().Body(req)
 	if err != nil {
@@ -36,9 +37,9 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 
 	err = validator.New().StructCtx(ctx, req)
 	if err != nil {
-		validationErrors := err.(validator.ValidationErrors)
+		err = utils.GetFirstValidatorError(err)
 
-		return SendErrorResp(c, fiber.StatusBadRequest, validationErrors.Error())
+		return SendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	userLoginData, err := h.userService.Login(ctx, req.Username, req.Password)
@@ -57,7 +58,7 @@ func (h *AuthHandler) Register(c fiber.Ctx) error {
 	span, ctx := opentracing.StartSpanFromContext(c.UserContext(), "handler.AuthHandler.Register")
 	defer span.Finish()
 
-	req := &registerRequest{}
+	req := &entity.RegisterRequest{}
 
 	err := c.Bind().Body(req)
 	if err != nil {
@@ -66,9 +67,9 @@ func (h *AuthHandler) Register(c fiber.Ctx) error {
 
 	err = validator.New().StructCtx(ctx, req)
 	if err != nil {
-		validationErrors := err.(validator.ValidationErrors)
+		err = utils.GetFirstValidatorError(err)
 
-		return SendErrorResp(c, fiber.StatusBadRequest, validationErrors.Error())
+		return SendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	if req.Password != req.ConfirmPassword {

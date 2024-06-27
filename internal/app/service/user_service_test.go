@@ -12,7 +12,7 @@ import (
 )
 
 func TestUserService_Login(t *testing.T) {
-	mockUserORM := &entity.UserORM{ID: 1, Password: "$2a$14$aRI5bAYlMR7jvM2XH/EB1u9cHMpbuNX6FUsLGPnkdWNeN96OCbw0q"}
+	mockUserORM := &entity.UserORM{ID: 1, PasswordHashed: "$2a$14$aRI5bAYlMR7jvM2XH/EB1u9cHMpbuNX6FUsLGPnkdWNeN96OCbw0q"}
 
 	type args struct {
 		ctx      context.Context
@@ -72,7 +72,7 @@ func TestUserService_Login(t *testing.T) {
 			wantErr: true,
 			setup: func(mockObj *MockObject) {
 				mockObj.MockUserRepo.EXPECT().GetUserByUsername(gomock.Any(), gomock.Any()).
-					Return(&entity.UserORM{ID: 1, Password: "aasd"}, nil).Times(1)
+					Return(&entity.UserORM{ID: 1, PasswordHashed: "aasd"}, nil).Times(1)
 			},
 		},
 		{
