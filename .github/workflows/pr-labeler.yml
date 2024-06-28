@@ -8,7 +8,8 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-    - uses: codelytv/pr-size-labeler@v1
+    - name: PR Size Labeler
+      uses: codelytv/pr-size-labeler@v1
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         xs_label: 'size/xs'
@@ -28,6 +29,7 @@ jobs:
         github_api_url: 'https://api.github.com'
         files_to_ignore: ''
 
-    - uses: actions/labeler@v4
+    - name: Labeler
+      uses: actions/labeler@v4
       with:
-        repo-token: "${{ secrets.GH_TOKEN }}"
+        repo-token: ${{ secrets.GH_TOKEN }}
