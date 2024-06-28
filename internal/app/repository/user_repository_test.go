@@ -28,7 +28,7 @@ func TestUserRepository_GetUserByEmail(t *testing.T) {
 		{
 			name: "SUCCESS - GetUserByEmail",
 			args: args{
-				
+
 				ctx:   context.Background(),
 				email: "mock@email.com",
 			},

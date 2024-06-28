@@ -43,11 +43,11 @@ func GetUserLoginFromCtx(ctx context.Context) (*Auth, error) {
 
 	// Create a new User struct with the retrieved values
 	user := &Auth{
-		UserID:    int64(userID),
-		Username:  username,
-		RoleID:    int64(roleID),
-		IsUserActive:  isUserActive,
-		RequestID: requestID,
+		UserID:       int64(userID),
+		Username:     username,
+		RoleID:       int64(roleID),
+		IsUserActive: isUserActive,
+		RequestID:    requestID,
 	}
 
 	return user, nil

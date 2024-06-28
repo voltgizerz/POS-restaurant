@@ -6,9 +6,10 @@ import (
 	"reflect"
 	"testing"
 
+	"go.uber.org/mock/gomock"
+
 	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
 	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
-	"go.uber.org/mock/gomock"
 )
 
 func TestUserService_Login(t *testing.T) {

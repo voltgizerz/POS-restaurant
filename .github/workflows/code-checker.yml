@@ -14,7 +14,7 @@ on:
 
 
 env:
-  TESTCOVERAGE_THRESHOLD: 10
+  TESTCOVERAGE_THRESHOLD: 20
 
 jobs:
   lint:
