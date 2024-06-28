@@ -83,7 +83,4 @@ jobs:
       uses: docker://morphy/revive-action:v2
       with:
         config: ./config/linter/revive.toml
-      continue-on-error: true
-
-    - name: 👨‍🎤 Check formatting
-      run: gofmt -l .
+      continue-on-error: false
