@@ -7,9 +7,9 @@ import (
 )
 
 func GetFirstValidatorError(valErr error) (err error) {
-	for _, valErr := range valErr.(validator.ValidationErrors) {
-		err = fmt.Errorf("field %s %s", valErr.Field(), valErr.Tag())
-		continue
+	valErrs := valErr.(validator.ValidationErrors)
+	if len(valErrs) != 0 {
+		err = fmt.Errorf("field %s %s", valErrs[0].Field(), valErrs[0].Tag())
 	}
 
 	return err

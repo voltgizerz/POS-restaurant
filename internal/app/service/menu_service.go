@@ -28,7 +28,7 @@ func (s *MenuService) RegisterMenu(ctx context.Context, menuData entity.Menu) (i
 	menuConvert := entity.MenuORM{
 		Name:      menuData.Name,
 		Thumbnail: menuData.Thumbnail,
-		UserId:    menuData.UserID,
+		UserID:    menuData.UserID,
 		Price:     menuData.Price,
 	}
 
@@ -113,7 +113,7 @@ func (s *MenuService) UpdateMenuID(ctx context.Context, menuData entity.Menu) (i
 		Name:      menuData.Name,
 		Thumbnail: menuData.Thumbnail,
 		Price:     menuData.Price,
-		UserId:    menuData.UserID,
+		UserID:    menuData.UserID,
 		IsActive:  menuData.IsActive,
 	}
 
