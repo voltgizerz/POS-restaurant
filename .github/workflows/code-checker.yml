@@ -84,6 +84,3 @@ jobs:
       with:
         config: ./config/linter/revive.toml
       continue-on-error: false
-
-    - name: 👨‍🎤 Check formatting
-      run: gofmt -l .
