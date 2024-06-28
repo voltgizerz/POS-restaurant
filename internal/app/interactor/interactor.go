@@ -11,17 +11,17 @@ type APInteractor struct {
 	MenuHandler ports.IMenuHandler
 }
 
-type UserHandler struct {
-	UserService ports.IUserService
+type AuthHandler struct {
+	AuthService ports.IAuthService
+}
+
+type AuthService struct {
+	JWTService     ports.IJWTAuth
+	UserRepository ports.IUserRepository
 }
 
 type MenuHandler struct {
 	MenuService ports.IMenuService
-}
-
-type UserService struct {
-	AuthService    ports.IAuth
-	UserRepository ports.IUserRepository
 }
 
 type MenuService struct {

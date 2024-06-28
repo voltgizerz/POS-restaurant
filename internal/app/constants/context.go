@@ -1,8 +1,11 @@
 package constants
 
+type ContextKey string
+
 const (
-	CTXKeyUserID   = "userID"
-	CTXKeyUsername = "username"
-	CTXKeyRoleID   = "roleID"
-	CTXKeyIsActive = "isActive"
+	CTXKeyUserID    ContextKey = "userID"
+	CTXKeyUsername  ContextKey = "username"
+	CTXKeyRoleID    ContextKey = "roleID"
+	CTXKeyIsActive  ContextKey = "isActive"
+	CTXKeyRequestID ContextKey = "requestID"
 )

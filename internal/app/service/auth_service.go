@@ -13,20 +13,20 @@ import (
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
 )
 
-type UserService struct {
-	authService    ports.IAuth
+type AuthService struct {
+	jwtService     ports.IJWTAuth
 	userRepository ports.IUserRepository
 }
 
-func NewUserService(i interactor.UserService) *UserService {
-	return &UserService{
-		authService:    i.AuthService,
+func NewAuthService(i interactor.AuthService) *AuthService {
+	return &AuthService{
+		jwtService:     i.JWTService,
 		userRepository: i.UserRepository,
 	}
 }
 
-func (s *UserService) Login(ctx context.Context, username string, password string) (*entity.LoginResponse, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "service.UserService.Login")
+func (s *AuthService) Login(ctx context.Context, username string, password string) (*entity.LoginResponse, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "service.AuthService.Login")
 	defer span.Finish()
 
 	user, err := s.userRepository.GetUserByUsername(ctx, username)
@@ -34,27 +34,27 @@ func (s *UserService) Login(ctx context.Context, username string, password strin
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": username,
 			"error":    err,
-		}).Error("[UserService] error on GetUserByUsername")
+		}).Error("[AuthService] error on GetUserByUsername")
 
 		return nil, err
 	}
 
-	err = utils.VerifyPassword(password, user.Password)
+	err = utils.VerifyPassword(password, user.PasswordHashed)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": username,
 			"error":    err,
-		}).Error("[UserService] error on VerifyPassword")
+		}).Error("[AuthService] error on VerifyPassword")
 
 		return nil, err
 	}
 
-	tokenData, err := s.authService.CreateToken(ctx, *user)
+	tokenData, err := s.jwtService.CreateToken(ctx, *user)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": username,
 			"error":    err,
-		}).Error("[UserService] error on CreateToken")
+		}).Error("[AuthService] error on CreateToken")
 
 		return nil, err
 	}
@@ -70,8 +70,8 @@ func (s *UserService) Login(ctx context.Context, username string, password strin
 	return resp, nil
 }
 
-func (s *UserService) Register(ctx context.Context, userData entity.User) (int64, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "service.UserService.Register")
+func (s *AuthService) Register(ctx context.Context, userData entity.User) (int64, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "service.AuthService.Register")
 	defer span.Finish()
 
 	user, err := s.userRepository.GetUserByEmail(ctx, userData.Email)
@@ -79,7 +79,7 @@ func (s *UserService) Register(ctx context.Context, userData entity.User) (int64
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": userData.Username,
 			"error":    err,
-		}).Error("[UserService] error on GetUserByEmail")
+		}).Error("[AuthService] error on GetUserByEmail")
 		return 0, err
 	}
 
@@ -87,7 +87,7 @@ func (s *UserService) Register(ctx context.Context, userData entity.User) (int64
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": userData.Username,
 			"error":    err,
-		}).Error("[UserService] error on Email Already Exist")
+		}).Error("[AuthService] error on Email Already Exist")
 		return 0, errors.New("Email already exist")
 	}
 
@@ -96,15 +96,15 @@ func (s *UserService) Register(ctx context.Context, userData entity.User) (int64
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": userData.Username,
 			"error":    err,
-		}).Error("[UserService] error on HashPassword")
+		}).Error("[AuthService] error on HashPassword")
 		return 0, errors.New("Failed hashed password")
 	}
 
 	userDataProceed := entity.UserORM{
-		Username: userData.Username,
-		Password: passwordHashed,
-		Name:     userData.Name,
-		Email:    userData.Email,
+		Username:       userData.Username,
+		PasswordHashed: passwordHashed,
+		Name:           userData.Name,
+		Email:          userData.Email,
 	}
 
 	result, err := s.userRepository.RegisterUser(ctx, userDataProceed)
@@ -112,7 +112,7 @@ func (s *UserService) Register(ctx context.Context, userData entity.User) (int64
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": userData.Username,
 			"error":    err,
-		}).Error("[UserService] error on RegisterUser")
+		}).Error("[AuthService] error on RegisterUser")
 		return 0, err
 	}
 

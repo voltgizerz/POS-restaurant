@@ -12,6 +12,9 @@ import (
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
 )
 
+// Define a variable for the sqlx.ConnectContext function
+var sqlxConnectContext = sqlx.ConnectContext
+
 type DatabaseOpts struct {
 	MasterDB *sqlx.DB
 }
@@ -29,10 +32,10 @@ func InitDatabase(ctx context.Context, cfg config.Database) *DatabaseOpts {
 }
 
 func connectMySQL(ctx context.Context, dsn string, maxOpenConns, maxIdleConns int) *sqlx.DB {
-	span, _ := opentracing.StartSpanFromContext(ctx, "database.connectMySQL")
+	span, ctx := opentracing.StartSpanFromContext(ctx, "database.connectMySQL")
 	defer span.Finish()
 
-	db, err := sqlx.Connect("mysql", dsn)
+	db, err := sqlxConnectContext(ctx, "mysql", dsn)
 	if err != nil {
 		logger.LogStdErr.Fatalf("Failed to connect to MySQL: %s", err)
 	}

@@ -1,4 +1,4 @@
-package service
+package api
 
 import (
 	"os"
@@ -18,19 +18,16 @@ func TestMain(m *testing.M) {
 }
 
 type MockObject struct {
-	MockUserRepo   *mocks.MockIUserRepository
-	MockJWTService *mocks.MockIJWTAuth
+	MockAuthHandler *mocks.MockIAuthHandler
 }
 
 func NewMock(t *testing.T) (*gomock.Controller, *MockObject) {
 	setTestENV()
 	ctrl := gomock.NewController(t)
-	mockUserRepo := mocks.NewMockIUserRepository(ctrl)
-	mockJWTService := mocks.NewMockIJWTAuth(ctrl)
+	mockAuthHandler := mocks.NewMockIAuthHandler(ctrl)
 
 	mockObj := &MockObject{
-		MockUserRepo:   mockUserRepo,
-		MockJWTService: mockJWTService,
+		MockAuthHandler: mockAuthHandler,
 	}
 
 	return ctrl, mockObj

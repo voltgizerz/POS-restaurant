@@ -13,36 +13,37 @@ import (
 	context "context"
 	reflect "reflect"
 
+	fiber "github.com/gofiber/fiber/v3"
 	jwt "github.com/golang-jwt/jwt/v5"
 	entity "github.com/voltgizerz/POS-restaurant/internal/app/entity"
 	gomock "go.uber.org/mock/gomock"
 )
 
-// MockIAuth is a mock of IAuth interface.
-type MockIAuth struct {
+// MockIJWTAuth is a mock of IJWTAuth interface.
+type MockIJWTAuth struct {
 	ctrl     *gomock.Controller
-	recorder *MockIAuthMockRecorder
+	recorder *MockIJWTAuthMockRecorder
 }
 
-// MockIAuthMockRecorder is the mock recorder for MockIAuth.
-type MockIAuthMockRecorder struct {
-	mock *MockIAuth
+// MockIJWTAuthMockRecorder is the mock recorder for MockIJWTAuth.
+type MockIJWTAuthMockRecorder struct {
+	mock *MockIJWTAuth
 }
 
-// NewMockIAuth creates a new mock instance.
-func NewMockIAuth(ctrl *gomock.Controller) *MockIAuth {
-	mock := &MockIAuth{ctrl: ctrl}
-	mock.recorder = &MockIAuthMockRecorder{mock}
+// NewMockIJWTAuth creates a new mock instance.
+func NewMockIJWTAuth(ctrl *gomock.Controller) *MockIJWTAuth {
+	mock := &MockIJWTAuth{ctrl: ctrl}
+	mock.recorder = &MockIJWTAuthMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockIAuth) EXPECT() *MockIAuthMockRecorder {
+func (m *MockIJWTAuth) EXPECT() *MockIJWTAuthMockRecorder {
 	return m.recorder
 }
 
 // CreateToken mocks base method.
-func (m *MockIAuth) CreateToken(ctx context.Context, user entity.UserORM) (*entity.CreateTokenResponse, error) {
+func (m *MockIJWTAuth) CreateToken(ctx context.Context, user entity.UserORM) (*entity.CreateTokenResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateToken", ctx, user)
 	ret0, _ := ret[0].(*entity.CreateTokenResponse)
@@ -51,13 +52,13 @@ func (m *MockIAuth) CreateToken(ctx context.Context, user entity.UserORM) (*enti
 }
 
 // CreateToken indicates an expected call of CreateToken.
-func (mr *MockIAuthMockRecorder) CreateToken(ctx, user any) *gomock.Call {
+func (mr *MockIJWTAuthMockRecorder) CreateToken(ctx, user any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateToken", reflect.TypeOf((*MockIAuth)(nil).CreateToken), ctx, user)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateToken", reflect.TypeOf((*MockIJWTAuth)(nil).CreateToken), ctx, user)
 }
 
 // VerifyToken mocks base method.
-func (m *MockIAuth) VerifyToken(ctx context.Context, tokenString string) (*jwt.Token, jwt.MapClaims, error) {
+func (m *MockIJWTAuth) VerifyToken(ctx context.Context, tokenString string) (*jwt.Token, jwt.MapClaims, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "VerifyToken", ctx, tokenString)
 	ret0, _ := ret[0].(*jwt.Token)
@@ -67,7 +68,111 @@ func (m *MockIAuth) VerifyToken(ctx context.Context, tokenString string) (*jwt.T
 }
 
 // VerifyToken indicates an expected call of VerifyToken.
-func (mr *MockIAuthMockRecorder) VerifyToken(ctx, tokenString any) *gomock.Call {
+func (mr *MockIJWTAuthMockRecorder) VerifyToken(ctx, tokenString any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyToken", reflect.TypeOf((*MockIAuth)(nil).VerifyToken), ctx, tokenString)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyToken", reflect.TypeOf((*MockIJWTAuth)(nil).VerifyToken), ctx, tokenString)
+}
+
+// MockIAuthHandler is a mock of IAuthHandler interface.
+type MockIAuthHandler struct {
+	ctrl     *gomock.Controller
+	recorder *MockIAuthHandlerMockRecorder
+}
+
+// MockIAuthHandlerMockRecorder is the mock recorder for MockIAuthHandler.
+type MockIAuthHandlerMockRecorder struct {
+	mock *MockIAuthHandler
+}
+
+// NewMockIAuthHandler creates a new mock instance.
+func NewMockIAuthHandler(ctrl *gomock.Controller) *MockIAuthHandler {
+	mock := &MockIAuthHandler{ctrl: ctrl}
+	mock.recorder = &MockIAuthHandlerMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockIAuthHandler) EXPECT() *MockIAuthHandlerMockRecorder {
+	return m.recorder
+}
+
+// Login mocks base method.
+func (m *MockIAuthHandler) Login(c fiber.Ctx) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Login", c)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Login indicates an expected call of Login.
+func (mr *MockIAuthHandlerMockRecorder) Login(c any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockIAuthHandler)(nil).Login), c)
+}
+
+// Register mocks base method.
+func (m *MockIAuthHandler) Register(c fiber.Ctx) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Register", c)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// Register indicates an expected call of Register.
+func (mr *MockIAuthHandlerMockRecorder) Register(c any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockIAuthHandler)(nil).Register), c)
+}
+
+// MockIAuthService is a mock of IAuthService interface.
+type MockIAuthService struct {
+	ctrl     *gomock.Controller
+	recorder *MockIAuthServiceMockRecorder
+}
+
+// MockIAuthServiceMockRecorder is the mock recorder for MockIAuthService.
+type MockIAuthServiceMockRecorder struct {
+	mock *MockIAuthService
+}
+
+// NewMockIAuthService creates a new mock instance.
+func NewMockIAuthService(ctrl *gomock.Controller) *MockIAuthService {
+	mock := &MockIAuthService{ctrl: ctrl}
+	mock.recorder = &MockIAuthServiceMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockIAuthService) EXPECT() *MockIAuthServiceMockRecorder {
+	return m.recorder
+}
+
+// Login mocks base method.
+func (m *MockIAuthService) Login(ctx context.Context, username, password string) (*entity.LoginResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Login", ctx, username, password)
+	ret0, _ := ret[0].(*entity.LoginResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Login indicates an expected call of Login.
+func (mr *MockIAuthServiceMockRecorder) Login(ctx, username, password any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockIAuthService)(nil).Login), ctx, username, password)
+}
+
+// Register mocks base method.
+func (m *MockIAuthService) Register(ctx context.Context, userData entity.User) (int64, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Register", ctx, userData)
+	ret0, _ := ret[0].(int64)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Register indicates an expected call of Register.
+func (mr *MockIAuthServiceMockRecorder) Register(ctx, userData any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockIAuthService)(nil).Register), ctx, userData)
 }

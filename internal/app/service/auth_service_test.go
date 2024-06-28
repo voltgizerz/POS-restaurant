@@ -6,12 +6,14 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
 	"go.uber.org/mock/gomock"
+
+	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
+	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
 )
 
 func TestUserService_Login(t *testing.T) {
-	mockUserORM := &entity.UserORM{ID: 1, Password: "$2a$14$aRI5bAYlMR7jvM2XH/EB1u9cHMpbuNX6FUsLGPnkdWNeN96OCbw0q"}
+	mockUserORM := &entity.UserORM{ID: 1, PasswordHashed: "$2a$14$aRI5bAYlMR7jvM2XH/EB1u9cHMpbuNX6FUsLGPnkdWNeN96OCbw0q"}
 
 	type args struct {
 		ctx      context.Context
@@ -42,7 +44,7 @@ func TestUserService_Login(t *testing.T) {
 				mockObj.MockUserRepo.EXPECT().GetUserByUsername(gomock.Any(), gomock.Any()).
 					Return(mockUserORM, nil).Times(1)
 
-				mockObj.MockAuthService.EXPECT().CreateToken(gomock.Any(), gomock.Any()).
+				mockObj.MockJWTService.EXPECT().CreateToken(gomock.Any(), gomock.Any()).
 					Return(&entity.CreateTokenResponse{Token: "MOCKING-TOKEN", TokenType: "Bearer"}, nil).Times(1)
 			},
 		},
@@ -71,7 +73,7 @@ func TestUserService_Login(t *testing.T) {
 			wantErr: true,
 			setup: func(mockObj *MockObject) {
 				mockObj.MockUserRepo.EXPECT().GetUserByUsername(gomock.Any(), gomock.Any()).
-					Return(&entity.UserORM{ID: 1, Password: "aasd"}, nil).Times(1)
+					Return(&entity.UserORM{ID: 1, PasswordHashed: "aasd"}, nil).Times(1)
 			},
 		},
 		{
@@ -81,13 +83,13 @@ func TestUserService_Login(t *testing.T) {
 				username: "test-user",
 				password: "felix",
 			},
-			want:   nil,
+			want:    nil,
 			wantErr: true,
 			setup: func(mockObj *MockObject) {
 				mockObj.MockUserRepo.EXPECT().GetUserByUsername(gomock.Any(), gomock.Any()).
 					Return(mockUserORM, nil).Times(1)
 
-				mockObj.MockAuthService.EXPECT().CreateToken(gomock.Any(), gomock.Any()).
+				mockObj.MockJWTService.EXPECT().CreateToken(gomock.Any(), gomock.Any()).
 					Return(nil, errors.New("some errors")).Times(1)
 			},
 		},
@@ -101,18 +103,18 @@ func TestUserService_Login(t *testing.T) {
 			}
 			defer ctrl.Finish()
 
-			service := &UserService{
-				authService:    mockObj.MockAuthService,
+			service := &AuthService{
+				jwtService:     mockObj.MockJWTService,
 				userRepository: mockObj.MockUserRepo,
 			}
 
 			got, err := service.Login(tt.args.ctx, tt.args.username, tt.args.password)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("UserService.Login() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("AuthService.Login() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("UserService.Login() = %v, want %v", got, tt.want)
+				t.Errorf("AuthService.Login() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -195,7 +197,7 @@ func TestUserService_Register(t *testing.T) {
 			}
 			defer ctrl.Finish()
 
-			service := &UserService{
+			service := &AuthService{
 				userRepository: mockObj.MockUserRepo,
 			}
 
@@ -208,11 +210,35 @@ func TestUserService_Register(t *testing.T) {
 
 			got, err := service.Register(tt.args.ctx, *user_data)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("UserService.Register() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("AuthService.Register() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("UserService.Register() = %v, want %v", got, tt.want)
+				t.Errorf("AuthService.Register() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNewAuthService(t *testing.T) {
+	type args struct {
+		i interactor.AuthService
+	}
+	tests := []struct {
+		name string
+		args args
+		want *AuthService
+	}{
+		{
+			name: "SUCCESS",
+			args: args{i: interactor.AuthService{}},
+			want: &AuthService{},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewAuthService(tt.args.i); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewAuthService() = %v, want %v", got, tt.want)
 			}
 		})
 	}
