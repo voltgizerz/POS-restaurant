@@ -79,6 +79,7 @@ func main() {
 
 	// Start API server
 	go startAPIServer(interactoAPI, jwtMiddleware)
+	logger.Log.Info("Application is now running. Press CTRL-C to exit.")
 
 	// Wait for termination signal
 	waitForSignal()
