@@ -8,7 +8,9 @@ import (
 )
 
 const (
-	GO_ENV_KEY = "GO_ENV"
+	GoEnvKey       = "GO_ENV"
+	EnvProduction  = "production"
+	EnvDevelopment = "development"
 )
 
 // LoadENV - load env file.
@@ -19,27 +21,27 @@ func LoadENV() {
 }
 
 func IsDevelopment() bool {
-	val, ok := os.LookupEnv(GO_ENV_KEY)
+	val, ok := os.LookupEnv(GoEnvKey)
 	if !ok {
-		logger.LogStdErr.Fatalf("%s not set\n", GO_ENV_KEY)
+		logger.LogStdErr.Fatalf("%s not set\n", GoEnvKey)
 	}
 
-	return val == "development"
+	return val == EnvDevelopment
 }
 
 func IsProduction() bool {
-	val, ok := os.LookupEnv(GO_ENV_KEY)
+	val, ok := os.LookupEnv(GoEnvKey)
 	if !ok {
-		logger.LogStdErr.Fatalf("%s not set\n", GO_ENV_KEY)
+		logger.LogStdErr.Fatalf("%s not set\n", GoEnvKey)
 	}
 
-	return val == "production"
+	return val == EnvProduction
 }
 
 func GetENV() string {
-	val, ok := os.LookupEnv(GO_ENV_KEY)
+	val, ok := os.LookupEnv(GoEnvKey)
 	if !ok {
-		logger.LogStdErr.Fatalf("%s not set\n", GO_ENV_KEY)
+		logger.LogStdErr.Fatalf("%s not set\n", GoEnvKey)
 	}
 
 	return val
