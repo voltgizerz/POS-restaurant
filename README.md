@@ -2,11 +2,11 @@
 This project provides simple REST APIs for Point of Sale (POS) software.
 
 ## Built With
-- Go 1.21.3 or higher
-- Fiber
+- Go 1.21.3
 - MySQL
-- JWT Auth
-- Goose
+- Fiber
+- JWT Authentication
+- DB Migration Goose
 
 ## How to Run the Project
 

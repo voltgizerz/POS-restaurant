@@ -19,7 +19,7 @@ func Test_getConfigPATH(t *testing.T) {
 		{
 			name:         "Production mode",
 			isProduction: true,
-			want:         ConfigPathPorduction,
+			want:         ConfigPathProduction,
 		},
 	}
 	for _, tt := range tests {
