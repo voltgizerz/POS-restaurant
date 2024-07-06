@@ -1,6 +1,5 @@
-name: 👀 Pull Request Size Labeler
-
-on: [pull_request]
+name: "🏷️ Pull Request Labeler Size"
+on: [pull_request_target]
 
 jobs:
   labeler:

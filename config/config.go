@@ -7,13 +7,20 @@ import (
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
 )
 
+const (
+	ConfigPathDevelopment = "./config/yml/config.development.yml"
+	ConfigPathProduction  = "./config/yml/config.production.yml"
+)
+
 type (
 	MainConfig struct {
 		App      `yaml:"app"`
 		API      `yaml:"api"`
 		Database `yaml:"database"`
 	}
+)
 
+type (
 	App struct {
 		Name    string `yaml:"name" env-required:"true"`
 		Version string `yaml:"version" env-required:"true"`
@@ -60,10 +67,9 @@ func NewConfig() *MainConfig {
 }
 
 func getConfigPATH() string {
-	cfgPath := ConfigPathDevelopment
 	if env.IsProduction() {
-		cfgPath = ConfigPathPorduction
+		return ConfigPathProduction
 	}
 
-	return cfgPath
+	return ConfigPathDevelopment
 }

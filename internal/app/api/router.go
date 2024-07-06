@@ -42,8 +42,8 @@ func (s *Server) initUserRoutes(group fiber.Router) {
 
 // initUserRoutes initializes user-related routes.
 func (s *Server) initMenuRoutes(group fiber.Router) {
-	menuRoutes := group.Group("/menu")
-	menuRoutes.Post("/", s.menuHandler.AddMenu, s.jwtMiddleware.AuthorizeAccess())
+	menuRoutes := group.Group("/menus", )
+	menuRoutes.Post("", s.menuHandler.AddMenu, s.jwtMiddleware.AuthorizeAccess())
 	menuRoutes.Delete("/user/:user_id", s.menuHandler.UpdateActiveMenuBatchByUserID, s.jwtMiddleware.AuthorizeAccess())
 	menuRoutes.Delete("/:menu_id", s.menuHandler.UpdateActiveMenuByMenuID, s.jwtMiddleware.AuthorizeAccess())
 	menuRoutes.Patch("/:menu_id", s.menuHandler.UpdateMenuByMenuID, s.jwtMiddleware.AuthorizeAccess())

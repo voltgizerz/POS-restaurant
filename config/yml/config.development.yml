@@ -1,5 +1,5 @@
 app:
-  name: 'POS-FREE'
+  name: 'POS-GO'
   version: '0.0.0'
   host: 'localhost:8080'
 
