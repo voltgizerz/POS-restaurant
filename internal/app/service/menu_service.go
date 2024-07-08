@@ -12,11 +12,13 @@ import (
 )
 
 type MenuService struct {
+	txRepository   ports.ITxRepository
 	menuRepository ports.IMenuRepository
 }
 
 func NewMenuService(i interactor.MenuService) *MenuService {
 	return &MenuService{
+		txRepository:   i.TxRepository,
 		menuRepository: i.MenuRepository,
 	}
 }

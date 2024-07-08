@@ -15,12 +15,12 @@ type Server struct {
 	menuHandler   ports.IMenuHandler
 }
 
-func NewServer(interactor interactor.APInteractor, jwtMiddleware middleware.JWTAuth) *Server {
+func NewServer(i interactor.APInteractor, jwtMiddleware middleware.JWTAuth) *Server {
 	return &Server{
-		cfgAPI:        interactor.CfgAPI,
+		cfgAPI:        i.CfgAPI,
 		jwtMiddleware: jwtMiddleware,
-		authHandler:   interactor.AuthHandler,
-		menuHandler:   interactor.MenuHandler,
+		authHandler:   i.AuthHandler,
+		menuHandler:   i.MenuHandler,
 	}
 }
 
