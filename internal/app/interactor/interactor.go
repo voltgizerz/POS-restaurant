@@ -25,5 +25,6 @@ type MenuHandler struct {
 }
 
 type MenuService struct {
+	TxRepository   ports.ITxRepository
 	MenuRepository ports.IMenuRepository
 }

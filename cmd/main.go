@@ -48,8 +48,8 @@ func main() {
 	}
 
 	// Initialize Repositories
+	txRepo := repository.NewTxRepository(repoOpts)
 	userRepo := repository.NewUserRepository(repoOpts)
-
 	menuRepo := repository.NewMenuRepository(repoOpts)
 
 	// Initialize Services
@@ -59,6 +59,7 @@ func main() {
 	})
 
 	menuService := service.NewMenuService(interactor.MenuService{
+		TxRepository:   txRepo,
 		MenuRepository: menuRepo,
 	})
 

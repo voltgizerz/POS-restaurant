@@ -2,6 +2,7 @@ package ports
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
@@ -27,7 +28,7 @@ type IMenuService interface {
 type IMenuRepository interface {
 	FetchMenuById(ctx context.Context, userID int64) ([]*entity.MenuORM, error)
 	AddMenu(ctx context.Context, menuData entity.MenuORM) (int64, error)
-	UpdateActiveMenuByMenuID(ctx context.Context, menuID int64) (int64, error)
-	UpdateActiveMenuBatchUser(ctx context.Context, userID int64) (int64, error)
-	UpdateMenuByMenuID(ctx context.Context, menuData *entity.MenuORM) (int64, error)
+	UpdateActiveMenuByMenuID(ctx context.Context, tx *sql.Tx, menuID int64) (int64, error)
+	UpdateActiveMenuBatchUser(ctx context.Context, tx *sql.Tx, userID int64) (int64, error)
+	UpdateMenuByMenuID(ctx context.Context, tx *sql.Tx, menuData *entity.MenuORM) (int64, error)
 }
