@@ -88,7 +88,7 @@ func (m *MenuRepository) UpdateMenuByMenuID(ctx context.Context, tx *sql.Tx, men
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.UpdateMenuByMenuID")
 	defer span.Finish()
 
-	result, err := m.execQuery(ctx, tx, queryUpdateMenuByMenuID, menuData.Name, menuData.Price, menuData.Thumbnail, menuData.IsActive, menuData.UserId, time.Now(), menuData.ID)
+	result, err := m.execQuery(ctx, tx, queryUpdateMenuByMenuID, menuData.Name, menuData.Price, menuData.Thumbnail, menuData.IsActive, menuData.UserID, time.Now(), menuData.ID)
 	if err != nil {
 		return 0, err
 	}
@@ -110,7 +110,7 @@ func (m *MenuRepository) AddMenu(ctx context.Context, menuData entity.MenuORM) (
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.AddMenu")
 	defer span.Finish()
 
-	result, err := m.MasterDB.ExecContext(ctx, queryInsertMenu, menuData.Name, menuData.Thumbnail, menuData.Price, menuData.IsActive, menuData.UserId)
+	result, err := m.MasterDB.ExecContext(ctx, queryInsertMenu, menuData.Name, menuData.Thumbnail, menuData.Price, menuData.IsActive, menuData.UserID)
 	if err != nil {
 		return 0, err
 	}

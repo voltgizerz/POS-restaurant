@@ -17,7 +17,7 @@ type Menu struct {
 type MenuORM struct {
 	ID        int64     `db:"id"`
 	Name      string    `db:"name"`
-	UserId    int64     `db:"user_id"`
+	UserID    int64     `db:"user_id"`
 	Thumbnail string    `db:"thumbnail"`
 	Price     float64   `db:"price"`
 	IsActive  bool      `db:"is_active"`
