@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
+	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
 )
 
 func TestMenuService_GetMenu(t *testing.T) {

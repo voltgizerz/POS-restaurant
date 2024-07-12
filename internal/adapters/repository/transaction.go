@@ -6,7 +6,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/opentracing/opentracing-go"
-	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
+	"github.com/voltgizerz/POS-restaurant/internal/core/ports"
 )
 
 type TxRepository struct {

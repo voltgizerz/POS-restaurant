@@ -4,7 +4,7 @@ import (
 	"github.com/bytedance/sonic"
 	"github.com/gofiber/fiber/v3"
 	fiberLogger "github.com/gofiber/fiber/v3/middleware/logger"
-	"github.com/voltgizerz/POS-restaurant/internal/app/api/middleware"
+	"github.com/voltgizerz/POS-restaurant/internal/adapters/api/middleware"
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
 )
 
@@ -42,7 +42,7 @@ func (s *Server) initUserRoutes(group fiber.Router) {
 
 // initUserRoutes initializes user-related routes.
 func (s *Server) initMenuRoutes(group fiber.Router) {
-	menuRoutes := group.Group("/menus", )
+	menuRoutes := group.Group("/menus")
 	menuRoutes.Post("", s.menuHandler.AddMenu, s.jwtMiddleware.AuthorizeAccess())
 	menuRoutes.Delete("/user/:user_id", s.menuHandler.UpdateActiveMenuBatchByUserID, s.jwtMiddleware.AuthorizeAccess())
 	menuRoutes.Delete("/:menu_id", s.menuHandler.UpdateActiveMenuByMenuID, s.jwtMiddleware.AuthorizeAccess())

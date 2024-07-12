@@ -8,8 +8,8 @@ import (
 
 	"go.uber.org/mock/gomock"
 
-	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
-	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
+	"github.com/voltgizerz/POS-restaurant/internal/core/interactor"
+	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
 )
 
 func TestUserService_Login(t *testing.T) {

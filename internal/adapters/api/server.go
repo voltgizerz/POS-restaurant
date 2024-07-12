@@ -2,9 +2,9 @@ package api
 
 import (
 	"github.com/voltgizerz/POS-restaurant/config"
-	"github.com/voltgizerz/POS-restaurant/internal/app/api/middleware"
-	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
-	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
+	"github.com/voltgizerz/POS-restaurant/internal/adapters/api/middleware"
+	"github.com/voltgizerz/POS-restaurant/internal/core/interactor"
+	"github.com/voltgizerz/POS-restaurant/internal/core/ports"
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
 )
 

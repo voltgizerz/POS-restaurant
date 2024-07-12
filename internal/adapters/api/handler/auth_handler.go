@@ -7,11 +7,11 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/opentracing/opentracing-go"
 
-	"github.com/voltgizerz/POS-restaurant/internal/app/api/common"
-	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
-	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
-	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
+	"github.com/voltgizerz/POS-restaurant/internal/adapters/api/common"
 	"github.com/voltgizerz/POS-restaurant/internal/constants"
+	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
+	"github.com/voltgizerz/POS-restaurant/internal/core/interactor"
+	"github.com/voltgizerz/POS-restaurant/internal/core/ports"
 	"github.com/voltgizerz/POS-restaurant/internal/utils"
 )
 

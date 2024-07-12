@@ -2,7 +2,7 @@ package interactor
 
 import (
 	"github.com/voltgizerz/POS-restaurant/config"
-	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
+	"github.com/voltgizerz/POS-restaurant/internal/core/ports"
 )
 
 type APInteractor struct {

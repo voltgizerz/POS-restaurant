@@ -5,10 +5,10 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
+	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
 )
 
-//go:generate mockgen -source=./internal/app/ports/auth_ports.go -destination=./internal/mocks/mocks_auth.go -package=mocks
+//go:generate mockgen -source=./internal/adapters/ports/auth_ports.go -destination=./internal/mocks/mocks_auth.go -package=mocks
 type IJWTAuth interface {
 	CreateToken(ctx context.Context, user entity.UserORM) (*entity.CreateTokenResponse, error)
 	VerifyToken(ctx context.Context, tokenString string) (*jwt.Token, jwt.MapClaims, error)
