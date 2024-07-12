@@ -6,3 +6,4 @@ app.exe
 tmp
 main.exe
 coverage.out
+vendor

@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
 	"github.com/voltgizerz/POS-restaurant/internal/core/interactor"
+	"github.com/voltgizerz/POS-restaurant/internal/core/models"
 	"github.com/voltgizerz/POS-restaurant/internal/core/ports"
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
 )
@@ -27,7 +28,7 @@ func (s *MenuService) RegisterMenu(ctx context.Context, menuData entity.Menu) (i
 	span, ctx := opentracing.StartSpanFromContext(ctx, "service.MenuService.RegisterMenu")
 	defer span.Finish()
 
-	menuConvert := entity.MenuORM{
+	menuConvert := models.Menu{
 		Name:      menuData.Name,
 		Thumbnail: menuData.Thumbnail,
 		UserID:    menuData.UserID,
@@ -110,7 +111,7 @@ func (s *MenuService) UpdateMenuID(ctx context.Context, menuData entity.Menu) (i
 	span, ctx := opentracing.StartSpanFromContext(ctx, "service.MenuService.UpdateMenuID")
 	defer span.Finish()
 
-	menuOrm := entity.MenuORM{
+	menuOrm := models.Menu{
 		ID:        menuData.ID,
 		Name:      menuData.Name,
 		Thumbnail: menuData.Thumbnail,
