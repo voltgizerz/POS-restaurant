@@ -8,8 +8,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/opentracing/opentracing-go"
 	"github.com/voltgizerz/POS-restaurant/internal/app/api/common"
-	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
 	"github.com/voltgizerz/POS-restaurant/internal/constants"
+	"github.com/voltgizerz/POS-restaurant/internal/core/ports"
 )
 
 const (

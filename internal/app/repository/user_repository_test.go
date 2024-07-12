@@ -9,7 +9,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jmoiron/sqlx"
-	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
+	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
 )
 
 func TestUserRepository_GetUserByEmail(t *testing.T) {

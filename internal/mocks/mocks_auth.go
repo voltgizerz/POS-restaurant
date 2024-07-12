@@ -15,7 +15,7 @@ import (
 
 	fiber "github.com/gofiber/fiber/v3"
 	jwt "github.com/golang-jwt/jwt/v5"
-	entity "github.com/voltgizerz/POS-restaurant/internal/app/entity"
+	entity "github.com/voltgizerz/POS-restaurant/internal/core/entity"
 	gomock "go.uber.org/mock/gomock"
 )
 

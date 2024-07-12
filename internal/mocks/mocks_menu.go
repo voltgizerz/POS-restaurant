@@ -14,7 +14,7 @@ import (
 	reflect "reflect"
 
 	fiber "github.com/gofiber/fiber/v3"
-	entity "github.com/voltgizerz/POS-restaurant/internal/app/entity"
+	entity "github.com/voltgizerz/POS-restaurant/internal/core/entity"
 	gomock "go.uber.org/mock/gomock"
 )
 

@@ -3,7 +3,7 @@ package ports
 import (
 	"context"
 
-	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
+	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
 )
 
 //go:generate mockgen -source=./internal/app/ports/user_ports.go -destination=./internal/mocks/mocks_user.go -package=mocks

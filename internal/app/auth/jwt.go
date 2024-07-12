@@ -7,8 +7,8 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/opentracing/opentracing-go"
-	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
-	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
+	"github.com/voltgizerz/POS-restaurant/internal/core/ports"
+	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
 )
 
 const (

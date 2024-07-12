@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
+	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
 )
 
 func TestAuthJWT_CreateToken(t *testing.T) {
