@@ -8,7 +8,7 @@ import (
 	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
 )
 
-//go:generate mockgen -source=./internal/app/ports/menu_ports.go -destination=./internal/mocks/mocks_menu.go -package=mocks
+//go:generate mockgen -source=./internal/adapters/ports/menu_ports.go -destination=./internal/mocks/mocks_menu.go -package=mocks
 type IMenuHandler interface {
 	AddMenu(c fiber.Ctx) error
 	GetMenuByUserID(c fiber.Ctx) error

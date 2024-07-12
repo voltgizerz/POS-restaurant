@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/voltgizerz/POS-restaurant/internal/app/api/middleware"
+	"github.com/voltgizerz/POS-restaurant/internal/adapters/api/middleware"
 	"github.com/voltgizerz/POS-restaurant/internal/core/interactor"
 )
 

@@ -5,7 +5,7 @@ import (
 	"database/sql"
 )
 
-//go:generate mockgen -source=./internal/app/ports/tx_ports.go -destination=./internal/mocks/mocks_tx.go -package=mocks
+//go:generate mockgen -source=./internal/adapters/ports/tx_ports.go -destination=./internal/mocks/mocks_tx.go -package=mocks
 
 // IRepositoryTx defines the transaction methods.
 type ITxRepository interface {
