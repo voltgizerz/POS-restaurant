@@ -7,9 +7,9 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
 	"github.com/opentracing/opentracing-go"
-	"github.com/voltgizerz/POS-restaurant/internal/app/api/handler"
-	"github.com/voltgizerz/POS-restaurant/internal/app/constants"
+	"github.com/voltgizerz/POS-restaurant/internal/app/api/common"
 	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
+	"github.com/voltgizerz/POS-restaurant/internal/constants"
 )
 
 const (
@@ -34,19 +34,19 @@ func (m *JWTAuth) AuthorizeAccess() fiber.Handler {
 	return func(c fiber.Ctx) error {
 		authHeader := c.Get(headerAuthName)
 		if authHeader == "" {
-			return handler.SendErrorResp(c, fiber.StatusUnauthorized, "Missing Authorization header")
+			return common.SendErrorResp(c, fiber.StatusUnauthorized, "Missing Authorization header")
 		}
 
 		// Check if the token type is Bearer
 		tokenType, tokenValue, err := parseAuthHeader(authHeader)
 		if err != nil || tokenType != tokenTypeJWT {
-			return handler.SendErrorResp(c, fiber.StatusUnauthorized, "Invalid authorization header format")
+			return common.SendErrorResp(c, fiber.StatusUnauthorized, "Invalid authorization header format")
 		}
 
 		// Verify JWT token using AuthService.VerifyToken
 		_, claims, err := m.AuthService.VerifyToken(c.UserContext(), tokenValue)
 		if err != nil {
-			return handler.SendErrorResp(c, fiber.StatusUnauthorized, "Invalid token")
+			return common.SendErrorResp(c, fiber.StatusUnauthorized, "Invalid token")
 		}
 
 		requestID := uuid.New().String()

@@ -6,7 +6,7 @@ import (
 
 	"go.uber.org/mock/gomock"
 
-	"github.com/voltgizerz/POS-restaurant/internal/app/mocks"
+	"github.com/voltgizerz/POS-restaurant/internal/mocks"
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
 )
 

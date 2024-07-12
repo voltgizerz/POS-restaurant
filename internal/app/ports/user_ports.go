@@ -6,7 +6,7 @@ import (
 	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
 )
 
-//go:generate mockgen -source=./internal/app/ports/user_ports.go -destination=./internal/app/mocks/mocks_user.go -package=mocks
+//go:generate mockgen -source=./internal/app/ports/user_ports.go -destination=./internal/mocks/mocks_user.go -package=mocks
 type IUserRepository interface {
 	GetUserByUsernameAndPassword(ctx context.Context, username string, hashPassword string) (*entity.UserORM, error)
 	GetUserByUsername(ctx context.Context, username string) (*entity.UserORM, error)

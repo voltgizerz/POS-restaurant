@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/voltgizerz/POS-restaurant/internal/app/constants"
+	"github.com/voltgizerz/POS-restaurant/internal/constants"
 )
 
 type Auth struct {

@@ -22,7 +22,7 @@ pkg:
 - pkg/**/*
 
 mocks:
-- internal/app/mocks/*
+- internal/mocks/*
 
 changelog:
 - CHANGELOG.md

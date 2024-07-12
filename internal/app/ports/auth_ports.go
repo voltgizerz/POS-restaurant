@@ -8,7 +8,7 @@ import (
 	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
 )
 
-//go:generate mockgen -source=./internal/app/ports/auth_ports.go -destination=./internal/app/mocks/mocks_auth.go -package=mocks
+//go:generate mockgen -source=./internal/app/ports/auth_ports.go -destination=./internal/mocks/mocks_auth.go -package=mocks
 type IJWTAuth interface {
 	CreateToken(ctx context.Context, user entity.UserORM) (*entity.CreateTokenResponse, error)
 	VerifyToken(ctx context.Context, tokenString string) (*jwt.Token, jwt.MapClaims, error)
