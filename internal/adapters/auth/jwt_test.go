@@ -7,12 +7,13 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
+	"github.com/voltgizerz/POS-restaurant/internal/core/models"
 )
 
 func TestAuthJWT_CreateToken(t *testing.T) {
 	type args struct {
 		ctx  context.Context
-		user entity.UserORM
+		user models.User
 	}
 	tests := []struct {
 		name    string
@@ -29,7 +30,7 @@ func TestAuthJWT_CreateToken(t *testing.T) {
 			},
 			args: args{
 				ctx: context.Background(),
-				user: entity.UserORM{
+				user: models.User{
 					ID: 1,
 				},
 			},

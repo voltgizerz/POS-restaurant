@@ -7,8 +7,9 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/opentracing/opentracing-go"
-	"github.com/voltgizerz/POS-restaurant/internal/core/ports"
 	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
+	"github.com/voltgizerz/POS-restaurant/internal/core/models"
+	"github.com/voltgizerz/POS-restaurant/internal/core/ports"
 )
 
 const (
@@ -28,7 +29,7 @@ func NewAuthJWT(secretKey string) ports.IJWTAuth {
 	}
 }
 
-func (a *AuthJWT) CreateToken(ctx context.Context, user entity.UserORM) (*entity.CreateTokenResponse, error) {
+func (a *AuthJWT) CreateToken(ctx context.Context, user models.User) (*entity.CreateTokenResponse, error) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "auth.CreateToken")
 	defer span.Finish()
 

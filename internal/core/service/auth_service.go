@@ -8,6 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
 	"github.com/voltgizerz/POS-restaurant/internal/core/interactor"
+	"github.com/voltgizerz/POS-restaurant/internal/core/models"
 	"github.com/voltgizerz/POS-restaurant/internal/core/ports"
 	"github.com/voltgizerz/POS-restaurant/internal/utils"
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
@@ -100,7 +101,7 @@ func (s *AuthService) Register(ctx context.Context, userData entity.User) (int64
 		return 0, errors.New("Failed hashed password")
 	}
 
-	userDataProceed := entity.UserORM{
+	userDataProceed := models.User{
 		Username:       userData.Username,
 		PasswordHashed: passwordHashed,
 		Name:           userData.Name,

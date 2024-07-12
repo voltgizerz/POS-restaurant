@@ -9,7 +9,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jmoiron/sqlx"
-	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
+	"github.com/voltgizerz/POS-restaurant/internal/core/models"
 )
 
 func TestUserRepository_GetUserByEmail(t *testing.T) {
@@ -21,7 +21,7 @@ func TestUserRepository_GetUserByEmail(t *testing.T) {
 		name     string
 		r        *UserRepository
 		args     args
-		want     *entity.UserORM
+		want     *models.User
 		wantErr  bool
 		mockFunc func(mock sqlmock.Sqlmock)
 	}{
@@ -32,7 +32,7 @@ func TestUserRepository_GetUserByEmail(t *testing.T) {
 				ctx:   context.Background(),
 				email: "mock@email.com",
 			},
-			want: &entity.UserORM{
+			want: &models.User{
 				ID: 1,
 			},
 			wantErr: false,
@@ -62,7 +62,7 @@ func TestUserRepository_GetUserByEmail(t *testing.T) {
 				ctx:   context.Background(),
 				email: "mock@email.com",
 			},
-			want:    &entity.UserORM{},
+			want:    &models.User{},
 			wantErr: false,
 			mockFunc: func(mock sqlmock.Sqlmock) {
 				mock.ExpectQuery(queryGetEmailSame).
@@ -116,7 +116,7 @@ func TestUserRepository_GetUserByUsernameAndPassword(t *testing.T) {
 		name    string
 		r       *UserRepository
 		args    args
-		want    *entity.UserORM
+		want    *models.User
 		wantErr bool
 	}{
 		// TODO: Add test cases.

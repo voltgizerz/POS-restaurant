@@ -8,12 +8,13 @@ import (
 
 	"go.uber.org/mock/gomock"
 
-	"github.com/voltgizerz/POS-restaurant/internal/core/interactor"
 	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
+	"github.com/voltgizerz/POS-restaurant/internal/core/interactor"
+	"github.com/voltgizerz/POS-restaurant/internal/core/models"
 )
 
 func TestUserService_Login(t *testing.T) {
-	mockUserORM := &entity.UserORM{ID: 1, PasswordHashed: "$2a$14$aRI5bAYlMR7jvM2XH/EB1u9cHMpbuNX6FUsLGPnkdWNeN96OCbw0q"}
+	mockUserORM := &models.User{ID: 1, PasswordHashed: "$2a$14$aRI5bAYlMR7jvM2XH/EB1u9cHMpbuNX6FUsLGPnkdWNeN96OCbw0q"}
 
 	type args struct {
 		ctx      context.Context
@@ -73,7 +74,7 @@ func TestUserService_Login(t *testing.T) {
 			wantErr: true,
 			setup: func(mockObj *MockObject) {
 				mockObj.MockUserRepo.EXPECT().GetUserByUsername(gomock.Any(), gomock.Any()).
-					Return(&entity.UserORM{ID: 1, PasswordHashed: "aasd"}, nil).Times(1)
+					Return(&models.User{ID: 1, PasswordHashed: "aasd"}, nil).Times(1)
 			},
 		},
 		{
@@ -148,7 +149,7 @@ func TestUserService_Register(t *testing.T) {
 			wantErr: false,
 			setup: func(mockObj *MockObject) {
 				mockObj.MockUserRepo.EXPECT().GetUserByEmail(gomock.Any(), gomock.Any()).
-					Return(&entity.UserORM{}, nil).Times(1)
+					Return(&models.User{}, nil).Times(1)
 				mockObj.MockUserRepo.EXPECT().RegisterUser(gomock.Any(), gomock.Any()).
 					Return(int64(1), nil).Times(1)
 			},
@@ -166,7 +167,7 @@ func TestUserService_Register(t *testing.T) {
 			wantErr: true,
 			setup: func(mockObj *MockObject) {
 				mockObj.MockUserRepo.EXPECT().GetUserByEmail(gomock.Any(), gomock.Any()).
-					Return(&entity.UserORM{Username: ""}, errors.New("some error")).Times(1)
+					Return(&models.User{Username: ""}, errors.New("some error")).Times(1)
 			},
 		},
 		{
@@ -182,7 +183,7 @@ func TestUserService_Register(t *testing.T) {
 			wantErr: true,
 			setup: func(mockObj *MockObject) {
 				mockObj.MockUserRepo.EXPECT().GetUserByEmail(gomock.Any(), gomock.Any()).
-					Return(&entity.UserORM{Username: ""}, errors.New("some error")).Times(1)
+					Return(&models.User{Username: ""}, errors.New("some error")).Times(1)
 				mockObj.MockUserRepo.EXPECT().RegisterUser(gomock.Any(), gomock.Any()).
 					Return(int64(0), errors.New("some error")).AnyTimes()
 			},
@@ -201,14 +202,14 @@ func TestUserService_Register(t *testing.T) {
 				userRepository: mockObj.MockUserRepo,
 			}
 
-			user_data := &entity.User{
+			userData := &entity.User{
 				Username: tt.args.username,
 				Password: tt.args.password,
 				Email:    tt.args.email,
 				Name:     tt.args.name,
 			}
 
-			got, err := service.Register(tt.args.ctx, *user_data)
+			got, err := service.Register(tt.args.ctx, *userData)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("AuthService.Register() error = %v, wantErr %v", err, tt.wantErr)
 				return

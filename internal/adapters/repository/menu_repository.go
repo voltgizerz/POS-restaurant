@@ -8,8 +8,8 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/opentracing/opentracing-go"
+	"github.com/voltgizerz/POS-restaurant/internal/core/models"
 	"github.com/voltgizerz/POS-restaurant/internal/core/ports"
-	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
 )
 
 const (
@@ -84,7 +84,7 @@ func (m *MenuRepository) UpdateActiveMenuByMenuID(ctx context.Context, tx *sql.T
 }
 
 // UpdateMenuByMenuID implements ports.IMenuRepository.
-func (m *MenuRepository) UpdateMenuByMenuID(ctx context.Context, tx *sql.Tx, menuData *entity.MenuORM) (int64, error) {
+func (m *MenuRepository) UpdateMenuByMenuID(ctx context.Context, tx *sql.Tx, menuData *models.Menu) (int64, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.UpdateMenuByMenuID")
 	defer span.Finish()
 
@@ -106,7 +106,7 @@ func (m *MenuRepository) UpdateMenuByMenuID(ctx context.Context, tx *sql.Tx, men
 }
 
 // AddMenu implements ports.IMenuRepository.
-func (m *MenuRepository) AddMenu(ctx context.Context, menuData entity.MenuORM) (int64, error) {
+func (m *MenuRepository) AddMenu(ctx context.Context, menuData models.Menu) (int64, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.AddMenu")
 	defer span.Finish()
 
@@ -124,11 +124,11 @@ func (m *MenuRepository) AddMenu(ctx context.Context, menuData entity.MenuORM) (
 }
 
 // FetchMenuById implements ports.IMenuRepository.
-func (m *MenuRepository) FetchMenuById(ctx context.Context, menuId int64) ([]*entity.MenuORM, error) {
+func (m *MenuRepository) FetchMenuById(ctx context.Context, menuId int64) ([]*models.Menu, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.FetchMenuById")
 	defer span.Finish()
 
-	menuData := []*entity.MenuORM{}
+	menuData := []*models.Menu{}
 
 	err := m.MasterDB.SelectContext(ctx, &menuData, queryGetMenuByUserID, menuId)
 	if err != nil {
