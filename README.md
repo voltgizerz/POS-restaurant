@@ -4,9 +4,17 @@ This project provides simple REST APIs for Point of Sale (POS) software.
 ## Built With
 - Go 1.21.3
 - MySQL
-- Fiber
 - JWT Authentication
-- DB Migration Goose
+
+## Frameworks and Library
+- Fiber: HTTP Framework
+- Goose: Database Migrations
+- SQLX: Database ORM
+- Validator V10: Struct Validation
+- Logrus: Application Logging
+- Jaeger: Opentracing
+- Cleanenv: Environment Configuration
+- Mockgen: Mock Generation
 
 ## How to Run the Project
 

@@ -4,23 +4,20 @@ import (
 	"context"
 	"os"
 	"os/signal"
-	"sync"
 	"syscall"
 
 	"github.com/voltgizerz/POS-restaurant/config"
-	"github.com/voltgizerz/POS-restaurant/database"
-	"github.com/voltgizerz/POS-restaurant/internal/app/api"
-	"github.com/voltgizerz/POS-restaurant/internal/app/api/handler"
-	"github.com/voltgizerz/POS-restaurant/internal/app/api/middleware"
-	"github.com/voltgizerz/POS-restaurant/internal/app/auth"
-	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
-	"github.com/voltgizerz/POS-restaurant/internal/app/repository"
-	"github.com/voltgizerz/POS-restaurant/internal/app/service"
+	"github.com/voltgizerz/POS-restaurant/internal/adapters/api"
+	"github.com/voltgizerz/POS-restaurant/internal/adapters/api/handler"
+	"github.com/voltgizerz/POS-restaurant/internal/adapters/api/middleware"
+	"github.com/voltgizerz/POS-restaurant/internal/adapters/auth"
+	"github.com/voltgizerz/POS-restaurant/internal/adapters/repository"
+	"github.com/voltgizerz/POS-restaurant/internal/core/interactor"
+	"github.com/voltgizerz/POS-restaurant/internal/core/service"
+	"github.com/voltgizerz/POS-restaurant/internal/database"
 	"github.com/voltgizerz/POS-restaurant/pkg/jeager"
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
 )
-
-var wg sync.WaitGroup
 
 func main() {
 	logger.Init()
@@ -48,8 +45,8 @@ func main() {
 	}
 
 	// Initialize Repositories
+	txRepo := repository.NewTxRepository(repoOpts)
 	userRepo := repository.NewUserRepository(repoOpts)
-
 	menuRepo := repository.NewMenuRepository(repoOpts)
 
 	// Initialize Services
@@ -59,6 +56,7 @@ func main() {
 	})
 
 	menuService := service.NewMenuService(interactor.MenuService{
+		TxRepository:   txRepo,
 		MenuRepository: menuRepo,
 	})
 

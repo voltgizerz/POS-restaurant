@@ -20,19 +20,19 @@ decrypt-gpg:
 	@gpg -d .env.gpg
 
 mock-gen:
-	@mockgen -source=./internal/app/ports/auth_ports.go -destination=./internal/app/mocks/mocks_auth.go -package=mocks
-	@mockgen -source=./internal/app/ports/user_ports.go -destination=./internal/app/mocks/mocks_user.go -package=mocks
+	@mockgen -source=./internal/core/ports/auth_ports.go -destination=./internal/mocks/mocks_auth.go -package=mocks
+	@mockgen -source=./internal/core/ports/user_ports.go -destination=./internal/mocks/mocks_user.go -package=mocks
 
 changelog-gen:
 	@auto-changelog
 
 # Target to apply migrations
 up:
-	@goose -dir=./database/migrations mysql "root@tcp(localhost:3306)/db_pos?parseTime=true" up
+	@goose -dir=./internal/database/migrations mysql "root@tcp(localhost:3306)/db_pos?parseTime=true" up
 
 # Target to reset migrations (if needed)
 down:
-	@goose -dir=./database/migrations mysql "root@tcp(localhost:3306)/db_pos?parseTime=true" reset
+	@goose -dir=./internal/database/migrations mysql "root@tcp(localhost:3306)/db_pos?parseTime=true" reset
 
 status:
-	@goose -dir=./database/migrations mysql "root@tcp(localhost:3306)/db_pos?parseTime=true" status
+	@goose -dir=./internal/database/migrations mysql "root@tcp(localhost:3306)/db_pos?parseTime=true" status
