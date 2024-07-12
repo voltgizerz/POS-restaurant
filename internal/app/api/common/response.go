@@ -1,18 +1,18 @@
-package handler
+package common
 
 import (
 	"github.com/gofiber/fiber/v3"
-	"github.com/voltgizerz/POS-restaurant/internal/app/constants"
+	"github.com/voltgizerz/POS-restaurant/internal/constants"
 )
 
 type (
-	errorResponse struct {
+	ErrorResponse struct {
 		Success   bool   `json:"success"`
 		Message   string `json:"message"`
 		RequestID string `json:"request_id"`
 	}
 
-	successResponse struct {
+	SuccessResponse struct {
 		Success   bool        `json:"success"`
 		Message   string      `json:"message"`
 		Data      interface{} `json:"data"`
@@ -22,7 +22,7 @@ type (
 
 // SendErrorResp generates and sends error response
 func SendErrorResp(c fiber.Ctx, statusCode int, errorMessage string) error {
-	response := errorResponse{
+	response := ErrorResponse{
 		Success:   false,
 		Message:   errorMessage,
 		RequestID: c.Locals(constants.CTXKeyRequestID).(string),
@@ -33,7 +33,7 @@ func SendErrorResp(c fiber.Ctx, statusCode int, errorMessage string) error {
 
 // SendSuccessResp generates and sends success response with dynamic data
 func SendSuccessResp(c fiber.Ctx, statusCode int, message string, data interface{}) error {
-	response := successResponse{
+	response := SuccessResponse{
 		Success:   true,
 		Message:   message,
 		Data:      data,

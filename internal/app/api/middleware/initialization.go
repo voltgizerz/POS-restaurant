@@ -5,7 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/google/uuid"
-	"github.com/voltgizerz/POS-restaurant/internal/app/constants"
+	"github.com/voltgizerz/POS-restaurant/internal/constants"
 )
 
 // All request go here first

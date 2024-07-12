@@ -7,10 +7,11 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/opentracing/opentracing-go"
 
-	"github.com/voltgizerz/POS-restaurant/internal/app/constants"
+	"github.com/voltgizerz/POS-restaurant/internal/app/api/common"
 	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
 	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
 	"github.com/voltgizerz/POS-restaurant/internal/app/ports"
+	"github.com/voltgizerz/POS-restaurant/internal/constants"
 	"github.com/voltgizerz/POS-restaurant/internal/utils"
 )
 
@@ -32,26 +33,26 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 
 	err := c.Bind().Body(req)
 	if err != nil {
-		return SendErrorResp(c, fiber.StatusBadRequest, constants.ErrMsgInvalidUsernameAndPassword)
+		return common.SendErrorResp(c, fiber.StatusBadRequest, constants.ErrMsgInvalidUsernameAndPassword)
 	}
 
 	err = validator.New().StructCtx(ctx, req)
 	if err != nil {
 		err = utils.GetFirstValidatorError(err)
 
-		return SendErrorResp(c, fiber.StatusBadRequest, err.Error())
+		return common.SendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	dataLogin, err := h.authService.Login(ctx, req.Username, req.Password)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return SendErrorResp(c, fiber.StatusUnauthorized, constants.ErrMsgUsernameNotFound)
+			return common.SendErrorResp(c, fiber.StatusUnauthorized, constants.ErrMsgUsernameNotFound)
 		}
 
-		return SendErrorResp(c, fiber.StatusUnauthorized, constants.ErrMsgInvalidUsernameOrPassword)
+		return common.SendErrorResp(c, fiber.StatusUnauthorized, constants.ErrMsgInvalidUsernameOrPassword)
 	}
 
-	return SendSuccessResp(c, fiber.StatusOK, "Success", dataLogin)
+	return common.SendSuccessResp(c, fiber.StatusOK, "Success", dataLogin)
 }
 
 func (h *AuthHandler) Register(c fiber.Ctx) error {
@@ -62,18 +63,18 @@ func (h *AuthHandler) Register(c fiber.Ctx) error {
 
 	err := c.Bind().Body(req)
 	if err != nil {
-		return SendErrorResp(c, fiber.StatusBadRequest, "Invalid request body.")
+		return common.SendErrorResp(c, fiber.StatusBadRequest, "Invalid request body.")
 	}
 
 	err = validator.New().StructCtx(ctx, req)
 	if err != nil {
 		err = utils.GetFirstValidatorError(err)
 
-		return SendErrorResp(c, fiber.StatusBadRequest, err.Error())
+		return common.SendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	if req.Password != req.ConfirmPassword {
-		return SendErrorResp(c, fiber.StatusBadRequest, "Password mismatch")
+		return common.SendErrorResp(c, fiber.StatusBadRequest, "Password mismatch")
 	}
 
 	userData := &entity.User{
@@ -85,12 +86,12 @@ func (h *AuthHandler) Register(c fiber.Ctx) error {
 
 	result, err := h.authService.Register(ctx, *userData)
 	if err != nil {
-		return SendErrorResp(c, fiber.StatusBadRequest, err.Error())
+		return common.SendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	res := map[string]int64{
 		"user_id": result,
 	}
 
-	return SendSuccessResp(c, fiber.StatusCreated, "Account created succesfully.", res)
+	return common.SendSuccessResp(c, fiber.StatusCreated, "Account created succesfully.", res)
 }

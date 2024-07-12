@@ -9,9 +9,9 @@ import (
 	"github.com/bytedance/sonic"
 	"github.com/gofiber/fiber/v3"
 	"github.com/valyala/fasthttp"
-	"github.com/voltgizerz/POS-restaurant/internal/app/constants"
 	"github.com/voltgizerz/POS-restaurant/internal/app/entity"
 	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
+	"github.com/voltgizerz/POS-restaurant/internal/constants"
 	"go.uber.org/mock/gomock"
 )
 

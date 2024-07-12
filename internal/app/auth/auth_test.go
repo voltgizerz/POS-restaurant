@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/voltgizerz/POS-restaurant/internal/app/constants"
+	"github.com/voltgizerz/POS-restaurant/internal/constants"
 )
 
 func TestGetUserLoginFromCtx(t *testing.T) {

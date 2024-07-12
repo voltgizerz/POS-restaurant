@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/voltgizerz/POS-restaurant/internal/app/mocks"
+	"github.com/voltgizerz/POS-restaurant/internal/mocks"
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
 	"go.uber.org/mock/gomock"
 )

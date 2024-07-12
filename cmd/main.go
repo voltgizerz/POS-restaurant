@@ -8,7 +8,6 @@ import (
 	"syscall"
 
 	"github.com/voltgizerz/POS-restaurant/config"
-	"github.com/voltgizerz/POS-restaurant/database"
 	"github.com/voltgizerz/POS-restaurant/internal/app/api"
 	"github.com/voltgizerz/POS-restaurant/internal/app/api/handler"
 	"github.com/voltgizerz/POS-restaurant/internal/app/api/middleware"
@@ -16,6 +15,7 @@ import (
 	"github.com/voltgizerz/POS-restaurant/internal/app/interactor"
 	"github.com/voltgizerz/POS-restaurant/internal/app/repository"
 	"github.com/voltgizerz/POS-restaurant/internal/app/service"
+	"github.com/voltgizerz/POS-restaurant/internal/database"
 	"github.com/voltgizerz/POS-restaurant/pkg/jeager"
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
 )
