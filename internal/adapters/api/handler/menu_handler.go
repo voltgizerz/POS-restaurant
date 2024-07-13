@@ -63,13 +63,12 @@ func (h *MenuHandler) GetMenuByUserID(c fiber.Ctx) error {
 	span, ctx := opentracing.StartSpanFromContext(c.UserContext(), "handler.MenuHandler.GetMenuByUserID")
 	defer span.Finish()
 
-	userID := c.Params("user_id")
-	convertUserIDtoInt, err := strconv.Atoi(userID)
+	userID, err := strconv.ParseInt(c.Params("user_id"), 10, 64)
 	if err != nil {
 		return common.WriteErrorJSON(c, fiber.StatusBadRequest, err.Error())
 	}
 
-	result, err := h.menuService.GetMenu(ctx, int64(convertUserIDtoInt))
+	result, err := h.menuService.GetMenu(ctx, userID)
 	if err != nil {
 		return common.WriteErrorJSON(c, fiber.StatusBadRequest, constants.ErrMsgMenuNotFound)
 	}
@@ -87,8 +86,7 @@ func (h *MenuHandler) UpdateMenuByMenuID(c fiber.Ctx) error {
 		return common.WriteErrorJSON(c, fiber.StatusBadRequest, "Invalid request body.")
 	}
 
-	menuID := c.Params("menu_id")
-	convertMenuIDtoInt, err := strconv.Atoi(menuID)
+	menuID, err := strconv.ParseInt(c.Params("menu_id"), 10, 64)
 	if err != nil {
 		return common.WriteErrorJSON(c, fiber.StatusBadRequest, err.Error())
 	}
@@ -99,7 +97,7 @@ func (h *MenuHandler) UpdateMenuByMenuID(c fiber.Ctx) error {
 	}
 
 	menuData := entity.Menu{
-		ID:        int64(convertMenuIDtoInt),
+		ID:        menuID,
 		Name:      req.Name,
 		UserID:    req.UserID,
 		Thumbnail: req.Thumbnail,
@@ -119,13 +117,12 @@ func (h *MenuHandler) UpdateActiveMenuBatchByUserID(c fiber.Ctx) error {
 	span, ctx := opentracing.StartSpanFromContext(c.UserContext(), "handler.MenuHandler.UpdateActiveMenuBatchByUserID")
 	defer span.Finish()
 
-	userID := c.Params("user_id")
-	convertUserIDtoInt, err := strconv.Atoi(userID)
+	userID, err := strconv.ParseInt(c.Params("user_id"), 10, 64)
 	if err != nil {
 		return common.WriteErrorJSON(c, fiber.StatusBadRequest, err.Error())
 	}
 
-	result, err := h.menuService.UpdateActiveMenuBatchUserID(ctx, int64(convertUserIDtoInt))
+	result, err := h.menuService.UpdateActiveMenuBatchUserID(ctx, userID)
 	if err != nil {
 		return common.WriteErrorJSON(c, fiber.StatusBadRequest, fmt.Sprintf(constants.ErrMsgFailedDeleteMenu, " delete batch by user id"))
 	}
@@ -137,15 +134,14 @@ func (h *MenuHandler) UpdateActiveMenuByMenuID(c fiber.Ctx) error {
 	span, ctx := opentracing.StartSpanFromContext(c.UserContext(), "handler.MenuHandler.DeleteMenuByMenuId")
 	defer span.Finish()
 
-	menuID := c.Params("menu_id")
-	convertMenuIDtoInt, err := strconv.Atoi(menuID)
+	menuID, err := strconv.ParseInt(c.Params("menu_id"), 10, 64)
 	if err != nil {
 		return common.WriteErrorJSON(c, fiber.StatusBadRequest, err.Error())
 	}
 
-	result, err := h.menuService.UpdateActiveMenuID(ctx, int64(convertMenuIDtoInt))
+	result, err := h.menuService.UpdateActiveMenuID(ctx, menuID)
 	if err != nil {
-		return common.WriteErrorJSON(c, fiber.StatusBadRequest, fmt.Sprintf(constants.ErrMsgFailedDeleteMenu, " delete by menu id"))
+		return common.WriteErrorJSON(c, fiber.StatusBadRequest, fmt.Sprintf(constants.ErrMsgFailedDeleteMenu, "delete by menu id"))
 	}
 
 	return common.WriteSuccessJSON(c, fiber.StatusOK, "Success", result)
