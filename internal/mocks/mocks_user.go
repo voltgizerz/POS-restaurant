@@ -11,6 +11,7 @@ package mocks
 
 import (
 	context "context"
+	sql "database/sql"
 	reflect "reflect"
 
 	models "github.com/voltgizerz/POS-restaurant/internal/core/models"
@@ -86,16 +87,16 @@ func (mr *MockIUserRepositoryMockRecorder) GetUserByUsernameAndPassword(ctx, use
 }
 
 // RegisterUser mocks base method.
-func (m *MockIUserRepository) RegisterUser(ctx context.Context, userData models.UserORM) (int64, error) {
+func (m *MockIUserRepository) RegisterUser(ctx context.Context, tx *sql.Tx, userData models.UserORM) (int64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RegisterUser", ctx, userData)
+	ret := m.ctrl.Call(m, "RegisterUser", ctx, tx, userData)
 	ret0, _ := ret[0].(int64)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // RegisterUser indicates an expected call of RegisterUser.
-func (mr *MockIUserRepositoryMockRecorder) RegisterUser(ctx, userData any) *gomock.Call {
+func (mr *MockIUserRepositoryMockRecorder) RegisterUser(ctx, tx, userData any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterUser", reflect.TypeOf((*MockIUserRepository)(nil).RegisterUser), ctx, userData)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterUser", reflect.TypeOf((*MockIUserRepository)(nil).RegisterUser), ctx, tx, userData)
 }

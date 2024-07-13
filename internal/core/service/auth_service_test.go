@@ -106,6 +106,7 @@ func TestUserService_Login(t *testing.T) {
 
 			service := &AuthService{
 				jwtService:     mockObj.MockJWTService,
+				txRepository:   mockObj.MockTxRepo,
 				userRepository: mockObj.MockUserRepo,
 			}
 
@@ -150,7 +151,7 @@ func TestUserService_Register(t *testing.T) {
 			setup: func(mockObj *MockObject) {
 				mockObj.MockUserRepo.EXPECT().GetUserByEmail(gomock.Any(), gomock.Any()).
 					Return(&models.UserORM{}, nil).Times(1)
-				mockObj.MockUserRepo.EXPECT().RegisterUser(gomock.Any(), gomock.Any()).
+				mockObj.MockUserRepo.EXPECT().RegisterUser(gomock.Any(), gomock.Any(), gomock.Any()).
 					Return(int64(1), nil).Times(1)
 			},
 		},
@@ -184,7 +185,7 @@ func TestUserService_Register(t *testing.T) {
 			setup: func(mockObj *MockObject) {
 				mockObj.MockUserRepo.EXPECT().GetUserByEmail(gomock.Any(), gomock.Any()).
 					Return(&models.UserORM{Username: ""}, errors.New("some error")).Times(1)
-				mockObj.MockUserRepo.EXPECT().RegisterUser(gomock.Any(), gomock.Any()).
+				mockObj.MockUserRepo.EXPECT().RegisterUser(gomock.Any(), gomock.Any(), gomock.Any()).
 					Return(int64(0), errors.New("some error")).AnyTimes()
 			},
 		},

@@ -52,6 +52,7 @@ func main() {
 	// Initialize Services
 	authService := service.NewAuthService(interactor.AuthService{
 		JWTService:     authJWT,
+		TxRepository:   txRepo,
 		UserRepository: userRepo,
 	})
 

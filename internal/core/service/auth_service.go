@@ -16,12 +16,14 @@ import (
 
 type AuthService struct {
 	jwtService     ports.IJWTAuth
+	txRepository   ports.ITxRepository
 	userRepository ports.IUserRepository
 }
 
 func NewAuthService(i interactor.AuthService) *AuthService {
 	return &AuthService{
 		jwtService:     i.JWTService,
+		txRepository:   i.TxRepository,
 		userRepository: i.UserRepository,
 	}
 }
@@ -108,7 +110,7 @@ func (s *AuthService) Register(ctx context.Context, userData entity.User) (int64
 		Email:          userData.Email,
 	}
 
-	result, err := s.userRepository.RegisterUser(ctx, userDataProceed)
+	result, err := s.userRepository.RegisterUser(ctx, nil, userDataProceed)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": userData.Username,

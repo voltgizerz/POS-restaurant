@@ -55,7 +55,7 @@ func (r *UserRepository) GetUserByUsername(ctx context.Context, username string)
 	return &user, nil
 }
 
-func (r *UserRepository) RegisterUser(ctx context.Context, userData models.UserORM) (int64, error) {
+func (r *UserRepository) RegisterUser(ctx context.Context, tx *sql.Tx, userData models.UserORM) (int64, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.RegisterUser")
 	defer span.Finish()
 

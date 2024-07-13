@@ -2,6 +2,7 @@ package ports
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/voltgizerz/POS-restaurant/internal/core/models"
 )
@@ -10,6 +11,6 @@ import (
 type IUserRepository interface {
 	GetUserByUsernameAndPassword(ctx context.Context, username string, hashPassword string) (*models.UserORM, error)
 	GetUserByUsername(ctx context.Context, username string) (*models.UserORM, error)
-	RegisterUser(ctx context.Context, userData models.UserORM) (int64, error)
+	RegisterUser(ctx context.Context, tx *sql.Tx, userData models.UserORM) (int64, error)
 	GetUserByEmail(ctx context.Context, email string) (*models.UserORM, error)
 }
