@@ -21,7 +21,7 @@ func TestUserRepository_GetUserByEmail(t *testing.T) {
 		name     string
 		r        *UserRepository
 		args     args
-		want     *models.User
+		want     *models.UserORM
 		wantErr  bool
 		mockFunc func(mock sqlmock.Sqlmock)
 	}{
@@ -32,7 +32,7 @@ func TestUserRepository_GetUserByEmail(t *testing.T) {
 				ctx:   context.Background(),
 				email: "mock@email.com",
 			},
-			want: &models.User{
+			want: &models.UserORM{
 				ID: 1,
 			},
 			wantErr: false,
@@ -62,7 +62,7 @@ func TestUserRepository_GetUserByEmail(t *testing.T) {
 				ctx:   context.Background(),
 				email: "mock@email.com",
 			},
-			want:    &models.User{},
+			want:    &models.UserORM{},
 			wantErr: false,
 			mockFunc: func(mock sqlmock.Sqlmock) {
 				mock.ExpectQuery(queryGetEmailSame).
@@ -116,7 +116,7 @@ func TestUserRepository_GetUserByUsernameAndPassword(t *testing.T) {
 		name    string
 		r       *UserRepository
 		args    args
-		want    *models.User
+		want    *models.UserORM
 		wantErr bool
 	}{
 		// TODO: Add test cases.

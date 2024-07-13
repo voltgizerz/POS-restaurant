@@ -28,7 +28,7 @@ func (s *MenuService) RegisterMenu(ctx context.Context, menuData entity.Menu) (i
 	span, ctx := opentracing.StartSpanFromContext(ctx, "service.MenuService.RegisterMenu")
 	defer span.Finish()
 
-	menuConvert := models.Menu{
+	menuConvert := models.MenuORM{
 		Name:      menuData.Name,
 		Thumbnail: menuData.Thumbnail,
 		UserID:    menuData.UserID,
@@ -111,7 +111,7 @@ func (s *MenuService) UpdateMenuID(ctx context.Context, menuData entity.Menu) (i
 	span, ctx := opentracing.StartSpanFromContext(ctx, "service.MenuService.UpdateMenuID")
 	defer span.Finish()
 
-	menuOrm := models.Menu{
+	menuOrm := models.MenuORM{
 		ID:        menuData.ID,
 		Name:      menuData.Name,
 		Thumbnail: menuData.Thumbnail,

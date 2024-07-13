@@ -101,7 +101,7 @@ func (s *AuthService) Register(ctx context.Context, userData entity.User) (int64
 		return 0, errors.New("Failed hashed password")
 	}
 
-	userDataProceed := models.User{
+	userDataProceed := models.UserORM{
 		Username:       userData.Username,
 		PasswordHashed: passwordHashed,
 		Name:           userData.Name,

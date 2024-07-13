@@ -13,7 +13,7 @@ import (
 func TestAuthJWT_CreateToken(t *testing.T) {
 	type args struct {
 		ctx  context.Context
-		user models.User
+		user models.UserORM
 	}
 	tests := []struct {
 		name    string
@@ -30,7 +30,7 @@ func TestAuthJWT_CreateToken(t *testing.T) {
 			},
 			args: args{
 				ctx: context.Background(),
-				user: models.User{
+				user: models.UserORM{
 					ID: 1,
 				},
 			},

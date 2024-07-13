@@ -29,11 +29,11 @@ func NewUserRepository(opts RepositoryOpts) ports.IUserRepository {
 	}
 }
 
-func (r *UserRepository) GetUserByUsernameAndPassword(ctx context.Context, username string, hashPassword string) (*models.User, error) {
+func (r *UserRepository) GetUserByUsernameAndPassword(ctx context.Context, username string, hashPassword string) (*models.UserORM, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.GetUserByUsernameAndPassword")
 	defer span.Finish()
 
-	user := models.User{}
+	user := models.UserORM{}
 	err := r.MasterDB.GetContext(ctx, &user, queryGetUserByUsernameAndPassword, username, hashPassword)
 	if err != nil {
 		return nil, err
@@ -42,11 +42,11 @@ func (r *UserRepository) GetUserByUsernameAndPassword(ctx context.Context, usern
 	return &user, nil
 }
 
-func (r *UserRepository) GetUserByUsername(ctx context.Context, username string) (*models.User, error) {
+func (r *UserRepository) GetUserByUsername(ctx context.Context, username string) (*models.UserORM, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.GetUserByUsername")
 	defer span.Finish()
 
-	user := models.User{}
+	user := models.UserORM{}
 	err := r.MasterDB.GetContext(ctx, &user, queryGetUserByUsername, username)
 	if err != nil {
 		return nil, err
@@ -55,7 +55,7 @@ func (r *UserRepository) GetUserByUsername(ctx context.Context, username string)
 	return &user, nil
 }
 
-func (r *UserRepository) RegisterUser(ctx context.Context, userData models.User) (int64, error) {
+func (r *UserRepository) RegisterUser(ctx context.Context, userData models.UserORM) (int64, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.RegisterUser")
 	defer span.Finish()
 
@@ -72,11 +72,11 @@ func (r *UserRepository) RegisterUser(ctx context.Context, userData models.User)
 	return lastId, nil
 }
 
-func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*models.UserORM, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.UserRepository.GetUserByEmail")
 	defer span.Finish()
 
-	user := &models.User{}
+	user := &models.UserORM{}
 
 	err := r.MasterDB.GetContext(ctx, user, queryGetEmailSame, email)
 	if err != nil {

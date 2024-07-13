@@ -29,7 +29,7 @@ func NewAuthJWT(secretKey string) ports.IJWTAuth {
 	}
 }
 
-func (a *AuthJWT) CreateToken(ctx context.Context, user models.User) (*entity.CreateTokenResponse, error) {
+func (a *AuthJWT) CreateToken(ctx context.Context, user models.UserORM) (*entity.CreateTokenResponse, error) {
 	span, _ := opentracing.StartSpanFromContext(ctx, "auth.CreateToken")
 	defer span.Finish()
 

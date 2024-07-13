@@ -27,9 +27,9 @@ type IMenuService interface {
 }
 
 type IMenuRepository interface {
-	FetchMenuById(ctx context.Context, userID int64) ([]*models.Menu, error)
-	AddMenu(ctx context.Context, menuData models.Menu) (int64, error)
+	FetchMenuById(ctx context.Context, userID int64) ([]*models.MenuORM, error)
+	AddMenu(ctx context.Context, menuData models.MenuORM) (int64, error)
 	UpdateActiveMenuByMenuID(ctx context.Context, tx *sql.Tx, menuID int64) (int64, error)
 	UpdateActiveMenuBatchUser(ctx context.Context, tx *sql.Tx, userID int64) (int64, error)
-	UpdateMenuByMenuID(ctx context.Context, tx *sql.Tx, menuData *models.Menu) (int64, error)
+	UpdateMenuByMenuID(ctx context.Context, tx *sql.Tx, menuData *models.MenuORM) (int64, error)
 }
