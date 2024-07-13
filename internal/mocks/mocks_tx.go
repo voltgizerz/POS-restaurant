@@ -40,45 +40,45 @@ func (m *MockITxRepository) EXPECT() *MockITxRepositoryMockRecorder {
 	return m.recorder
 }
 
-// CommitTransaction mocks base method.
-func (m *MockITxRepository) CommitTransaction(ctx context.Context, tx *sql.Tx) error {
+// CommitTx mocks base method.
+func (m *MockITxRepository) CommitTx(ctx context.Context, tx *sql.Tx) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "CommitTransaction", ctx, tx)
+	ret := m.ctrl.Call(m, "CommitTx", ctx, tx)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// CommitTransaction indicates an expected call of CommitTransaction.
-func (mr *MockITxRepositoryMockRecorder) CommitTransaction(ctx, tx any) *gomock.Call {
+// CommitTx indicates an expected call of CommitTx.
+func (mr *MockITxRepositoryMockRecorder) CommitTx(ctx, tx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CommitTransaction", reflect.TypeOf((*MockITxRepository)(nil).CommitTransaction), ctx, tx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CommitTx", reflect.TypeOf((*MockITxRepository)(nil).CommitTx), ctx, tx)
 }
 
-// RollbackTransaction mocks base method.
-func (m *MockITxRepository) RollbackTransaction(ctx context.Context, tx *sql.Tx) error {
+// RollbackTx mocks base method.
+func (m *MockITxRepository) RollbackTx(ctx context.Context, tx *sql.Tx) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RollbackTransaction", ctx, tx)
+	ret := m.ctrl.Call(m, "RollbackTx", ctx, tx)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// RollbackTransaction indicates an expected call of RollbackTransaction.
-func (mr *MockITxRepositoryMockRecorder) RollbackTransaction(ctx, tx any) *gomock.Call {
+// RollbackTx indicates an expected call of RollbackTx.
+func (mr *MockITxRepositoryMockRecorder) RollbackTx(ctx, tx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RollbackTransaction", reflect.TypeOf((*MockITxRepository)(nil).RollbackTransaction), ctx, tx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RollbackTx", reflect.TypeOf((*MockITxRepository)(nil).RollbackTx), ctx, tx)
 }
 
-// StartTransaction mocks base method.
-func (m *MockITxRepository) StartTransaction(ctx context.Context) (*sql.Tx, error) {
+// StartTx mocks base method.
+func (m *MockITxRepository) StartTx(ctx context.Context) (*sql.Tx, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "StartTransaction", ctx)
+	ret := m.ctrl.Call(m, "StartTx", ctx)
 	ret0, _ := ret[0].(*sql.Tx)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// StartTransaction indicates an expected call of StartTransaction.
-func (mr *MockITxRepositoryMockRecorder) StartTransaction(ctx any) *gomock.Call {
+// StartTx indicates an expected call of StartTx.
+func (mr *MockITxRepositoryMockRecorder) StartTx(ctx any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartTransaction", reflect.TypeOf((*MockITxRepository)(nil).StartTransaction), ctx)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartTx", reflect.TypeOf((*MockITxRepository)(nil).StartTx), ctx)
 }

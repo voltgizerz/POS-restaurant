@@ -19,9 +19,9 @@ func NewTxRepository(opts RepositoryOpts) ports.ITxRepository {
 	}
 }
 
-// StartTransaction starts a new transaction.
-func (m *TxRepository) StartTransaction(ctx context.Context) (*sql.Tx, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.TxRepository.StartTransaction")
+// StartTx starts a new transaction.
+func (m *TxRepository) StartTx(ctx context.Context) (*sql.Tx, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.TxRepository.StartTx")
 	defer span.Finish()
 
 	tx, err := m.MasterDB.BeginTx(ctx, nil)
@@ -32,17 +32,17 @@ func (m *TxRepository) StartTransaction(ctx context.Context) (*sql.Tx, error) {
 	return tx, nil
 }
 
-// CommitTransaction commits the given transaction.
-func (m *TxRepository) CommitTransaction(ctx context.Context, tx *sql.Tx) error {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.TxRepository.CommitTransaction")
+// CommitTx commits the given transaction.
+func (m *TxRepository) CommitTx(ctx context.Context, tx *sql.Tx) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.TxRepository.CommitTx")
 	defer span.Finish()
 
 	return tx.Commit()
 }
 
-// RollbackTransaction rolls back the given transaction.
-func (m *TxRepository) RollbackTransaction(ctx context.Context, tx *sql.Tx) error {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.TxRepository.RollbackTransaction")
+// RollbackTx rolls back the given transaction.
+func (m *TxRepository) RollbackTx(ctx context.Context, tx *sql.Tx) error {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.TxRepository.RollbackTx")
 	defer span.Finish()
 
 	return tx.Rollback()

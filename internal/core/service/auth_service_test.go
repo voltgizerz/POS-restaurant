@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"reflect"
 	"testing"
@@ -149,14 +150,15 @@ func TestUserService_Register(t *testing.T) {
 			want:    1,
 			wantErr: false,
 			setup: func(mockObj *MockObject) {
-				mockObj.MockUserRepo.EXPECT().GetUserByEmail(gomock.Any(), gomock.Any()).
-					Return(&models.UserORM{}, nil).Times(1)
-				mockObj.MockUserRepo.EXPECT().RegisterUser(gomock.Any(), gomock.Any(), gomock.Any()).
-					Return(int64(1), nil).Times(1)
+				mockObj.MockUserRepo.EXPECT().GetUserByEmail(gomock.Any(), gomock.Any()).Return(&models.UserORM{}, nil).Times(1)
+				mockObj.MockTxRepo.EXPECT().StartTx(gomock.Any()).Return(&sql.Tx{}, nil).Times(1)
+				mockObj.MockUserRepo.EXPECT().RegisterUser(gomock.Any(), gomock.Any(), gomock.Any()).Return(int64(1), nil).Times(1)
+				mockObj.MockTxRepo.EXPECT().CommitTx(gomock.Any(), gomock.Any()).Return(nil).Times(1)
+				mockObj.MockTxRepo.EXPECT().RollbackTx(gomock.Any(), gomock.Any()).Return(nil).Times(1)
 			},
 		},
 		{
-			name: "ERROR - GetUserByEmail",
+			name: "ERROR - on GetUserByEmail",
 			args: args{
 				ctx:      context.Background(),
 				username: "test-user",
@@ -172,7 +174,7 @@ func TestUserService_Register(t *testing.T) {
 			},
 		},
 		{
-			name: "ERROR - Register",
+			name: "ERROR - on StartTx",
 			args: args{
 				ctx:      context.Background(),
 				username: "test-user",
@@ -183,10 +185,45 @@ func TestUserService_Register(t *testing.T) {
 			want:    0,
 			wantErr: true,
 			setup: func(mockObj *MockObject) {
-				mockObj.MockUserRepo.EXPECT().GetUserByEmail(gomock.Any(), gomock.Any()).
-					Return(&models.UserORM{Username: ""}, errors.New("some error")).Times(1)
-				mockObj.MockUserRepo.EXPECT().RegisterUser(gomock.Any(), gomock.Any(), gomock.Any()).
-					Return(int64(0), errors.New("some error")).AnyTimes()
+				mockObj.MockUserRepo.EXPECT().GetUserByEmail(gomock.Any(), gomock.Any()).Return(&models.UserORM{}, nil).Times(1)
+				mockObj.MockTxRepo.EXPECT().StartTx(gomock.Any()).Return(nil, errors.New("some error")).Times(1)
+			},
+		},
+		{
+			name: "ERROR - on RegisterUser",
+			args: args{
+				ctx:      context.Background(),
+				username: "test-user",
+				password: "test-password",
+				email:    "test-email@email.com",
+				name:     "test-name",
+			},
+			want:    0,
+			wantErr: true,
+			setup: func(mockObj *MockObject) {
+				mockObj.MockUserRepo.EXPECT().GetUserByEmail(gomock.Any(), gomock.Any()).Return(&models.UserORM{}, nil).Times(1)
+				mockObj.MockTxRepo.EXPECT().StartTx(gomock.Any()).Return(&sql.Tx{}, nil).Times(1)
+				mockObj.MockUserRepo.EXPECT().RegisterUser(gomock.Any(), gomock.Any(), gomock.Any()).Return(int64(0), errors.New("some error")).Times(1)
+				mockObj.MockTxRepo.EXPECT().RollbackTx(gomock.Any(), gomock.Any()).Return(nil).Times(1)
+			},
+		},
+		{
+			name: "ERROR - on CommitTx",
+			args: args{
+				ctx:      context.Background(),
+				username: "test-user",
+				password: "test-password",
+				email:    "test-email@email.com",
+				name:     "test-name",
+			},
+			want:    0,
+			wantErr: true,
+			setup: func(mockObj *MockObject) {
+				mockObj.MockUserRepo.EXPECT().GetUserByEmail(gomock.Any(), gomock.Any()).Return(&models.UserORM{}, nil).Times(1)
+				mockObj.MockTxRepo.EXPECT().StartTx(gomock.Any()).Return(&sql.Tx{}, nil).Times(1)
+				mockObj.MockUserRepo.EXPECT().RegisterUser(gomock.Any(), gomock.Any(), gomock.Any()).Return(int64(1), nil).Times(1)
+				mockObj.MockTxRepo.EXPECT().CommitTx(gomock.Any(), gomock.Any()).Return(errors.New("some error")).Times(1)
+				mockObj.MockTxRepo.EXPECT().RollbackTx(gomock.Any(), gomock.Any()).Return(nil).Times(1)
 			},
 		},
 	}
@@ -201,16 +238,17 @@ func TestUserService_Register(t *testing.T) {
 
 			service := &AuthService{
 				userRepository: mockObj.MockUserRepo,
+				txRepository:   mockObj.MockTxRepo,
 			}
 
-			userData := &entity.User{
+			userData := entity.User{
 				Username: tt.args.username,
 				Password: tt.args.password,
 				Email:    tt.args.email,
 				Name:     tt.args.name,
 			}
 
-			got, err := service.Register(tt.args.ctx, *userData)
+			got, err := service.Register(tt.args.ctx, userData)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("AuthService.Register() error = %v, wantErr %v", err, tt.wantErr)
 				return

@@ -110,14 +110,15 @@ func (s *AuthService) Register(ctx context.Context, userData entity.User) (int64
 		Email:          userData.Email,
 	}
 
-	tx, err := s.txRepository.StartTransaction(ctx)
+	tx, err := s.txRepository.StartTx(ctx)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": userData.Username,
 			"error":    err,
-		}).Error("[AuthService] error on StartTransaction")
+		}).Error("[AuthService] error on StartTx")
+		return 0, err
 	}
-	defer s.txRepository.RollbackTransaction(ctx, tx)
+	defer s.txRepository.RollbackTx(ctx, tx)
 
 	result, err := s.userRepository.RegisterUser(ctx, tx, userDataProceed)
 	if err != nil {
@@ -128,12 +129,13 @@ func (s *AuthService) Register(ctx context.Context, userData entity.User) (int64
 		return 0, err
 	}
 
-	err = s.txRepository.CommitTransaction(ctx, tx)
+	err = s.txRepository.CommitTx(ctx, tx)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": userData.Username,
 			"error":    err,
-		}).Error("[AuthService] error on CommitTransaction")
+		}).Error("[AuthService] error on CommitTx")
+		return 0, err
 	}
 
 	return result, nil
