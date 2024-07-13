@@ -9,7 +9,7 @@ import (
 
 // IRepositoryTx defines the transaction methods.
 type ITxRepository interface {
-	StartTransaction(ctx context.Context) (*sql.Tx, error)
-	CommitTransaction(ctx context.Context, tx *sql.Tx) error
-	RollbackTransaction(ctx context.Context, tx *sql.Tx) error
+	StartTx(ctx context.Context) (*sql.Tx, error)
+	CommitTx(ctx context.Context, tx *sql.Tx) error
+	RollbackTx(ctx context.Context, tx *sql.Tx) error
 }

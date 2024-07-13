@@ -44,7 +44,7 @@ func (m *MockIJWTAuth) EXPECT() *MockIJWTAuthMockRecorder {
 }
 
 // CreateToken mocks base method.
-func (m *MockIJWTAuth) CreateToken(ctx context.Context, user models.User) (*entity.CreateTokenResponse, error) {
+func (m *MockIJWTAuth) CreateToken(ctx context.Context, user models.UserORM) (*entity.CreateTokenResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateToken", ctx, user)
 	ret0, _ := ret[0].(*entity.CreateTokenResponse)

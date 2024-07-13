@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"database/sql"
-
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v3"
 	"github.com/opentracing/opentracing-go"
@@ -45,10 +43,6 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 
 	dataLogin, err := h.authService.Login(ctx, req.Username, req.Password)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return common.SendErrorResp(c, fiber.StatusUnauthorized, constants.ErrMsgUsernameNotFound)
-		}
-
 		return common.SendErrorResp(c, fiber.StatusUnauthorized, constants.ErrMsgInvalidUsernameOrPassword)
 	}
 
@@ -77,14 +71,14 @@ func (h *AuthHandler) Register(c fiber.Ctx) error {
 		return common.SendErrorResp(c, fiber.StatusBadRequest, "Password mismatch")
 	}
 
-	userData := &entity.User{
+	userData := entity.User{
 		Email:    req.Email,
 		Password: req.Password,
 		Name:     req.Name,
 		Username: req.Username,
 	}
 
-	result, err := h.authService.Register(ctx, *userData)
+	result, err := h.authService.Register(ctx, userData)
 	if err != nil {
 		return common.SendErrorResp(c, fiber.StatusBadRequest, err.Error())
 	}

@@ -11,6 +11,7 @@ package mocks
 
 import (
 	context "context"
+	sql "database/sql"
 	reflect "reflect"
 
 	models "github.com/voltgizerz/POS-restaurant/internal/core/models"
@@ -41,10 +42,10 @@ func (m *MockIUserRepository) EXPECT() *MockIUserRepositoryMockRecorder {
 }
 
 // GetUserByEmail mocks base method.
-func (m *MockIUserRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+func (m *MockIUserRepository) GetUserByEmail(ctx context.Context, email string) (*models.UserORM, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserByEmail", ctx, email)
-	ret0, _ := ret[0].(*models.User)
+	ret0, _ := ret[0].(*models.UserORM)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -56,10 +57,10 @@ func (mr *MockIUserRepositoryMockRecorder) GetUserByEmail(ctx, email any) *gomoc
 }
 
 // GetUserByUsername mocks base method.
-func (m *MockIUserRepository) GetUserByUsername(ctx context.Context, username string) (*models.User, error) {
+func (m *MockIUserRepository) GetUserByUsername(ctx context.Context, username string) (*models.UserORM, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserByUsername", ctx, username)
-	ret0, _ := ret[0].(*models.User)
+	ret0, _ := ret[0].(*models.UserORM)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -71,10 +72,10 @@ func (mr *MockIUserRepositoryMockRecorder) GetUserByUsername(ctx, username any) 
 }
 
 // GetUserByUsernameAndPassword mocks base method.
-func (m *MockIUserRepository) GetUserByUsernameAndPassword(ctx context.Context, username, hashPassword string) (*models.User, error) {
+func (m *MockIUserRepository) GetUserByUsernameAndPassword(ctx context.Context, username, hashPassword string) (*models.UserORM, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserByUsernameAndPassword", ctx, username, hashPassword)
-	ret0, _ := ret[0].(*models.User)
+	ret0, _ := ret[0].(*models.UserORM)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -86,16 +87,16 @@ func (mr *MockIUserRepositoryMockRecorder) GetUserByUsernameAndPassword(ctx, use
 }
 
 // RegisterUser mocks base method.
-func (m *MockIUserRepository) RegisterUser(ctx context.Context, userData models.User) (int64, error) {
+func (m *MockIUserRepository) RegisterUser(ctx context.Context, tx *sql.Tx, userData models.UserORM) (int64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RegisterUser", ctx, userData)
+	ret := m.ctrl.Call(m, "RegisterUser", ctx, tx, userData)
 	ret0, _ := ret[0].(int64)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // RegisterUser indicates an expected call of RegisterUser.
-func (mr *MockIUserRepositoryMockRecorder) RegisterUser(ctx, userData any) *gomock.Call {
+func (mr *MockIUserRepositoryMockRecorder) RegisterUser(ctx, tx, userData any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterUser", reflect.TypeOf((*MockIUserRepository)(nil).RegisterUser), ctx, userData)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterUser", reflect.TypeOf((*MockIUserRepository)(nil).RegisterUser), ctx, tx, userData)
 }

@@ -11,7 +11,7 @@ import (
 
 //go:generate mockgen -source=./internal/adapters/ports/auth_ports.go -destination=./internal/mocks/mocks_auth.go -package=mocks
 type IJWTAuth interface {
-	CreateToken(ctx context.Context, user models.User) (*entity.CreateTokenResponse, error)
+	CreateToken(ctx context.Context, user models.UserORM) (*entity.CreateTokenResponse, error)
 	VerifyToken(ctx context.Context, tokenString string) (*jwt.Token, jwt.MapClaims, error)
 }
 

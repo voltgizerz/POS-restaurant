@@ -235,7 +235,7 @@ func (m *MockIMenuRepository) EXPECT() *MockIMenuRepositoryMockRecorder {
 }
 
 // AddMenu mocks base method.
-func (m *MockIMenuRepository) AddMenu(ctx context.Context, menuData models.Menu) (int64, error) {
+func (m *MockIMenuRepository) AddMenu(ctx context.Context, menuData models.MenuORM) (int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddMenu", ctx, menuData)
 	ret0, _ := ret[0].(int64)
@@ -250,10 +250,10 @@ func (mr *MockIMenuRepositoryMockRecorder) AddMenu(ctx, menuData any) *gomock.Ca
 }
 
 // FetchMenuById mocks base method.
-func (m *MockIMenuRepository) FetchMenuById(ctx context.Context, userID int64) ([]*models.Menu, error) {
+func (m *MockIMenuRepository) FetchMenuById(ctx context.Context, userID int64) ([]*models.MenuORM, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FetchMenuById", ctx, userID)
-	ret0, _ := ret[0].([]*models.Menu)
+	ret0, _ := ret[0].([]*models.MenuORM)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -295,7 +295,7 @@ func (mr *MockIMenuRepositoryMockRecorder) UpdateActiveMenuByMenuID(ctx, tx, men
 }
 
 // UpdateMenuByMenuID mocks base method.
-func (m *MockIMenuRepository) UpdateMenuByMenuID(ctx context.Context, tx *sql.Tx, menuData *models.Menu) (int64, error) {
+func (m *MockIMenuRepository) UpdateMenuByMenuID(ctx context.Context, tx *sql.Tx, menuData *models.MenuORM) (int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateMenuByMenuID", ctx, tx, menuData)
 	ret0, _ := ret[0].(int64)

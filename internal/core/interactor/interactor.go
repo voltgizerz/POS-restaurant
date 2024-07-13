@@ -17,6 +17,7 @@ type AuthHandler struct {
 
 type AuthService struct {
 	JWTService     ports.IJWTAuth
+	TxRepository   ports.ITxRepository
 	UserRepository ports.IUserRepository
 }
 
