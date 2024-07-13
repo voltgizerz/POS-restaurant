@@ -7,7 +7,7 @@ This project provides simple REST APIs for Point of Sale (POS) software.
 - JWT Authentication
 
 ## Frameworks and Library
-- Fiber: HTTP Framework
+- Fiber V3: HTTP Framework
 - Goose: Database Migrations
 - SQLX: Database ORM
 - Validator V10: Struct Validation

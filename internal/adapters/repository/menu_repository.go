@@ -55,7 +55,7 @@ func (m *MenuRepository) UpdateActiveMenuBatchUser(ctx context.Context, tx *sql.
 	}
 
 	if rowChanged <= 0 {
-		return 0, errors.New("No Data Update")
+		return 0, errors.New("no data updated")
 	}
 
 	return 1, nil
@@ -77,7 +77,7 @@ func (m *MenuRepository) UpdateActiveMenuByMenuID(ctx context.Context, tx *sql.T
 	}
 
 	if rowChanged <= 0 {
-		return 0, errors.New("No Data Update")
+		return 0, errors.New("no data updated")
 	}
 
 	return 1, nil
@@ -99,7 +99,7 @@ func (m *MenuRepository) UpdateMenuByMenuID(ctx context.Context, tx *sql.Tx, men
 	}
 
 	if rowChanged <= 0 {
-		return 0, errors.New("No Data Update")
+		return 0, errors.New("no data updated")
 	}
 
 	return 1, nil
@@ -123,17 +123,17 @@ func (m *MenuRepository) AddMenu(ctx context.Context, menuData models.MenuORM) (
 	return lastID, nil
 }
 
-// FetchMenuById implements ports.IMenuRepository.
-func (m *MenuRepository) FetchMenuById(ctx context.Context, menuId int64) ([]*models.MenuORM, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.FetchMenuById")
+// FetchMenuByID implements ports.IMenuRepository.
+func (m *MenuRepository) FetchMenuByID(ctx context.Context, menuID int64) ([]*models.MenuORM, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.FetchMenuByID")
 	defer span.Finish()
 
-	menuData := []*models.MenuORM{}
+	dataMenu := []*models.MenuORM{}
 
-	err := m.MasterDB.SelectContext(ctx, &menuData, queryGetMenuByUserID, menuId)
+	err := m.MasterDB.SelectContext(ctx, &dataMenu, queryGetMenuByUserID, menuID)
 	if err != nil {
 		return nil, err
 	}
 
-	return menuData, nil
+	return dataMenu, nil
 }
