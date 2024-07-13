@@ -31,22 +31,22 @@ func (h *AuthHandler) Login(c fiber.Ctx) error {
 
 	err := c.Bind().Body(req)
 	if err != nil {
-		return common.SendErrorResp(c, fiber.StatusBadRequest, constants.ErrMsgInvalidUsernameAndPassword)
+		return common.WriteErrorJSON(c, fiber.StatusBadRequest, constants.ErrMsgInvalidUsernameAndPassword)
 	}
 
 	err = validator.New().StructCtx(ctx, req)
 	if err != nil {
 		err = utils.GetFirstValidatorError(err)
 
-		return common.SendErrorResp(c, fiber.StatusBadRequest, err.Error())
+		return common.WriteErrorJSON(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	dataLogin, err := h.authService.Login(ctx, req.Username, req.Password)
 	if err != nil {
-		return common.SendErrorResp(c, fiber.StatusUnauthorized, constants.ErrMsgInvalidUsernameOrPassword)
+		return common.WriteErrorJSON(c, fiber.StatusUnauthorized, constants.ErrMsgInvalidUsernameOrPassword)
 	}
 
-	return common.SendSuccessResp(c, fiber.StatusOK, "Success", dataLogin)
+	return common.WriteSuccessJSON(c, fiber.StatusOK, "Success", dataLogin)
 }
 
 func (h *AuthHandler) Register(c fiber.Ctx) error {
@@ -57,35 +57,35 @@ func (h *AuthHandler) Register(c fiber.Ctx) error {
 
 	err := c.Bind().Body(req)
 	if err != nil {
-		return common.SendErrorResp(c, fiber.StatusBadRequest, "Invalid request body.")
+		return common.WriteErrorJSON(c, fiber.StatusBadRequest, "Invalid request body.")
 	}
 
 	err = validator.New().StructCtx(ctx, req)
 	if err != nil {
 		err = utils.GetFirstValidatorError(err)
 
-		return common.SendErrorResp(c, fiber.StatusBadRequest, err.Error())
+		return common.WriteErrorJSON(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	if req.Password != req.ConfirmPassword {
-		return common.SendErrorResp(c, fiber.StatusBadRequest, "Password mismatch")
+		return common.WriteErrorJSON(c, fiber.StatusBadRequest, "Password mismatch")
 	}
 
-	userData := entity.User{
+	dataUser := entity.User{
 		Email:    req.Email,
 		Password: req.Password,
 		Name:     req.Name,
 		Username: req.Username,
 	}
 
-	result, err := h.authService.Register(ctx, userData)
+	result, err := h.authService.Register(ctx, dataUser)
 	if err != nil {
-		return common.SendErrorResp(c, fiber.StatusBadRequest, err.Error())
+		return common.WriteErrorJSON(c, fiber.StatusBadRequest, err.Error())
 	}
 
 	res := map[string]int64{
 		"user_id": result,
 	}
 
-	return common.SendSuccessResp(c, fiber.StatusCreated, "Account created succesfully.", res)
+	return common.WriteSuccessJSON(c, fiber.StatusCreated, "Account created succesfully.", res)
 }

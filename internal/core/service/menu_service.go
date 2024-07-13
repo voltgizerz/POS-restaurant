@@ -51,7 +51,7 @@ func (s *MenuService) GetMenu(ctx context.Context, userID int64) ([]*entity.Menu
 	span, ctx := opentracing.StartSpanFromContext(ctx, "service.MenuService.GetMenu")
 	defer span.Finish()
 
-	result, err := s.menuRepository.FetchMenuById(ctx, userID)
+	result, err := s.menuRepository.FetchMenuByID(ctx, userID)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"user_id": userID,

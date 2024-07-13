@@ -34,19 +34,19 @@ func (m *JWTAuth) AuthorizeAccess() fiber.Handler {
 	return func(c fiber.Ctx) error {
 		authHeader := c.Get(headerAuthName)
 		if authHeader == "" {
-			return common.SendErrorResp(c, fiber.StatusUnauthorized, "Missing Authorization header")
+			return common.WriteErrorJSON(c, fiber.StatusUnauthorized, "Missing Authorization header")
 		}
 
 		// Check if the token type is Bearer
 		tokenType, tokenValue, err := parseAuthHeader(authHeader)
 		if err != nil || tokenType != tokenTypeJWT {
-			return common.SendErrorResp(c, fiber.StatusUnauthorized, "Invalid authorization header format")
+			return common.WriteErrorJSON(c, fiber.StatusUnauthorized, "Invalid authorization header format")
 		}
 
 		// Verify JWT token using AuthService.VerifyToken
 		_, claims, err := m.AuthService.VerifyToken(c.UserContext(), tokenValue)
 		if err != nil {
-			return common.SendErrorResp(c, fiber.StatusUnauthorized, "Invalid token")
+			return common.WriteErrorJSON(c, fiber.StatusUnauthorized, "Invalid token")
 		}
 
 		requestID := uuid.New().String()

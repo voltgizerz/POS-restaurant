@@ -249,19 +249,19 @@ func (mr *MockIMenuRepositoryMockRecorder) AddMenu(ctx, menuData any) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddMenu", reflect.TypeOf((*MockIMenuRepository)(nil).AddMenu), ctx, menuData)
 }
 
-// FetchMenuById mocks base method.
-func (m *MockIMenuRepository) FetchMenuById(ctx context.Context, userID int64) ([]*models.MenuORM, error) {
+// FetchMenuByID mocks base method.
+func (m *MockIMenuRepository) FetchMenuByID(ctx context.Context, userID int64) ([]*models.MenuORM, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "FetchMenuById", ctx, userID)
+	ret := m.ctrl.Call(m, "FetchMenuByID", ctx, userID)
 	ret0, _ := ret[0].([]*models.MenuORM)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// FetchMenuById indicates an expected call of FetchMenuById.
-func (mr *MockIMenuRepositoryMockRecorder) FetchMenuById(ctx, userID any) *gomock.Call {
+// FetchMenuByID indicates an expected call of FetchMenuByID.
+func (mr *MockIMenuRepositoryMockRecorder) FetchMenuByID(ctx, userID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchMenuById", reflect.TypeOf((*MockIMenuRepository)(nil).FetchMenuById), ctx, userID)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchMenuByID", reflect.TypeOf((*MockIMenuRepository)(nil).FetchMenuByID), ctx, userID)
 }
 
 // UpdateActiveMenuBatchUser mocks base method.
