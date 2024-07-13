@@ -74,7 +74,7 @@ func (m *JWTAuth) AuthorizeAccess() fiber.Handler {
 }
 
 // Function to parse Authorization header
-func parseAuthHeader(authHeader string) (string, string, error) {
+func parseAuthHeader(authHeader string) (tokenType string, tokenValue string, err error) {
 	if authHeader == "" {
 		return "", "", errors.New("authorization header is empty")
 	}
