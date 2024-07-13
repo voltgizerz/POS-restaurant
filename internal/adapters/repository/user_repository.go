@@ -64,12 +64,12 @@ func (r *UserRepository) RegisterUser(ctx context.Context, tx *sql.Tx, userData 
 		return 0, err
 	}
 
-	lastId, err := result.LastInsertId()
+	lastID, err := result.LastInsertId()
 	if err != nil {
 		return 0, err
 	}
 
-	return lastId, nil
+	return lastID, nil
 }
 
 func (r *UserRepository) GetUserByEmail(ctx context.Context, email string) (*models.UserORM, error) {

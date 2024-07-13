@@ -139,5 +139,4 @@ func (s *AuthService) Register(ctx context.Context, userData entity.User) (int64
 	}
 
 	return result, nil
-
 }

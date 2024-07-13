@@ -99,8 +99,8 @@ func handlePanic() {
 	}
 }
 
-func startAPIServer(interactor interactor.APInteractor, jwtMiddleware middleware.JWTAuth) {
-	httpServer := api.NewServer(interactor, jwtMiddleware)
+func startAPIServer(i interactor.APInteractor, jwtMiddleware middleware.JWTAuth) {
+	httpServer := api.NewServer(i, jwtMiddleware)
 	httpServer.Initialize()
 }
 
