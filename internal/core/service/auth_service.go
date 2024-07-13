@@ -8,6 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
 	"github.com/voltgizerz/POS-restaurant/internal/core/interactor"
+	"github.com/voltgizerz/POS-restaurant/internal/core/models"
 	"github.com/voltgizerz/POS-restaurant/internal/core/ports"
 	"github.com/voltgizerz/POS-restaurant/internal/utils"
 	"github.com/voltgizerz/POS-restaurant/pkg/logger"
@@ -15,12 +16,14 @@ import (
 
 type AuthService struct {
 	jwtService     ports.IJWTAuth
+	txRepository   ports.ITxRepository
 	userRepository ports.IUserRepository
 }
 
 func NewAuthService(i interactor.AuthService) *AuthService {
 	return &AuthService{
 		jwtService:     i.JWTService,
+		txRepository:   i.TxRepository,
 		userRepository: i.UserRepository,
 	}
 }
@@ -88,7 +91,7 @@ func (s *AuthService) Register(ctx context.Context, userData entity.User) (int64
 			"username": userData.Username,
 			"error":    err,
 		}).Error("[AuthService] error on Email Already Exist")
-		return 0, errors.New("Email already exist")
+		return 0, errors.New("email already exist")
 	}
 
 	passwordHashed, err := utils.HashPassword(userData.Password)
@@ -97,22 +100,41 @@ func (s *AuthService) Register(ctx context.Context, userData entity.User) (int64
 			"username": userData.Username,
 			"error":    err,
 		}).Error("[AuthService] error on HashPassword")
-		return 0, errors.New("Failed hashed password")
+		return 0, errors.New("failed hashed password")
 	}
 
-	userDataProceed := entity.UserORM{
+	userDataProceed := models.UserORM{
 		Username:       userData.Username,
 		PasswordHashed: passwordHashed,
 		Name:           userData.Name,
 		Email:          userData.Email,
 	}
 
-	result, err := s.userRepository.RegisterUser(ctx, userDataProceed)
+	tx, err := s.txRepository.StartTx(ctx)
+	if err != nil {
+		logger.LogStdErr.WithFields(logrus.Fields{
+			"username": userData.Username,
+			"error":    err,
+		}).Error("[AuthService] error on StartTx")
+		return 0, err
+	}
+	defer s.txRepository.RollbackTx(ctx, tx)
+
+	result, err := s.userRepository.RegisterUser(ctx, tx, userDataProceed)
 	if err != nil {
 		logger.LogStdErr.WithFields(logrus.Fields{
 			"username": userData.Username,
 			"error":    err,
 		}).Error("[AuthService] error on RegisterUser")
+		return 0, err
+	}
+
+	err = s.txRepository.CommitTx(ctx, tx)
+	if err != nil {
+		logger.LogStdErr.WithFields(logrus.Fields{
+			"username": userData.Username,
+			"error":    err,
+		}).Error("[AuthService] error on CommitTx")
 		return 0, err
 	}
 

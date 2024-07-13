@@ -8,8 +8,8 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/opentracing/opentracing-go"
+	"github.com/voltgizerz/POS-restaurant/internal/core/models"
 	"github.com/voltgizerz/POS-restaurant/internal/core/ports"
-	"github.com/voltgizerz/POS-restaurant/internal/core/entity"
 )
 
 const (
@@ -55,7 +55,7 @@ func (m *MenuRepository) UpdateActiveMenuBatchUser(ctx context.Context, tx *sql.
 	}
 
 	if rowChanged <= 0 {
-		return 0, errors.New("No Data Update")
+		return 0, errors.New("no data updated")
 	}
 
 	return 1, nil
@@ -77,14 +77,14 @@ func (m *MenuRepository) UpdateActiveMenuByMenuID(ctx context.Context, tx *sql.T
 	}
 
 	if rowChanged <= 0 {
-		return 0, errors.New("No Data Update")
+		return 0, errors.New("no data updated")
 	}
 
 	return 1, nil
 }
 
 // UpdateMenuByMenuID implements ports.IMenuRepository.
-func (m *MenuRepository) UpdateMenuByMenuID(ctx context.Context, tx *sql.Tx, menuData *entity.MenuORM) (int64, error) {
+func (m *MenuRepository) UpdateMenuByMenuID(ctx context.Context, tx *sql.Tx, menuData *models.MenuORM) (int64, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.UpdateMenuByMenuID")
 	defer span.Finish()
 
@@ -99,14 +99,14 @@ func (m *MenuRepository) UpdateMenuByMenuID(ctx context.Context, tx *sql.Tx, men
 	}
 
 	if rowChanged <= 0 {
-		return 0, errors.New("No Data Update")
+		return 0, errors.New("no data updated")
 	}
 
 	return 1, nil
 }
 
 // AddMenu implements ports.IMenuRepository.
-func (m *MenuRepository) AddMenu(ctx context.Context, menuData entity.MenuORM) (int64, error) {
+func (m *MenuRepository) AddMenu(ctx context.Context, menuData models.MenuORM) (int64, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.AddMenu")
 	defer span.Finish()
 
@@ -123,17 +123,17 @@ func (m *MenuRepository) AddMenu(ctx context.Context, menuData entity.MenuORM) (
 	return lastID, nil
 }
 
-// FetchMenuById implements ports.IMenuRepository.
-func (m *MenuRepository) FetchMenuById(ctx context.Context, menuId int64) ([]*entity.MenuORM, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.FetchMenuById")
+// FetchMenuByID implements ports.IMenuRepository.
+func (m *MenuRepository) FetchMenuByID(ctx context.Context, menuID int64) ([]*models.MenuORM, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "repo.MenuRepository.FetchMenuByID")
 	defer span.Finish()
 
-	menuData := []*entity.MenuORM{}
+	dataMenu := []*models.MenuORM{}
 
-	err := m.MasterDB.SelectContext(ctx, &menuData, queryGetMenuByUserID, menuId)
+	err := m.MasterDB.SelectContext(ctx, &dataMenu, queryGetMenuByUserID, menuID)
 	if err != nil {
 		return nil, err
 	}
 
-	return menuData, nil
+	return dataMenu, nil
 }

@@ -22,6 +22,8 @@ decrypt-gpg:
 mock-gen:
 	@mockgen -source=./internal/core/ports/auth_ports.go -destination=./internal/mocks/mocks_auth.go -package=mocks
 	@mockgen -source=./internal/core/ports/user_ports.go -destination=./internal/mocks/mocks_user.go -package=mocks
+	@mockgen -source=./internal/core/ports/menu_ports.go -destination=./internal/mocks/mocks_menu.go -package=mocks
+	@mockgen -source=./internal/core/ports/tx_ports.go -destination=./internal/mocks/mocks_tx.go -package=mocks
 
 changelog-gen:
 	@auto-changelog
